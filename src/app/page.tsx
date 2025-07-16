@@ -2,7 +2,7 @@
 'use client'; // This marks the component as a Client Component, which is needed for hooks like useState and useEffect.
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link'; // CORRECTED: Import the Link component
+import Link from 'next/link';
 
 // --- Reusable BookCard Component ---
 interface Book {

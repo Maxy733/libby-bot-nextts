@@ -1,10 +1,8 @@
-// src/app/about/page.tsx
 'use client';
 
 import React from 'react';
 import Link from 'next/link';
 
-// The main component for the About Us page
 export default function AboutPage() {
   // A simple effect to add the 'is-visible' class for animations on scroll
   // In a real app, you might use a more robust library like Framer Motion
@@ -100,13 +98,13 @@ export default function AboutPage() {
                 {/* Member 2 */}
                 <div className="member-card animated-element" style={{transitionDelay: '100ms'}}>
                     <img src="https://placehold.co/200x200/2F2F2F/FFFFFF?text=A" alt="Team Member 2" className="member-image" />
-                    <h3 className="member-name">Alex</h3>
+                    <h3 className="member-name">Kyi</h3>
                     <p className="member-role">UI/UX Designer</p>
                 </div>
                 {/* Member 3 */}
                 <div className="member-card animated-element" style={{transitionDelay: '200ms'}}>
                     <img src="https://placehold.co/200x200/858585/FFFFFF?text=J" alt="Team Member 3" className="member-image" />
-                    <h3 className="member-name">Jordan</h3>
+                    <h3 className="member-name">Degan</h3>
                     <p className="member-role">Backend & Database Specialist</p>
                 </div>
             </div>
