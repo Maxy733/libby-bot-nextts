@@ -134,7 +134,7 @@ body {
 }
 
 .hero-bg {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/stack-of-library-books.webp');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/book_white.jpg');
     background-size: cover;
     background-position: center;
     color: white;
