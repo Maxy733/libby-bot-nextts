@@ -73,11 +73,11 @@ export default function Home() {
                     </Link>
                     <nav className="main-nav">
                         <Link href="/discover">Discover</Link>
-                        <a href="#about">About Us</a>
-                        <a href="trending.html">Trending</a>
+                        <Link href="/about">About Us</Link>
+                        <Link href="/trending">Trending</Link>
                     </nav>
                     <div className="header-actions">
-                        {/* CORRECTED: Replaced <a> with <Link> */}
+                        
                         <Link href="/login" className="login-btn">Log In</Link>
                         <Link href="/signup" className="signup-btn">Sign Up</Link>
                     </div>
@@ -135,7 +135,7 @@ export default function Home() {
                         <div className="join-us-card">
                             <h2>Unlock Personalized Recommendations</h2>
                             <p>Create a free account to get recommendations based on your courses, interests, and reading history. Find your next favorite book today.</p>
-                            {/* CORRECTED: Replaced <a> with <Link> */}
+                            
                             <Link href="/signup" className="join-us-btn">Join Us</Link>
                         </div>
                     </div>
