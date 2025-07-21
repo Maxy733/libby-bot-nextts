@@ -23,7 +23,7 @@ export default function Footer() {
             <h3 className="footer-col-title">LIBBY BOT</h3>
             <ul>
               <FooterLink href="/about">About Us</FooterLink>
-              <FooterLink href="#">Our Mission</FooterLink>
+              <FooterLink href="/about">Our Mission</FooterLink>
               <FooterLink href="#">Careers</FooterLink>
               <FooterLink href="#">Press</FooterLink>
             </ul>
