@@ -25,7 +25,6 @@ const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
 );
 
 const GenreCard = ({ title, imageUrl, delay }: { title: string, imageUrl: string, delay: number }) => (
-    // FIXED: Replaced <a> with <Link>
     <Link href="#" className="genre-card" style={{ transitionDelay: `${delay * 100}ms` }}>
         <div className="genre-card-bg" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.6)), url(${imageUrl})` }}></div>
         <h3 className="genre-card-title">{title}</h3>
@@ -50,7 +49,6 @@ export default function DiscoverPage() {
     }, []);
 
     const fetchBooksForMajor = (major: string) => {
-        // FIXED: Added a console.log to use the 'major' variable and satisfy the linter.
         console.log(`Fetching books for major: ${major}`);
         
         // This is a placeholder. In a real app, you would have an API endpoint like:
@@ -75,10 +73,11 @@ export default function DiscoverPage() {
                         </svg>
                         <span>LIBBY BOT</span>
                     </Link>
+                    {/* FIXED: Replaced <a> tags with <Link> components for proper navigation */}
                     <nav className="main-nav">
-                        <a href="/discover" className="text-brand-charcoal">Discover</a>
-                        <a href="/#about">About Us</a>
-                        <a href="/trending">Trending</a>
+                        <Link href="/discover" className="text-brand-charcoal">Discover</Link>
+                        <Link href="/#about">About Us</Link>
+                        <Link href="/trending">Trending</Link>
                     </nav>
                     <div className="header-actions">
                         <Link href="/login" className="login-btn">Log In</Link>
