@@ -76,7 +76,7 @@ export default function DiscoverPage() {
                     {/* FIXED: Replaced <a> tags with <Link> components for proper navigation */}
                     <nav className="main-nav">
                         <Link href="/discover" className="text-brand-charcoal">Discover</Link>
-                        <Link href="/#about">About Us</Link>
+                        <Link href="/about">About Us</Link>
                         <Link href="/trending">Trending</Link>
                     </nav>
                     <div className="header-actions">
