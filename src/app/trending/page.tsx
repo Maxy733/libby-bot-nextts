@@ -61,7 +61,7 @@ export default function TrendingPage() {
                     </Link>
                     <nav className="main-nav">
                         <Link href="/discover">Discover</Link>
-                        <Link href="/about">About Us</Link>
+                        <Link href="/#about">About Us</Link>
                         <Link href="/trending" className="text-brand-charcoal">Trending</Link>
                     </nav>
                     <div className="header-actions">
@@ -75,7 +75,8 @@ export default function TrendingPage() {
                 <div className="space-y-12">
                     <div>
                         <h1 className="page-title">Trending Books</h1>
-                        <p className="page-subtitle">See what's popular in the library right now, based on recent checkouts and ratings.</p>
+                        {/* FIXED: Replaced ' with &apos; */}
+                        <p className="page-subtitle">See what&apos;s popular in the library right now, based on recent checkouts and ratings.</p>
                     </div>
 
                     <section>

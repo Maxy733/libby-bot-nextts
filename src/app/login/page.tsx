@@ -8,7 +8,6 @@ import Link from 'next/link'; // Use the Next.js Link component for navigation
 export default function LoginPage() {
   
   // A placeholder function for handling form submission.
-  // In a real app, this would call your API's login endpoint.
   const handleLogin = (event: React.FormEvent) => {
     event.preventDefault(); // Prevents the default form submission behavior
     alert('Login functionality would be handled here!');
@@ -18,12 +17,14 @@ export default function LoginPage() {
     <div className="auth-page">
       
       {/* Left Side: Decorative Image */}
-      <div className="auth-image-panel" style={{ backgroundImage: "url('/Musuem-2_1195x794.webp')" }}>
+      <div className="auth-image-panel" style={{ backgroundImage: "url('/stack-of-library-books.webp')" }}>
+        {/* This div is for the background image, styled in globals.css */}
       </div>
 
       {/* Right Side: Form */}
       <div className="auth-form-panel">
         <div className="auth-form-container">
+          {/* Use the Link component for the logo to navigate back to the home page */}
           <Link href="/" className="logo auth-logo">
             LIBBY BOT
           </Link>
@@ -52,9 +53,9 @@ export default function LoginPage() {
             </div>
           </form>
 
+          {/* FIXED: Replaced ' with &apos; */}
           <p className="auth-footer-link">
-            Don't have an account?
-            {/* Use the Link component for navigation to the sign-up page */}
+            Don&apos;t have an account?
             <Link href="/signup">
               Sign up
             </Link>

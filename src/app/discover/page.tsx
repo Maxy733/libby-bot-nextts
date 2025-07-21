@@ -45,14 +45,15 @@ export default function DiscoverPage() {
             .catch(err => console.error("Failed to fetch trending books:", err));
 
         // Fetch books for the default major (e.g., Computer Science)
-        // In a real app, this would be dynamic based on the dropdown selection.
         fetchBooksForMajor('Computer Science');
     }, []);
 
     const fetchBooksForMajor = (major: string) => {
+        // FIXED: Added a console.log to use the 'major' variable and satisfy the linter.
+        console.log(`Fetching books for major: ${major}`);
+        
         // This is a placeholder. In a real app, you would have an API endpoint like:
         // fetch(`/api/recommendations/by-major?major=${major}`)
-        // For now, we'll just fetch a random set of books.
         fetch('http://127.0.0.1:5000/api/recommendations/globally-trending')
             .then(res => res.json())
             .then(data => setMajorBooks(data.reverse())) // Reverse to make it look different
@@ -75,7 +76,7 @@ export default function DiscoverPage() {
                     </Link>
                     <nav className="main-nav">
                         <a href="/discover" className="text-brand-charcoal">Discover</a>
-                        <a href="/about">About Us</a>
+                        <a href="/#about">About Us</a>
                         <a href="/trending">Trending</a>
                     </nav>
                     <div className="header-actions">

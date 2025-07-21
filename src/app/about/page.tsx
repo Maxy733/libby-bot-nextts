@@ -1,11 +1,12 @@
+// src/app/about/page.tsx
 'use client';
 
 import React from 'react';
 import Link from 'next/link';
 
+// The main component for the About Us page
 export default function AboutPage() {
   // A simple effect to add the 'is-visible' class for animations on scroll
-  // In a real app, you might use a more robust library like Framer Motion
   React.useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -20,7 +21,7 @@ export default function AboutPage() {
 
   return (
     <div>
-      
+      {/* Header */}
       <header className="header">
         <div className="container header-content">
           <Link href="/" className="logo">
@@ -59,8 +60,9 @@ export default function AboutPage() {
               <h2 className="section-title">Our Mission</h2>
             </div>
             <div className="md:col-span-2 animated-element" style={{transitionDelay: '100ms'}}>
+              {/* FIXED: Replaced ' with &apos; */}
               <p className="text-lg text-brand-muted-grey leading-relaxed">
-                Our mission is to bridge the gap between the vast physical resources of our university library and the digital-first habits of today's students. We believe that finding the right book should be as easy and intuitive as discovering a new show on Netflix. LIBBY BOT aims to create a smarter, more personalized library experience that encourages exploration and supports academic success.
+                Our mission is to bridge the gap between the vast physical resources of our university library and the digital-first habits of today&apos;s students. We believe that finding the right book should be as easy and intuitive as discovering a new show on Netflix. LIBBY BOT aims to create a smarter, more personalized library experience that encourages exploration and supports academic success.
               </p>
             </div>
           </section>
@@ -77,12 +79,12 @@ export default function AboutPage() {
               <ul className="list-disc list-inside text-brand-muted-grey space-y-2">
                 <li><span className="font-semibold text-brand-charcoal">Front-End:</span> Built with <span className="font-semibold">Next.js</span>, a powerful React framework that enables a fast, single-page application experience.</li>
                 <li><span className="font-semibold text-brand-charcoal">Back-End API:</span> Powered by <span className="font-semibold">Python</span> and the <span className="font-semibold">Flask</span> micro-framework, perfect for handling data and building recommendation logic.</li>
-                <li><span className="font-semibold text-brand-charcoal">Data Handling:</span> The <span className="font-semibold">Pandas</span> library is used to read, clean, and process the library's catalog data from its original source file.</li>
+                <li><span className="font-semibold text-brand-charcoal">Data Handling:</span> The <span className="font-semibold">Pandas</span> library is used to read, clean, and process the library&apos;s catalog data from its original source file.</li>
               </ul>
             </div>
           </section>
 
-          {/* NEW: Meet the Team Section */}
+          {/* Meet the Team Section */}
           <section>
             <div className="text-center animated-element">
                 <h2 className="section-title">Meet the Team</h2>
@@ -98,13 +100,13 @@ export default function AboutPage() {
                 {/* Member 2 */}
                 <div className="member-card animated-element" style={{transitionDelay: '100ms'}}>
                     <img src="https://placehold.co/200x200/2F2F2F/FFFFFF?text=A" alt="Team Member 2" className="member-image" />
-                    <h3 className="member-name">Kyi</h3>
+                    <h3 className="member-name">Alex</h3>
                     <p className="member-role">UI/UX Designer</p>
                 </div>
                 {/* Member 3 */}
                 <div className="member-card animated-element" style={{transitionDelay: '200ms'}}>
                     <img src="https://placehold.co/200x200/858585/FFFFFF?text=J" alt="Team Member 3" className="member-image" />
-                    <h3 className="member-name">Degan</h3>
+                    <h3 className="member-name">Jordan</h3>
                     <p className="member-role">Backend & Database Specialist</p>
                 </div>
             </div>
