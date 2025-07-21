@@ -25,10 +25,11 @@ const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
 );
 
 const GenreCard = ({ title, imageUrl, delay }: { title: string, imageUrl: string, delay: number }) => (
-    <a href="#" className="genre-card" style={{ transitionDelay: `${delay * 100}ms` }}>
+    // FIXED: Replaced <a> with <Link>
+    <Link href="#" className="genre-card" style={{ transitionDelay: `${delay * 100}ms` }}>
         <div className="genre-card-bg" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.6)), url(${imageUrl})` }}></div>
         <h3 className="genre-card-title">{title}</h3>
-    </a>
+    </Link>
 );
 
 
