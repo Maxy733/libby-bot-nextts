@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link'; 
 
 // --- Reusable BookCard Component ---
-// UPDATED: Added 'coverurl' to the Book interface
+// The Book interface expects a 'coverurl' field from the API.
 interface Book {
   id: number;
   title: string;
@@ -18,7 +18,7 @@ const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
         className="book-card" 
         style={{ transitionDelay: `${delay * 50}ms` }}
     >
-        {/* UPDATED: Use the real coverurl from the API.
+        {/* This now uses the real coverurl from the API.
             If coverurl is missing, it falls back to a placeholder. */}
         <img 
             src={book.coverurl || `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
@@ -44,6 +44,10 @@ export default function Home() {
                 return response.json();
             })
             .then((data: Book[]) => {
+                // --- DEBUGGING STEP ---
+                // This will print the data from your API to the browser's developer console.
+                // Check if the 'coverurl' field is present and has a valid URL.
+                console.log("Data received from API:", data);
                 setTrendingBooks(data); 
             })
             .catch(error => {
@@ -55,6 +59,8 @@ export default function Home() {
         const input = document.getElementById('hero-search-input') as HTMLInputElement;
         const query = input?.value.trim();
         if (query) {
+            // In a Next.js app, we should use the App Router for navigation.
+            // This creates a link to '/search?q=query'
             window.location.href = `/search?q=${encodeURIComponent(query)}`;
         }
     };
@@ -86,7 +92,7 @@ export default function Home() {
             </header>
 
             <main>
-                {/* Hero Section */}
+                {/* UPDATED: Hero Section now has a wrapper for margins */}
                 <div className="hero-wrapper">
                     <section className="hero-bg">
                         <div className="container hero-content">
@@ -136,7 +142,8 @@ export default function Home() {
                         <div className="join-us-card">
                             <h2>Unlock Personalized Recommendations</h2>
                             <p>Create a free account to get recommendations based on your courses, interests, and reading history. Find your next favorite book today.</p>
-                            <Link href="/signup" className="join-us-btn">Join Us</Link>
+                            {/* UPDATED: Link now points to the login page */}
+                            <Link href="/login" className="join-us-btn">Join Us</Link>
                         </div>
                     </div>
                 </section>
