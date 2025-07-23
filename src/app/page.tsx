@@ -1,14 +1,16 @@
 // src/app/page.tsx
-'use client'; // This marks the component as a Client Component, which is needed for hooks like useState and useEffect.
+'use client'; 
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import Link from 'next/link'; 
 
 // --- Reusable BookCard Component ---
+// UPDATED: Added 'coverurl' to the Book interface
 interface Book {
   id: number;
   title: string;
   author: string;
+  coverurl: string | null; // Can be a string or null if no cover exists
 }
 
 const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
@@ -16,8 +18,10 @@ const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
         className="book-card" 
         style={{ transitionDelay: `${delay * 50}ms` }}
     >
+        {/* UPDATED: Use the real coverurl from the API.
+            If coverurl is missing, it falls back to a placeholder. */}
         <img 
-            src={`https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
+            src={book.coverurl || `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
             alt={book.title} 
             className="book-cover"
         />
@@ -40,20 +44,18 @@ export default function Home() {
                 return response.json();
             })
             .then((data: Book[]) => {
-                setTrendingBooks(data);
+                setTrendingBooks(data); 
             })
             .catch(error => {
                 console.error("Error fetching trending books:", error);
             });
-    }, []);
+    }, []); 
 
     const handleSearch = () => {
         const input = document.getElementById('hero-search-input') as HTMLInputElement;
         const query = input?.value.trim();
         if (query) {
-            // In a real Next.js app, you would use the <Link> component or useRouter hook for navigation.
-            // For now, simple redirection works to connect to our other HTML pages.
-            window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+            window.location.href = `/search?q=${encodeURIComponent(query)}`;
         }
     };
 
@@ -73,11 +75,10 @@ export default function Home() {
                     </Link>
                     <nav className="main-nav">
                         <Link href="/discover">Discover</Link>
-                        <Link href="/about">About Us</Link>
+                        <Link href="/#about">About Us</Link>
                         <Link href="/trending">Trending</Link>
                     </nav>
                     <div className="header-actions">
-                        
                         <Link href="/login" className="login-btn">Log In</Link>
                         <Link href="/signup" className="signup-btn">Sign Up</Link>
                     </div>
@@ -135,7 +136,6 @@ export default function Home() {
                         <div className="join-us-card">
                             <h2>Unlock Personalized Recommendations</h2>
                             <p>Create a free account to get recommendations based on your courses, interests, and reading history. Find your next favorite book today.</p>
-                            
                             <Link href="/signup" className="join-us-btn">Join Us</Link>
                         </div>
                     </div>
