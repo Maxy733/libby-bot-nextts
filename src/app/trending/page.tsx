@@ -1,9 +1,9 @@
 // src/app/trending/page.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react'; // Import Suspense
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation'; // Hook to read URL query params
+import { useSearchParams } from 'next/navigation';
 
 // --- Type Definitions ---
 interface Book {
@@ -53,8 +53,8 @@ const Pagination = ({ currentPage, totalPages }: { currentPage: number, totalPag
     )
 }
 
-// --- Main Trending Page Component ---
-export default function TrendingPage() {
+// --- This component contains the logic that uses the hook ---
+function TrendingPageContent() {
     const [trendingBooks, setTrendingBooks] = useState<Book[]>([]);
     const [totalPages, setTotalPages] = useState(0);
     
@@ -72,6 +72,33 @@ export default function TrendingPage() {
             .catch(err => console.error("Failed to fetch trending books:", err));
     }, [currentPage]); // Re-fetch whenever the currentPage changes
 
+    return (
+        <main className="container page-content">
+            <div className="space-y-12">
+                <div>
+                    <h1 className="page-title">Trending Books</h1>
+                    <p className="page-subtitle">See what&apos;s popular in the library right now, based on recent checkouts and ratings.</p>
+                </div>
+
+                <section>
+                    <div className="results-grid">
+                        {trendingBooks.length > 0 ? (
+                            trendingBooks.map((book, index) => <BookCard key={book.id} book={book} delay={index} />)
+                        ) : (
+                            <p className="loading-text col-span-full">Loading trending books...</p>
+                        )}
+                    </div>
+                </section>
+                
+                {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} />}
+            </div>
+        </main>
+    )
+}
+
+
+// --- This is the main page component that will be rendered ---
+export default function TrendingPage() {
     return (
         <div>
             {/* Header */}
@@ -92,27 +119,11 @@ export default function TrendingPage() {
                     </div>
                 </div>
             </header>
-
-            <main className="container page-content">
-                <div className="space-y-12">
-                    <div>
-                        <h1 className="page-title">Trending Books</h1>
-                        <p className="page-subtitle">See what&apos;s popular in the library right now, based on recent checkouts and ratings.</p>
-                    </div>
-
-                    <section>
-                        <div className="results-grid">
-                            {trendingBooks.length > 0 ? (
-                                trendingBooks.map((book, index) => <BookCard key={book.id} book={book} delay={index} />)
-                            ) : (
-                                <p className="loading-text col-span-full">Loading trending books...</p>
-                            )}
-                        </div>
-                    </section>
-                    
-                    {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} />}
-                </div>
-            </main>
+            
+            {/* Wrap the part of the page that uses the hook in Suspense */}
+            <Suspense fallback={<div className="container page-content loading-text">Loading page...</div>}>
+                <TrendingPageContent />
+            </Suspense>
         </div>
     );
 }
