@@ -5,12 +5,11 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link'; 
 
 // --- Reusable BookCard Component ---
-// The Book interface expects a 'coverurl' field from the API.
 interface Book {
   id: number;
   title: string;
   author: string;
-  coverurl: string | null; // Can be a string or null if no cover exists
+  coverurl: string | null; 
 }
 
 const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
@@ -18,8 +17,6 @@ const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
         className="book-card" 
         style={{ transitionDelay: `${delay * 50}ms` }}
     >
-        {/* This now uses the real coverurl from the API.
-            If coverurl is missing, it falls back to a placeholder. */}
         <img 
             src={book.coverurl || `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
             alt={book.title} 
@@ -36,7 +33,10 @@ export default function Home() {
     const [trendingBooks, setTrendingBooks] = useState<Book[]>([]);
 
     useEffect(() => {
-        fetch('http://127.0.0.1:5000/api/recommendations/globally-trending')
+        // FIXED: Use the environment variable for the API URL
+        const apiUrl = process.env.API_URL || 'http://127.0.0.1:5000';
+
+        fetch(`${apiUrl}/api/recommendations/globally-trending`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -44,9 +44,6 @@ export default function Home() {
                 return response.json();
             })
             .then((data: Book[]) => {
-                // --- DEBUGGING STEP ---
-                // This will print the data from your API to the browser's developer console.
-                // Check if the 'coverurl' field is present and has a valid URL.
                 console.log("Data received from API:", data);
                 setTrendingBooks(data); 
             })
@@ -59,8 +56,6 @@ export default function Home() {
         const input = document.getElementById('hero-search-input') as HTMLInputElement;
         const query = input?.value.trim();
         if (query) {
-            // In a Next.js app, we should use the App Router for navigation.
-            // This creates a link to '/search?q=query'
             window.location.href = `/search?q=${encodeURIComponent(query)}`;
         }
     };
@@ -92,7 +87,7 @@ export default function Home() {
             </header>
 
             <main>
-                {/* UPDATED: Hero Section now has a wrapper for margins */}
+                {/* Hero Section */}
                 <div className="hero-wrapper">
                     <section className="hero-bg">
                         <div className="container hero-content">
@@ -142,8 +137,7 @@ export default function Home() {
                         <div className="join-us-card">
                             <h2>Unlock Personalized Recommendations</h2>
                             <p>Create a free account to get recommendations based on your courses, interests, and reading history. Find your next favorite book today.</p>
-                            {/* UPDATED: Link now points to the login page */}
-                            <Link href="/login" className="join-us-btn">Join Us</Link>
+                            <Link href="/signup" className="join-us-btn">Join Us</Link>
                         </div>
                     </div>
                 </section>
