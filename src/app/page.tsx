@@ -13,7 +13,6 @@ interface Book {
 }
 
 const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
-    // UPDATED: The entire card is now a link to the book's detail page.
     <Link href={`/book/${book.id}`} className="book-card" style={{ transitionDelay: `${delay * 50}ms` }}>
         <img 
             src={book.coverurl || `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
@@ -29,7 +28,6 @@ const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
 // --- Main Home Page Component ---
 export default function Home() {
     const [trendingBooks, setTrendingBooks] = useState<Book[]>([]);
-    // NEW: Added state to track loading and errors for better UI feedback.
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -39,22 +37,24 @@ export default function Home() {
         fetch(`${apiUrl}/api/recommendations/globally-trending`)
             .then(response => {
                 if (!response.ok) {
-                    // If the server responds with an error (like 404 or 500), throw an error.
                     throw new Error(`API request failed with status ${response.status}`);
                 }
                 return response.json();
             })
-            .then((data: Book[]) => {
-                console.log("Data received from API:", data);
-                setTrendingBooks(data); 
+            .then(data => {
+                // --- THIS IS THE FIX ---
+                // We now correctly check for the 'books' property in the response object.
+                if (data && Array.isArray(data.books)) {
+                    setTrendingBooks(data.books);
+                } else {
+                    throw new Error("Invalid data format from API");
+                }
             })
             .catch(error => {
-                // This will catch network errors or the error thrown above.
                 console.error("Error fetching trending books:", error);
                 setError("Could not load trending books. Please check the API connection.");
             })
             .finally(() => {
-                // This runs regardless of success or failure.
                 setIsLoading(false);
             });
     }, []); 

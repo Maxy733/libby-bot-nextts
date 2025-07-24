@@ -131,7 +131,7 @@ export default function TrendingPage() {
                     </Link>
                     <nav className="main-nav">
                         <Link href="/discover">Discover</Link>
-                        <Link href="/#about">About Us</Link>
+                        <Link href="/about">About Us</Link>
                         <Link href="/trending" className="text-brand-charcoal">Trending</Link>
                     </nav>
                     <div className="header-actions">
