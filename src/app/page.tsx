@@ -13,10 +13,8 @@ interface Book {
 }
 
 const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
-    <div 
-        className="book-card" 
-        style={{ transitionDelay: `${delay * 50}ms` }}
-    >
+    // UPDATED: The entire card is now a link to the book's detail page.
+    <Link href={`/book/${book.id}`} className="book-card" style={{ transitionDelay: `${delay * 50}ms` }}>
         <img 
             src={book.coverurl || `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
             alt={book.title} 
@@ -24,22 +22,25 @@ const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
         />
         <p className="book-title">{book.title || 'No Title'}</p>
         <p className="book-author">{book.author || 'Unknown Author'}</p>
-    </div>
+    </Link>
 );
 
 
 // --- Main Home Page Component ---
 export default function Home() {
     const [trendingBooks, setTrendingBooks] = useState<Book[]>([]);
+    // NEW: Added state to track loading and errors for better UI feedback.
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        // FIXED: Use the environment variable for the API URL
-        const apiUrl = process.env.API_URL || 'http://127.0.0.1:5000';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
 
         fetch(`${apiUrl}/api/recommendations/globally-trending`)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    // If the server responds with an error (like 404 or 500), throw an error.
+                    throw new Error(`API request failed with status ${response.status}`);
                 }
                 return response.json();
             })
@@ -48,7 +49,13 @@ export default function Home() {
                 setTrendingBooks(data); 
             })
             .catch(error => {
+                // This will catch network errors or the error thrown above.
                 console.error("Error fetching trending books:", error);
+                setError("Could not load trending books. Please check the API connection.");
+            })
+            .finally(() => {
+                // This runs regardless of success or failure.
+                setIsLoading(false);
             });
     }, []); 
 
@@ -107,13 +114,11 @@ export default function Home() {
                         <div id="trending">
                             <h2 className="section-title">Trending This Week</h2>
                             <div className="carousel-container">
-                                {trendingBooks.length > 0 ? (
-                                    trendingBooks.map((book, index) => (
-                                        <BookCard key={book.id || index} book={book} delay={index} />
-                                    ))
-                                ) : (
-                                    <p className="loading-text">Loading trending books...</p>
-                                )}
+                                {isLoading && <p className="loading-text">Loading trending books...</p>}
+                                {error && <p className="error-text">{error}</p>}
+                                {!isLoading && !error && trendingBooks.map((book, index) => (
+                                    <BookCard key={book.id || index} book={book} delay={index} />
+                                ))}
                             </div>
                         </div>
                     </div>
