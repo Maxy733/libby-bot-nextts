@@ -38,37 +38,50 @@ export default function DiscoverPage() {
     const [trendingBooks, setTrendingBooks] = useState<Book[]>([]);
     const [majorBooks, setMajorBooks] = useState<Book[]>([]);
     const [selectedMajor, setSelectedMajor] = useState('Computer Science');
+    const [isLoadingTrending, setIsLoadingTrending] = useState(true);
+    const [errorTrending, setErrorTrending] = useState<string | null>(null);
+    const [isLoadingMajor, setIsLoadingMajor] = useState(true);
+    const [errorMajor, setErrorMajor] = useState<string | null>(null);
 
     useEffect(() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
+        setIsLoadingTrending(true);
+        setErrorTrending(null);
         fetch(`${apiUrl}/api/recommendations/globally-trending`)
             .then(res => res.json())
             .then(data => {
-                // --- THIS IS THE FIX ---
-                // We now correctly check for the 'books' property in the response object.
                 if (data && Array.isArray(data.books)) {
                     setTrendingBooks(data.books);
                 } else {
-                    console.error("Invalid data format for trending books:", data);
+                    throw new Error(data.error || "Invalid data format for trending books");
                 }
             })
-            .catch(err => console.error("Failed to fetch trending books:", err));
+            .catch(err => {
+                console.error("Failed to fetch trending books:", err);
+                setErrorTrending(err.message);
+            })
+            .finally(() => setIsLoadingTrending(false));
     }, []);
 
     useEffect(() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
+        setIsLoadingMajor(true);
+        setErrorMajor(null);
         
         fetch(`${apiUrl}/api/recommendations/by-major?major=${encodeURIComponent(selectedMajor)}`)
             .then(res => res.json())
             .then(data => {
-                // This endpoint also needs to be checked for the object format
                 if (data && Array.isArray(data.books)) {
                     setMajorBooks(data.books);
                 } else {
-                     console.error("Invalid data format for major books:", data);
+                    throw new Error(data.error || "Invalid data format for major books");
                 }
             })
-            .catch(err => console.error("Failed to fetch major books:", err));
+            .catch(err => {
+                console.error("Failed to fetch major books:", err);
+                setErrorMajor(err.message);
+            })
+            .finally(() => setIsLoadingMajor(false));
     }, [selectedMajor]);
 
     const handleMajorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -116,7 +129,9 @@ export default function DiscoverPage() {
                             <Link href="/trending" className="see-more-link">See More &rarr;</Link>
                         </div>
                         <div className="carousel-container">
-                            {trendingBooks.map((book, index) => <BookCard key={book.id} book={book} delay={index} />)}
+                            {isLoadingTrending && <p className="loading-text">Loading...</p>}
+                            {errorTrending && <p className="error-text">{errorTrending}</p>}
+                            {!isLoadingTrending && !errorTrending && trendingBooks.map((book, index) => <BookCard key={book.id} book={book} delay={index} />)}
                         </div>
                     </section>
 
@@ -146,10 +161,12 @@ export default function DiscoverPage() {
                             </select>
                         </div>
                         <div className="carousel-container">
-                             {majorBooks.length > 0 ? (
+                             {isLoadingMajor && <p className="loading-text">Loading...</p>}
+                             {errorMajor && <p className="error-text">{errorMajor}</p>}
+                             {!isLoadingMajor && !errorMajor && majorBooks.length > 0 ? (
                                 majorBooks.map((book, index) => <BookCard key={book.id} book={book} delay={index} />)
                              ) : (
-                                <p className="loading-text">No books found for this major.</p>
+                                !isLoadingMajor && !errorMajor && <p className="loading-text">No books found for this major.</p>
                              )}
                         </div>
                     </section>

@@ -33,6 +33,8 @@ export default function Home() {
 
     useEffect(() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
+        setIsLoading(true);
+        setError(null);
 
         fetch(`${apiUrl}/api/recommendations/globally-trending`)
             .then(response => {
