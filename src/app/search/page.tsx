@@ -30,6 +30,7 @@ const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
 function SearchResults() {
     const [results, setResults] = useState<Book[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     
     const searchParams = useSearchParams();
     const query = searchParams.get('q') || '';
@@ -39,15 +40,22 @@ function SearchResults() {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
             
             fetch(`${apiUrl}/api/search?q=${encodeURIComponent(query)}`)
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) throw new Error("Search request failed");
+                    return res.json();
+                })
                 .then(data => {
-                    setResults(data);
-                    setIsLoading(false);
+                    if (Array.isArray(data)) {
+                        setResults(data);
+                    } else {
+                        throw new Error("Invalid data format from search API");
+                    }
                 })
                 .catch(err => {
                     console.error("Failed to fetch search results:", err);
-                    setIsLoading(false);
-                });
+                    setError(err.message);
+                })
+                .finally(() => setIsLoading(false));
         } else {
             setIsLoading(false);
         }
@@ -62,10 +70,11 @@ function SearchResults() {
             <section className="mt-12">
                 <div className="results-grid">
                     {isLoading && <p className="loading-text col-span-full">Loading results...</p>}
-                    {!isLoading && results.length > 0 && (
+                    {error && <p className="error-text col-span-full">{error}</p>}
+                    {!isLoading && !error && results.length > 0 && (
                         results.map((book, index) => <BookCard key={book.id} book={book} delay={index} />)
                     )}
-                    {!isLoading && results.length === 0 && (
+                    {!isLoading && !error && results.length === 0 && (
                         <p className="loading-text col-span-full">No books found matching your search.</p>
                     )}
                 </div>
@@ -97,7 +106,6 @@ export default function SearchPage() {
                 </div>
             </header>
             
-            {/* We wrap the results in Suspense because it uses the useSearchParams hook */}
             <Suspense fallback={<div className="container page-content loading-text">Loading page...</div>}>
                 <SearchResults />
             </Suspense>
