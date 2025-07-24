@@ -31,7 +31,10 @@ export default function BookDetailsPage() {
   useEffect(() => {
     // Fetch the book details only if the ID is available
     if (id) {
-      fetch(`http://127.0.0.1:5000/api/books/${id}`)
+      // FIXED: Use the environment variable for the API URL
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
+
+      fetch(`${apiUrl}/api/books/${id}`)
         .then(response => {
           if (!response.ok) {
             throw new Error('Book not found');

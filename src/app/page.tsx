@@ -83,7 +83,7 @@ export default function Home() {
                     </Link>
                     <nav className="main-nav">
                         <Link href="/discover">Discover</Link>
-                        <Link href="/#about">About Us</Link>
+                        <Link href="/about">About Us</Link>
                         <Link href="/trending">Trending</Link>
                     </nav>
                     <div className="header-actions">

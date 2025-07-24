@@ -12,6 +12,21 @@ interface Book {
   coverurl: string | null;
 }
 
+// --- Data for Genres ---
+const genres = [
+    { name: "Science", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Science" },
+    { name: "Technology", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Technology" },
+    { name: "Politics", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=Politics" },
+    { name: "Art", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Art" },
+    { name: "Fiction", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Fiction" },
+    { name: "History", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=History" },
+    { name: "Philosophy", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Philosophy" },
+    { name: "Self-Help", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Self-Help" },
+    { name: "Biography", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=Biography" },
+    { name: "Literature", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Literature" },
+];
+
+
 // --- Reusable Components ---
 const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
     <Link href={`/book/${book.id}`} className="book-card" style={{ transitionDelay: `${delay * 50}ms` }}>
@@ -37,32 +52,27 @@ const GenreCard = ({ title, imageUrl, delay }: { title: string, imageUrl: string
 export default function DiscoverPage() {
     const [trendingBooks, setTrendingBooks] = useState<Book[]>([]);
     const [majorBooks, setMajorBooks] = useState<Book[]>([]);
+    const [selectedMajor, setSelectedMajor] = useState('Computer Science');
 
     useEffect(() => {
-        // FIXED: Use the environment variable for the API URL
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
-
-        // Fetch trending books
         fetch(`${apiUrl}/api/recommendations/globally-trending`)
             .then(res => res.json())
             .then(data => setTrendingBooks(data))
             .catch(err => console.error("Failed to fetch trending books:", err));
-
-        // Fetch books for the default major
-        fetchBooksForMajor('Computer Science');
     }, []);
 
-    const fetchBooksForMajor = (major: string) => {
-        // FIXED: Use the environment variable for the API URL
+    useEffect(() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
-        console.log(`Fetching books for major: ${major}`);
         
-        // This is a placeholder. In a real app, you would have an API endpoint like:
-        // fetch(`${apiUrl}/api/recommendations/by-major?major=${major}`)
-        fetch(`${apiUrl}/api/recommendations/globally-trending`)
+        fetch(`${apiUrl}/api/recommendations/by-major?major=${encodeURIComponent(selectedMajor)}`)
             .then(res => res.json())
-            .then(data => setMajorBooks(data.reverse())) // Reverse to make it look different
+            .then(data => setMajorBooks(data))
             .catch(err => console.error("Failed to fetch major books:", err));
+    }, [selectedMajor]);
+
+    const handleMajorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedMajor(event.target.value);
     };
 
     return (
@@ -76,7 +86,7 @@ export default function DiscoverPage() {
                     </Link>
                     <nav className="main-nav">
                         <Link href="/discover" className="text-brand-charcoal">Discover</Link>
-                        <Link href="/#about">About Us</Link>
+                        <Link href="/about">About Us</Link>
                         <Link href="/trending">Trending</Link>
                     </nav>
                     <div className="header-actions">
@@ -106,25 +116,35 @@ export default function DiscoverPage() {
                     <section>
                         <h2 className="section-title">Browse by Genre</h2>
                         <div className="genre-grid">
-                            <GenreCard title="Science Fiction" imageUrl="https://placehold.co/400x300/A18A68/FFFFFF?text=Sci-Fi" delay={0} />
-                            <GenreCard title="History" imageUrl="https://placehold.co/400x300/2F2F2F/FFFFFF?text=History" delay={1} />
-                            <GenreCard title="Business" imageUrl="https://placehold.co/400x300/858585/FFFFFF?text=Business" delay={2} />
-                            <GenreCard title="Psychology" imageUrl="https://placehold.co/400x300/A18A68/FFFFFF?text=Psychology" delay={3} />
+                            {/* UPDATED: Dynamically render the 10 genres */}
+                            {genres.map((genre, index) => (
+                                <GenreCard 
+                                    key={genre.name}
+                                    title={genre.name} 
+                                    imageUrl={genre.imageUrl}
+                                    delay={index} 
+                                />
+                            ))}
                         </div>
                     </section>
 
                     <section>
                         <div className="section-header">
                             <h2 className="section-title">Major Collections</h2>
-                            <select className="major-select">
+                            <select className="major-select" value={selectedMajor} onChange={handleMajorChange}>
                                 <option>Computer Science</option>
                                 <option>Economics</option>
                                 <option>Literature</option>
                                 <option>Biology</option>
+                                <option>History</option>
                             </select>
                         </div>
                         <div className="carousel-container">
-                             {majorBooks.map((book, index) => <BookCard key={book.id} book={book} delay={index} />)}
+                             {majorBooks.length > 0 ? (
+                                majorBooks.map((book, index) => <BookCard key={book.id} book={book} delay={index} />)
+                             ) : (
+                                <p className="loading-text">No books found for this major.</p>
+                             )}
                         </div>
                     </section>
                 </div>

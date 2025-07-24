@@ -26,7 +26,7 @@ const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
     </Link>
 );
 
-const Pagination = ({ currentPage, totalPages }: { currentPage: number, totalPages: number }) => {
+const Pagination = ({ currentPage, totalPages, timespan }: { currentPage: number, totalPages: number, timespan: string }) => {
     const pageNumbers = [];
     for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(i);
@@ -35,51 +35,59 @@ const Pagination = ({ currentPage, totalPages }: { currentPage: number, totalPag
     return (
         <div className="pagination">
             {currentPage > 1 && (
-                <Link href={`/trending?page=${currentPage - 1}`} className="pagination-arrow">&laquo;</Link>
+                <Link href={`/trending?page=${currentPage - 1}&timespan=${timespan}`} className="pagination-arrow">&laquo;</Link>
             )}
             {pageNumbers.map(number => (
                 <Link 
                     key={number} 
-                    href={`/trending?page=${number}`}
+                    href={`/trending?page=${number}&timespan=${timespan}`}
                     className={`pagination-number ${currentPage === number ? 'active' : ''}`}
                 >
                     {number}
                 </Link>
             ))}
             {currentPage < totalPages && (
-                 <Link href={`/trending?page=${currentPage + 1}`} className="pagination-arrow">&raquo;</Link>
+                 <Link href={`/trending?page=${currentPage + 1}&timespan=${timespan}`} className="pagination-arrow">&raquo;</Link>
             )}
         </div>
     )
 }
 
-// --- This component contains the logic that uses the hook ---
+// --- This component contains the main logic ---
 function TrendingPageContent() {
     const [trendingBooks, setTrendingBooks] = useState<Book[]>([]);
     const [totalPages, setTotalPages] = useState(0);
     
     const searchParams = useSearchParams();
     const currentPage = parseInt(searchParams.get('page') || '1', 10);
+    const activeTimespan = searchParams.get('timespan') || 'week'; // Default to 'week'
 
     useEffect(() => {
-        // FIXED: Use the environment variable for the API URL
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
-
-        fetch(`${apiUrl}/api/recommendations/globally-trending?page=${currentPage}`)
+        
+        // The fetch call now includes the timespan
+        fetch(`${apiUrl}/api/recommendations/globally-trending?page=${currentPage}&timespan=${activeTimespan}`)
             .then(res => res.json())
             .then(data => {
                 setTrendingBooks(data.books);
                 setTotalPages(Math.ceil(data.total_books / data.per_page));
             })
             .catch(err => console.error("Failed to fetch trending books:", err));
-    }, [currentPage]);
+    }, [currentPage, activeTimespan]); // Re-fetch when page OR timespan changes
 
     return (
         <main className="container page-content">
             <div className="space-y-12">
                 <div>
                     <h1 className="page-title">Trending Books</h1>
-                    <p className="page-subtitle">See what&apos;s popular in the library right now, based on recent checkouts and ratings.</p>
+                    <p className="page-subtitle">See what&apos;s popular in the library right now.</p>
+                </div>
+
+                {/* NEW: Filter Buttons */}
+                <div className="filter-group">
+                    <Link href="/trending?timespan=week" className={`filter-button ${activeTimespan === 'week' ? 'active' : ''}`}>This Week</Link>
+                    <Link href="/trending?timespan=month" className={`filter-button ${activeTimespan === 'month' ? 'active' : ''}`}>This Month</Link>
+                    <Link href="/trending?timespan=year" className={`filter-button ${activeTimespan === 'year' ? 'active' : ''}`}>This Year</Link>
                 </div>
 
                 <section>
@@ -92,7 +100,7 @@ function TrendingPageContent() {
                     </div>
                 </section>
                 
-                {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} />}
+                {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} timespan={activeTimespan} />}
             </div>
         </main>
     )

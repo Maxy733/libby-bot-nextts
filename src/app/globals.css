@@ -243,9 +243,15 @@ body {
     border-radius: 0.5rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     border: 1px solid var(--brand-light-grey);
-    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.4s ease-out, box-shadow 0.4s ease-out;
     text-decoration: none;
     color: inherit;
+}
+.book-card.is-visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 .book-card:hover {
     transform: translateY(-5px);
@@ -355,6 +361,7 @@ body {
     opacity: 1;
     transform: translateY(0);
 }
+
 
 /* --- Auth Page Layout (Login & Sign Up) --- */
 .auth-page {
@@ -510,6 +517,7 @@ body {
     color: var(--brand-accent-hover);
 }
 
+/* UPDATED: Genre grid for 10 items */
 .genre-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -521,6 +529,12 @@ body {
         grid-template-columns: repeat(4, 1fr);
     }
 }
+@media (min-width: 1280px) { /* xl breakpoint */
+    .genre-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
 
 .genre-card {
     position: relative;
@@ -766,4 +780,35 @@ body {
 
 .social-icon:hover {
     background-color: var(--brand-accent-hover);
+}
+/* --- Add this to the end of src/app/globals.css --- */
+
+/* --- NEW: Filter Group Styles --- */
+.filter-group {
+    display: flex;
+    gap: 0.5rem;
+    background-color: var(--brand-light-grey);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    max-width: max-content;
+}
+
+.filter-button {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--brand-muted-grey);
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.filter-button:hover {
+    color: var(--brand-charcoal);
+}
+
+.filter-button.active {
+    background-color: var(--brand-bg);
+    color: var(--brand-charcoal);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
