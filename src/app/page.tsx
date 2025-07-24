@@ -44,11 +44,18 @@ export default function Home() {
                 return response.json();
             })
             .then(data => {
+                console.log("Data received from API:", data);
+
                 // --- THIS IS THE FIX ---
-                // We now correctly check for the 'books' property in the response object.
-                if (data && Array.isArray(data.books)) {
+                // This logic is now more robust. It checks for both possible data formats.
+                if (Array.isArray(data)) {
+                    // Handles the case where the API sends a simple list: [...]
+                    setTrendingBooks(data);
+                } else if (data && Array.isArray(data.books)) {
+                    // Handles the case where the API sends an object: { "books": [...] }
                     setTrendingBooks(data.books);
                 } else {
+                    // If the data is not in a format we expect, we throw an error.
                     throw new Error("Invalid data format received from API.");
                 }
             })
