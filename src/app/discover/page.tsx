@@ -12,21 +12,6 @@ interface Book {
   coverurl: string | null;
 }
 
-// --- Data for Genres ---
-const genres = [
-    { name: "Science", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Science" },
-    { name: "Technology", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Technology" },
-    { name: "Politics", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=Politics" },
-    { name: "Art", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Art" },
-    { name: "Fiction", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Fiction" },
-    { name: "History", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=History" },
-    { name: "Philosophy", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Philosophy" },
-    { name: "Self-Help", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Self-Help" },
-    { name: "Biography", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=Biography" },
-    { name: "Literature", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Literature" },
-];
-
-
 // --- Reusable Components ---
 const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
     <Link href={`/book/${book.id}`} className="book-card" style={{ transitionDelay: `${delay * 50}ms` }}>
@@ -58,7 +43,12 @@ export default function DiscoverPage() {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
         fetch(`${apiUrl}/api/recommendations/globally-trending`)
             .then(res => res.json())
-            .then(data => setTrendingBooks(data))
+            .then(data => {
+                // FIXED: Correctly access the .books property
+                if (data && Array.isArray(data.books)) {
+                    setTrendingBooks(data.books);
+                }
+            })
             .catch(err => console.error("Failed to fetch trending books:", err));
     }, []);
 
@@ -67,13 +57,29 @@ export default function DiscoverPage() {
         
         fetch(`${apiUrl}/api/recommendations/by-major?major=${encodeURIComponent(selectedMajor)}`)
             .then(res => res.json())
-            .then(data => setMajorBooks(data))
+            .then(data => {
+                // This endpoint returns a direct array, so this is correct.
+                setMajorBooks(data);
+            })
             .catch(err => console.error("Failed to fetch major books:", err));
     }, [selectedMajor]);
 
     const handleMajorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedMajor(event.target.value);
     };
+
+    const genres = [
+        { name: "Science", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Science" },
+        { name: "Technology", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Technology" },
+        { name: "Politics", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=Politics" },
+        { name: "Art", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Art" },
+        { name: "Fiction", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Fiction" },
+        { name: "History", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=History" },
+        { name: "Philosophy", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Philosophy" },
+        { name: "Self-Help", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Self-Help" },
+        { name: "Biography", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=Biography" },
+        { name: "Literature", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Literature" },
+    ];
 
     return (
         <div>
@@ -116,7 +122,6 @@ export default function DiscoverPage() {
                     <section>
                         <h2 className="section-title">Browse by Genre</h2>
                         <div className="genre-grid">
-                            {/* UPDATED: Dynamically render the 10 genres */}
                             {genres.map((genre, index) => (
                                 <GenreCard 
                                     key={genre.name}
