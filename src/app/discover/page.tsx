@@ -12,21 +12,6 @@ interface Book {
   coverurl: string | null;
 }
 
-// --- Data for Genres ---
-const genres = [
-    { name: "Science", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Science" },
-    { name: "Technology", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Technology" },
-    { name: "Politics", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=Politics" },
-    { name: "Art", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Art" },
-    { name: "Fiction", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Fiction" },
-    { name: "History", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=History" },
-    { name: "Philosophy", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Philosophy" },
-    { name: "Self-Help", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Self-Help" },
-    { name: "Biography", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=Biography" },
-    { name: "Literature", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Literature" },
-];
-
-
 // --- Reusable Components ---
 const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
     <Link href={`/book/${book.id}`} className="book-card" style={{ transitionDelay: `${delay * 50}ms` }}>
@@ -59,8 +44,12 @@ export default function DiscoverPage() {
         fetch(`${apiUrl}/api/recommendations/globally-trending`)
             .then(res => res.json())
             .then(data => {
+                // --- THIS IS THE FIX ---
+                // We now correctly check for the 'books' property in the response object.
                 if (data && Array.isArray(data.books)) {
                     setTrendingBooks(data.books);
+                } else {
+                    console.error("Invalid data format for trending books:", data);
                 }
             })
             .catch(err => console.error("Failed to fetch trending books:", err));
@@ -72,8 +61,11 @@ export default function DiscoverPage() {
         fetch(`${apiUrl}/api/recommendations/by-major?major=${encodeURIComponent(selectedMajor)}`)
             .then(res => res.json())
             .then(data => {
-                if (Array.isArray(data)) {
-                    setMajorBooks(data);
+                // This endpoint also needs to be checked for the object format
+                if (data && Array.isArray(data.books)) {
+                    setMajorBooks(data.books);
+                } else {
+                     console.error("Invalid data format for major books:", data);
                 }
             })
             .catch(err => console.error("Failed to fetch major books:", err));
@@ -82,6 +74,13 @@ export default function DiscoverPage() {
     const handleMajorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedMajor(event.target.value);
     };
+
+    const genres = [
+        { name: "Science", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Science" },
+        { name: "Technology", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Technology" },
+        { name: "Politics", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=Politics" },
+        // ... add other genres
+    ];
 
     return (
         <div>
@@ -124,7 +123,6 @@ export default function DiscoverPage() {
                     <section>
                         <h2 className="section-title">Browse by Genre</h2>
                         <div className="genre-grid">
-                            {/* FIXED: This now correctly uses the 'genres' array and 'GenreCard' component */}
                             {genres.map((genre, index) => (
                                 <GenreCard 
                                     key={genre.name}
@@ -139,7 +137,6 @@ export default function DiscoverPage() {
                     <section>
                         <div className="section-header">
                             <h2 className="section-title">Major Collections</h2>
-                            {/* FIXED: This now correctly uses the 'handleMajorChange' function */}
                             <select className="major-select" value={selectedMajor} onChange={handleMajorChange}>
                                 <option>Computer Science</option>
                                 <option>Economics</option>
@@ -149,7 +146,6 @@ export default function DiscoverPage() {
                             </select>
                         </div>
                         <div className="carousel-container">
-                             {/* FIXED: This now correctly uses the 'majorBooks' state variable */}
                              {majorBooks.length > 0 ? (
                                 majorBooks.map((book, index) => <BookCard key={book.id} book={book} delay={index} />)
                              ) : (

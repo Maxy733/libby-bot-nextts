@@ -42,11 +42,12 @@ export default function Home() {
                 return response.json();
             })
             .then(data => {
-                // FIXED: Now expects a direct array
-                if (Array.isArray(data)) {
-                    setTrendingBooks(data);
+                // --- THIS IS THE FIX ---
+                // We now correctly check for the 'books' property in the response object.
+                if (data && Array.isArray(data.books)) {
+                    setTrendingBooks(data.books);
                 } else {
-                    throw new Error("Invalid data format received from API. Expected an array.");
+                    throw new Error("Invalid data format received from API.");
                 }
             })
             .catch(error => {
