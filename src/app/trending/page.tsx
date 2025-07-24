@@ -1,7 +1,7 @@
 // src/app/trending/page.tsx
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react'; // Import Suspense
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
@@ -62,15 +62,17 @@ function TrendingPageContent() {
     const currentPage = parseInt(searchParams.get('page') || '1', 10);
 
     useEffect(() => {
-        // Fetch trending books for the current page
-        fetch(`http://127.0.0.1:5000/api/recommendations/globally-trending?page=${currentPage}`)
+        // FIXED: Use the environment variable for the API URL
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
+
+        fetch(`${apiUrl}/api/recommendations/globally-trending?page=${currentPage}`)
             .then(res => res.json())
             .then(data => {
                 setTrendingBooks(data.books);
                 setTotalPages(Math.ceil(data.total_books / data.per_page));
             })
             .catch(err => console.error("Failed to fetch trending books:", err));
-    }, [currentPage]); // Re-fetch whenever the currentPage changes
+    }, [currentPage]);
 
     return (
         <main className="container page-content">
@@ -120,7 +122,6 @@ export default function TrendingPage() {
                 </div>
             </header>
             
-            {/* Wrap the part of the page that uses the hook in Suspense */}
             <Suspense fallback={<div className="container page-content loading-text">Loading page...</div>}>
                 <TrendingPageContent />
             </Suspense>
