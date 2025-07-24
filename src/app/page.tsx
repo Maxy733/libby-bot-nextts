@@ -42,26 +42,16 @@ export default function Home() {
                 return response.json();
             })
             .then(data => {
-                // --- DEBUGGING STEP ---
-                // This will print the raw data from your API to the browser's developer console.
-                console.log("Data received from API:", data);
-
-                // --- MORE ROBUST DATA CHECKING ---
-                // We check if the data is an array before trying to use it.
+                // FIXED: Now expects a direct array
                 if (Array.isArray(data)) {
                     setTrendingBooks(data);
-                } else if (data && Array.isArray(data.books)) {
-                    // This handles the case where the API sends { "books": [...] }
-                    setTrendingBooks(data.books);
-                }
-                else {
-                    // If the data is not in a format we expect, we throw an error.
-                    throw new Error("Invalid data format received from API.");
+                } else {
+                    throw new Error("Invalid data format received from API. Expected an array.");
                 }
             })
             .catch(error => {
                 console.error("Error fetching trending books:", error);
-                setError(error.message); // Display a more specific error
+                setError(error.message);
             })
             .finally(() => {
                 setIsLoading(false);
