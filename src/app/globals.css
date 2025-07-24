@@ -192,7 +192,23 @@ body {
     background-color: var(--brand-accent-hover);
 }
 
-/* --- Discover Section --- */
+/* --- General Page & Section Styles --- */
+.page-content {
+    padding-top: 3rem;
+    padding-bottom: 4rem;
+}
+
+.page-title {
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+.page-subtitle {
+    margin-top: 0.5rem;
+    font-size: 1.125rem;
+    color: var(--brand-muted-grey);
+}
+
 .discover-section {
     background-color: var(--brand-surface);
     padding: 4rem 0;
@@ -228,6 +244,8 @@ body {
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     border: 1px solid var(--brand-light-grey);
     transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+    text-decoration: none;
+    color: inherit;
 }
 .book-card:hover {
     transform: translateY(-5px);
@@ -237,7 +255,10 @@ body {
 
 .book-cover {
     width: 100%;
+    height: 10rem;
+    object-fit: cover;
     border-radius: 0.25rem;
+    background-color: var(--brand-light-grey);
 }
 
 .book-title {
@@ -258,6 +279,7 @@ body {
 
 /* --- About & Join Us Sections --- */
 .about-section {
+    background-color: var(--brand-bg);
     padding: 4rem 0;
 }
 
@@ -324,17 +346,14 @@ body {
 }
 
 /* --- Animations --- */
-.animated-element, .book-card {
+.animated-element {
     opacity: 0;
     transform: translateY(20px);
-    animation: slide-up 0.8s ease-out forwards;
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
 }
-
-@keyframes slide-up {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.animated-element.is-visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* --- Auth Page Layout (Login & Sign Up) --- */
@@ -473,23 +492,7 @@ body {
     color: var(--brand-accent-hover);
 }
 
-/* --- NEW: Discover & Trending Page Styles --- */
-.page-content {
-    padding-top: 3rem;
-    padding-bottom: 4rem;
-}
-
-.page-title {
-    font-size: 3rem;
-    font-weight: 700;
-}
-
-.page-subtitle {
-    margin-top: 0.5rem;
-    font-size: 1.125rem;
-    color: var(--brand-muted-grey);
-}
-
+/* --- Discover & Trending Page Styles --- */
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -630,9 +633,9 @@ body {
 }
 
 .member-image {
-    width: 8rem; /* 128px */
-    height: 8rem; /* 128px */
-    border-radius: 9999px; /* rounded-full */
+    width: 8rem;
+    height: 8rem;
+    border-radius: 9999px;
     margin-left: auto;
     margin-right: auto;
     object-fit: cover;
@@ -642,14 +645,14 @@ body {
 
 .member-name {
     margin-top: 1.5rem;
-    font-size: 1.25rem; /* text-xl */
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--brand-charcoal);
 }
 
 .member-role {
     margin-top: 0.25rem;
-    font-size: 0.875rem; /* text-sm */
+    font-size: 0.875rem;
     color: var(--brand-accent);
     font-weight: 500;
 }
@@ -763,82 +766,4 @@ body {
 
 .social-icon:hover {
     background-color: var(--brand-accent-hover);
-}
-/* --- Add this to the end of src/app/globals.css --- */
-
-/* --- Book Details Page Styles --- */
-.book-details-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    padding: 2rem 0;
-}
-
-@media (min-width: 768px) {
-    .book-details-layout {
-        grid-template-columns: 1fr 2fr;
-        gap: 3rem;
-    }
-}
-
-.book-details-cover img {
-    width: 100%;
-    max-width: 350px;
-    margin: 0 auto;
-    border-radius: 0.5rem;
-    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
-}
-
-.book-details-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    line-height: 1.2;
-}
-
-.book-details-author {
-    font-size: 1.25rem;
-    color: var(--brand-muted-grey);
-    margin-top: 0.5rem;
-}
-
-.book-details-genre {
-    display: inline-block;
-    margin-top: 1.5rem;
-    background-color: var(--brand-light-grey);
-    color: var(--brand-muted-grey);
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.875rem;
-    font-weight: 500;
-}
-
-.book-details-section {
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--brand-light-grey);
-}
-
-.book-details-section h2 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-}
-
-.book-details-section p,
-.book-details-section ul {
-    color: var(--brand-muted-grey);
-    line-height: 1.6;
-}
-
-.book-details-section ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.error-text {
-    color: #ef4444; /* A red color for errors */
-    font-weight: 500;
 }
