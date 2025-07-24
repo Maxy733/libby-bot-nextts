@@ -53,37 +53,47 @@ const Pagination = ({ currentPage, totalPages, timespan }: { currentPage: number
     )
 }
 
-// --- This component contains the main logic ---
+// --- This component contains the logic that uses the hook ---
 function TrendingPageContent() {
     const [trendingBooks, setTrendingBooks] = useState<Book[]>([]);
     const [totalPages, setTotalPages] = useState(0);
+    const [error, setError] = useState<string | null>(null); // State to hold error messages
     
     const searchParams = useSearchParams();
     const currentPage = parseInt(searchParams.get('page') || '1', 10);
-    const activeTimespan = searchParams.get('timespan') || 'week'; // Default to 'week'
+    const activeTimespan = searchParams.get('timespan') || 'week';
 
     useEffect(() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
         
-        // The fetch call now includes the timespan
         fetch(`${apiUrl}/api/recommendations/globally-trending?page=${currentPage}&timespan=${activeTimespan}`)
             .then(res => res.json())
             .then(data => {
-                setTrendingBooks(data.books);
-                setTotalPages(Math.ceil(data.total_books / data.per_page));
+                // --- THIS IS THE FIX ---
+                // Before we use the data, we check if it's in the expected format.
+                if (data && Array.isArray(data.books)) {
+                    setTrendingBooks(data.books);
+                    setTotalPages(Math.ceil(data.total_books / data.per_page));
+                    setError(null); // Clear any previous errors
+                } else {
+                    // If the API sent an error, we set an error message.
+                    throw new Error(data.error || "Invalid data format from API");
+                }
             })
-            .catch(err => console.error("Failed to fetch trending books:", err));
-    }, [currentPage, activeTimespan]); // Re-fetch when page OR timespan changes
+            .catch(err => {
+                console.error("Failed to fetch trending books:", err);
+                setError(err.message); // Display the error to the user
+            });
+    }, [currentPage, activeTimespan]);
 
     return (
         <main className="container page-content">
             <div className="space-y-12">
                 <div>
                     <h1 className="page-title">Trending Books</h1>
-                    <p className="page-subtitle">See what&apos;s popular in the library right now.</p>
+                    <p className="page-subtitle">See what&apos;s popular in the library right now, based on recent checkouts and ratings.</p>
                 </div>
 
-                {/* NEW: Filter Buttons */}
                 <div className="filter-group">
                     <Link href="/trending?timespan=week" className={`filter-button ${activeTimespan === 'week' ? 'active' : ''}`}>This Week</Link>
                     <Link href="/trending?timespan=month" className={`filter-button ${activeTimespan === 'month' ? 'active' : ''}`}>This Month</Link>
@@ -92,15 +102,16 @@ function TrendingPageContent() {
 
                 <section>
                     <div className="results-grid">
-                        {trendingBooks.length > 0 ? (
+                        {error && <p className="error-text col-span-full">Error: {error}</p>}
+                        {!error && trendingBooks.length > 0 ? (
                             trendingBooks.map((book, index) => <BookCard key={book.id} book={book} delay={index} />)
                         ) : (
-                            <p className="loading-text col-span-full">Loading trending books...</p>
+                            !error && <p className="loading-text col-span-full">Loading trending books...</p>
                         )}
                     </div>
                 </section>
                 
-                {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} timespan={activeTimespan} />}
+                {!error && totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} timespan={activeTimespan} />}
             </div>
         </main>
     )
