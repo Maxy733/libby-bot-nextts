@@ -12,8 +12,8 @@ interface Book {
   coverurl: string | null; 
 }
 
-const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
-    <Link href={`/book/${book.id}`} className="book-card" style={{ transitionDelay: `${delay * 50}ms` }}>
+const BookCard = ({ book }: { book: Book }) => (
+    <Link href={`/book/${book.id}`} className="book-card">
         <img 
             src={book.coverurl || `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
             alt={book.title} 
@@ -37,25 +37,13 @@ export default function Home() {
         setError(null);
 
         fetch(`${apiUrl}/api/recommendations/globally-trending`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`API request failed with status ${response.status}`);
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                console.log("Data received from API:", data);
-
-                // --- THIS IS THE FIX ---
-                // This logic is now more robust. It checks for both possible data formats.
                 if (Array.isArray(data)) {
-                    // Handles the case where the API sends a simple list: [...]
                     setTrendingBooks(data);
                 } else if (data && Array.isArray(data.books)) {
-                    // Handles the case where the API sends an object: { "books": [...] }
                     setTrendingBooks(data.books);
                 } else {
-                    // If the data is not in a format we expect, we throw an error.
                     throw new Error("Invalid data format received from API.");
                 }
             })
@@ -67,6 +55,28 @@ export default function Home() {
                 setIsLoading(false);
             });
     }, []); 
+
+    // --- THIS IS THE FIX ---
+    // This useEffect hook sets up the Intersection Observer to animate elements
+    // as they scroll into view. It runs whenever the list of books changes.
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    // Apply a staggered delay for a nice effect
+                    entry.target.classList.add('is-visible');
+                    (entry.target as HTMLElement).style.transitionDelay = `${index * 50}ms`;
+                }
+            });
+        }, { threshold: 0.1 });
+
+        // Find all elements that need animating and start observing them.
+        const elementsToAnimate = document.querySelectorAll('.animated-element, .book-card');
+        elementsToAnimate.forEach(el => observer.observe(el));
+
+        // Cleanup function to stop observing when the component unmounts
+        return () => elementsToAnimate.forEach(el => observer.unobserve(el));
+    }, [trendingBooks]); // Rerun this effect when trendingBooks is updated
 
     const handleSearch = () => {
         const input = document.getElementById('hero-search-input') as HTMLInputElement;
@@ -107,9 +117,9 @@ export default function Home() {
                 <div className="hero-wrapper">
                     <section className="hero-bg">
                         <div className="container hero-content">
-                            <h1>Find Your Next Great Read Today</h1>
-                            <p>Explore our vast collection, discover hidden gems, and find exactly what you need for your next academic breakthrough.</p>
-                            <div className="search-bar">
+                            <h1 className="animated-element">Find Your Next Great Read Today</h1>
+                            <p className="animated-element">Explore our vast collection, discover hidden gems, and find exactly what you need for your next academic breakthrough.</p>
+                            <div className="search-bar animated-element">
                                 <input id="hero-search-input" type="text" placeholder="Search for any book..." onKeyDown={(e) => e.key === 'Enter' && handleSearch()} />
                                 <button onClick={handleSearch}>Search</button>
                             </div>
@@ -121,12 +131,12 @@ export default function Home() {
                 <section id="discover" className="discover-section">
                     <div className="container">
                         <div id="trending">
-                            <h2 className="section-title">Trending This Week</h2>
+                            <h2 className="section-title animated-element">Trending This Week</h2>
                             <div className="carousel-container">
                                 {isLoading && <p className="loading-text">Loading trending books...</p>}
                                 {error && <p className="error-text">{error}</p>}
                                 {!isLoading && !error && trendingBooks.map((book, index) => (
-                                    <BookCard key={book.id || index} book={book} delay={index} />
+                                    <BookCard key={book.id || index} book={book} />
                                 ))}
                             </div>
                         </div>
@@ -136,10 +146,10 @@ export default function Home() {
                 {/* About Us Section */}
                 <section id="about" className="about-section">
                     <div className="container about-content">
-                        <div className="about-title">
+                        <div className="about-title animated-element">
                             <h2 className="section-title">A Smarter Library Experience</h2>
                         </div>
-                        <div className="about-text">
+                        <div className="about-text animated-element">
                             <p>LIBBY BOT is a project designed to modernize how our community interacts with the university library. By leveraging smart recommendations and real-time data, we help you find the resources you need faster than ever before.</p>
                         </div>
                     </div>
@@ -148,7 +158,7 @@ export default function Home() {
                 {/* Join Us Section */}
                 <section className="join-us-section">
                     <div className="container">
-                        <div className="join-us-card">
+                        <div className="join-us-card animated-element">
                             <h2>Unlock Personalized Recommendations</h2>
                             <p>Create a free account to get recommendations based on your courses, interests, and reading history. Find your next favorite book today.</p>
                             <Link href="/signup" className="join-us-btn">Join Us</Link>
