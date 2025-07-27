@@ -41,7 +41,6 @@ const BookCard = ({ book }: { book: Book }) => (
 );
 
 const GenreCard = ({ title, imageUrl }: { title: string, imageUrl: string }) => (
-    // UPDATED: The link now navigates to the dynamic genre page
     <Link href={`/genre/${encodeURIComponent(title)}`} className="genre-card">
         <div className="genre-card-bg" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.6)), url(${imageUrl})` }}></div>
         <h3 className="genre-card-title">{title}</h3>
@@ -51,12 +50,8 @@ const GenreCard = ({ title, imageUrl }: { title: string, imageUrl: string }) => 
 
 // --- Main Discover Page Component ---
 export default function DiscoverPage() {
-    const [trendingBooks, setTrendingBooks] = useState<Book[]>([]);
-    const [majorBooks, setMajorBooks] = useState<Book[]>([]);
-    const [selectedMajor, setSelectedMajor] = useState('Computer Science');
-
+    const [trendingBooks, setTrendingBooks] useState<Book[]>([]);
     const trendingCarouselRef = useRef<HTMLDivElement>(null);
-    const majorCarouselRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
@@ -71,19 +66,6 @@ export default function DiscoverPage() {
     }, []);
 
     useEffect(() => {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
-        
-        fetch(`${apiUrl}/api/recommendations/by-major?major=${encodeURIComponent(selectedMajor)}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data && Array.isArray(data.books)) {
-                    setMajorBooks(data.books);
-                }
-            })
-            .catch(err => console.error("Failed to fetch major books:", err));
-    }, [selectedMajor]);
-
-    useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -96,11 +78,7 @@ export default function DiscoverPage() {
         elementsToAnimate.forEach(el => observer.observe(el));
 
         return () => elementsToAnimate.forEach(el => observer.unobserve(el));
-    }, [trendingBooks, majorBooks]);
-
-    const handleMajorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedMajor(event.target.value);
-    };
+    }, [trendingBooks]);
     
     const handleCarouselScroll = (direction: 'left' | 'right', ref: React.RefObject<HTMLDivElement | null>) => {
         if (ref.current) {
@@ -167,30 +145,6 @@ export default function DiscoverPage() {
                                     imageUrl={genre.imageUrl}
                                 />
                             ))}
-                        </div>
-                    </section>
-
-                    <section>
-                        <div className="section-header">
-                            <h2 className="section-title">Major Collections</h2>
-                            <select className="major-select" value={selectedMajor} onChange={handleMajorChange}>
-                                <option>Computer Science</option>
-                                <option>Economics</option>
-                                <option>Literature</option>
-                                <option>Biology</option>
-                                <option>History</option>
-                            </select>
-                        </div>
-                        <div className="carousel-wrapper">
-                            <div ref={majorCarouselRef} className="carousel-container">
-                                 {majorBooks.length > 0 ? (
-                                    majorBooks.map((book) => <BookCard key={book.id} book={book} />)
-                                 ) : (
-                                    <p className="loading-text">No books found for this major.</p>
-                                 )}
-                            </div>
-                            <button onClick={() => handleCarouselScroll('left', majorCarouselRef)} className="carousel-button prev" aria-label="Scroll left">‹</button>
-                            <button onClick={() => handleCarouselScroll('right', majorCarouselRef)} className="carousel-button next" aria-label="Scroll right">›</button>
                         </div>
                     </section>
                 </div>
