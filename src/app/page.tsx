@@ -32,7 +32,7 @@ export default function Home() {
     const [error, setError] = useState<string | null>(null);
     // NEW: Create a ref to hold a reference to the carousel's DOM element
     const trendingCarouselRef = useRef<HTMLDivElement>(null);
-    
+
     useEffect(() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
         setIsLoading(true);
@@ -146,12 +146,17 @@ export default function Home() {
                     <div className="container">
                         <div id="trending">
                             <h2 className="section-title animated-element">Trending This Week</h2>
-                            <div className="carousel-container">
-                                {isLoading && <p className="loading-text">Loading trending books...</p>}
-                                {error && <p className="error-text">{error}</p>}
-                                {!isLoading && !error && trendingBooks.map((book, index) => (
-                                    <BookCard key={book.id || index} book={book} />
-                                ))}
+                            <div className="carousel-wrapper">
+                                <div ref={trendingCarouselRef} className="carousel-container">
+                                    {isLoading && <p className="loading-text">Loading trending books...</p>}
+                                    {error && <p className="error-text">{error}</p>}
+                                    {!isLoading && !error && trendingBooks.map((book, index) => (
+                                        <BookCard key={book.id || index} book={book} />
+                                    ))}
+                                </div>
+                                {/* NEW: Scroll Buttons */}
+                                <button onClick={() => handleCarouselScroll('left')} className="carousel-button prev" aria-label="Scroll left">‹</button>
+                                <button onClick={() => handleCarouselScroll('right')} className="carousel-button next" aria-label="Scroll right">›</button>
                             </div>
                         </div>
                     </div>
