@@ -1,7 +1,7 @@
 // src/app/discover/page.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // Import useRef
 import Link from 'next/link';
 
 // --- Type Definitions ---
@@ -12,9 +12,24 @@ interface Book {
   coverurl: string | null;
 }
 
+// --- Data for Genres ---
+const genres = [
+    { name: "Science", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Science" },
+    { name: "Technology", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Technology" },
+    { name: "Politics", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=Politics" },
+    { name: "Art", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Art" },
+    { name: "Fiction", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Fiction" },
+    { name: "History", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=History" },
+    { name: "Philosophy", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Philosophy" },
+    { name: "Self-Help", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Self-Help" },
+    { name: "Biography", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=Biography" },
+    { name: "Literature", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Literature" },
+];
+
+
 // --- Reusable Components ---
-const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
-    <Link href={`/book/${book.id}`} className="book-card" style={{ transitionDelay: `${delay * 50}ms` }}>
+const BookCard = ({ book }: { book: Book }) => (
+    <Link href={`/book/${book.id}`} className="book-card">
         <img 
             src={book.coverurl || `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
             alt={book.title} 
@@ -25,8 +40,8 @@ const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
     </Link>
 );
 
-const GenreCard = ({ title, imageUrl, delay }: { title: string, imageUrl: string, delay: number }) => (
-    <Link href="#" className="genre-card" style={{ transitionDelay: `${delay * 100}ms` }}>
+const GenreCard = ({ title, imageUrl }: { title: string, imageUrl: string }) => (
+    <Link href="#" className="genre-card">
         <div className="genre-card-bg" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.6)), url(${imageUrl})` }}></div>
         <h3 className="genre-card-title">{title}</h3>
     </Link>
@@ -38,62 +53,68 @@ export default function DiscoverPage() {
     const [trendingBooks, setTrendingBooks] = useState<Book[]>([]);
     const [majorBooks, setMajorBooks] = useState<Book[]>([]);
     const [selectedMajor, setSelectedMajor] = useState('Computer Science');
-    const [isLoadingTrending, setIsLoadingTrending] = useState(true);
-    const [errorTrending, setErrorTrending] = useState<string | null>(null);
-    const [isLoadingMajor, setIsLoadingMajor] = useState(true);
-    const [errorMajor, setErrorMajor] = useState<string | null>(null);
+
+    // NEW: Refs for the carousels
+    const trendingCarouselRef = useRef<HTMLDivElement>(null);
+    const majorCarouselRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
-        setIsLoadingTrending(true);
-        setErrorTrending(null);
         fetch(`${apiUrl}/api/recommendations/globally-trending`)
             .then(res => res.json())
             .then(data => {
                 if (data && Array.isArray(data.books)) {
                     setTrendingBooks(data.books);
-                } else {
-                    throw new Error(data.error || "Invalid data format for trending books");
                 }
             })
-            .catch(err => {
-                console.error("Failed to fetch trending books:", err);
-                setErrorTrending(err.message);
-            })
-            .finally(() => setIsLoadingTrending(false));
+            .catch(err => console.error("Failed to fetch trending books:", err));
     }, []);
 
     useEffect(() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
-        setIsLoadingMajor(true);
-        setErrorMajor(null);
         
         fetch(`${apiUrl}/api/recommendations/by-major?major=${encodeURIComponent(selectedMajor)}`)
             .then(res => res.json())
             .then(data => {
                 if (data && Array.isArray(data.books)) {
                     setMajorBooks(data.books);
-                } else {
-                    throw new Error(data.error || "Invalid data format for major books");
                 }
             })
-            .catch(err => {
-                console.error("Failed to fetch major books:", err);
-                setErrorMajor(err.message);
-            })
-            .finally(() => setIsLoadingMajor(false));
+            .catch(err => console.error("Failed to fetch major books:", err));
     }, [selectedMajor]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        const elementsToAnimate = document.querySelectorAll('.animated-element, .book-card, .genre-card');
+        elementsToAnimate.forEach(el => observer.observe(el));
+
+        return () => elementsToAnimate.forEach(el => observer.unobserve(el));
+    }, [trendingBooks, majorBooks]);
 
     const handleMajorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedMajor(event.target.value);
     };
-
-    const genres = [
-        { name: "Science", imageUrl: "https://placehold.co/400x300/2F2F2F/FFFFFF?text=Science" },
-        { name: "Technology", imageUrl: "https://placehold.co/400x300/858585/FFFFFF?text=Technology" },
-        { name: "Politics", imageUrl: "https://placehold.co/400x300/A18A68/FFFFFF?text=Politics" },
-        // ... add other genres
-    ];
+    
+    // NEW: Reusable scroll handler
+    const handleCarouselScroll = (direction: 'left' | 'right', ref: React.RefObject<HTMLDivElement>) => {
+        if (ref.current) {
+            const scrollAmount = 300;
+            const currentScroll = ref.current.scrollLeft;
+            
+            if (direction === 'left') {
+                ref.current.scrollTo({ left: currentScroll - scrollAmount, behavior: 'smooth' });
+            } else {
+                ref.current.scrollTo({ left: currentScroll + scrollAmount, behavior: 'smooth' });
+            }
+        }
+    };
 
     return (
         <div>
@@ -128,10 +149,12 @@ export default function DiscoverPage() {
                             <h2 className="section-title">Trending This Week</h2>
                             <Link href="/trending" className="see-more-link">See More &rarr;</Link>
                         </div>
-                        <div className="carousel-container">
-                            {isLoadingTrending && <p className="loading-text">Loading...</p>}
-                            {errorTrending && <p className="error-text">{errorTrending}</p>}
-                            {!isLoadingTrending && !errorTrending && trendingBooks.map((book, index) => <BookCard key={book.id} book={book} delay={index} />)}
+                        <div className="carousel-wrapper">
+                            <div ref={trendingCarouselRef} className="carousel-container">
+                                {trendingBooks.map((book, index) => <BookCard key={book.id} book={book} />)}
+                            </div>
+                            <button onClick={() => handleCarouselScroll('left', trendingCarouselRef)} className="carousel-button prev" aria-label="Scroll left">‹</button>
+                            <button onClick={() => handleCarouselScroll('right', trendingCarouselRef)} className="carousel-button next" aria-label="Scroll right">›</button>
                         </div>
                     </section>
 
@@ -143,7 +166,6 @@ export default function DiscoverPage() {
                                     key={genre.name}
                                     title={genre.name} 
                                     imageUrl={genre.imageUrl}
-                                    delay={index} 
                                 />
                             ))}
                         </div>
@@ -160,14 +182,16 @@ export default function DiscoverPage() {
                                 <option>History</option>
                             </select>
                         </div>
-                        <div className="carousel-container">
-                             {isLoadingMajor && <p className="loading-text">Loading...</p>}
-                             {errorMajor && <p className="error-text">{errorMajor}</p>}
-                             {!isLoadingMajor && !errorMajor && majorBooks.length > 0 ? (
-                                majorBooks.map((book, index) => <BookCard key={book.id} book={book} delay={index} />)
-                             ) : (
-                                !isLoadingMajor && !errorMajor && <p className="loading-text">No books found for this major.</p>
-                             )}
+                        <div className="carousel-wrapper">
+                            <div ref={majorCarouselRef} className="carousel-container">
+                                 {majorBooks.length > 0 ? (
+                                    majorBooks.map((book, index) => <BookCard key={book.id} book={book} />)
+                                 ) : (
+                                    <p className="loading-text">No books found for this major.</p>
+                                 )}
+                            </div>
+                            <button onClick={() => handleCarouselScroll('left', majorCarouselRef)} className="carousel-button prev" aria-label="Scroll left">‹</button>
+                            <button onClick={() => handleCarouselScroll('right', majorCarouselRef)} className="carousel-button next" aria-label="Scroll right">›</button>
                         </div>
                     </section>
                 </div>
