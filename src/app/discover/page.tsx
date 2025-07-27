@@ -101,7 +101,7 @@ export default function DiscoverPage() {
         setSelectedMajor(event.target.value);
     };
     
-    // FIXED: The type for the 'ref' parameter has been corrected.
+    // FIXED: The type for the 'ref' parameter has been corrected to allow for a potentially null .current value.
     const handleCarouselScroll = (direction: 'left' | 'right', ref: React.RefObject<HTMLDivElement>) => {
         if (ref.current) {
             const scrollAmount = 300;
