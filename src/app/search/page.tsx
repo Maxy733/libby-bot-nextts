@@ -44,10 +44,17 @@ function SearchResults() {
             fetch(`${apiUrl}/api/search?q=${encodeURIComponent(query)}`)
                 .then(res => res.json())
                 .then(data => {
-                    if (data && Array.isArray(data.books)) {
+                    // --- THIS IS THE FIX ---
+                    // This logic is now more robust. It checks for both possible data formats.
+                    if (Array.isArray(data)) {
+                        // Handles the case where the API sends a simple list: [...]
+                        setResults(data);
+                    } else if (data && Array.isArray(data.books)) {
+                        // Handles the case where the API sends an object: { "books": [...] }
                         setResults(data.books);
                     } else {
-                        throw new Error("Invalid data format from search API");
+                        // If the data is not in a format we expect, we throw an error.
+                        throw new Error("Invalid data format received from API.");
                     }
                 })
                 .catch(err => {
@@ -60,9 +67,6 @@ function SearchResults() {
         }
     }, [query]);
 
-    // --- THIS IS THE FIX ---
-    // This useEffect hook sets up the Intersection Observer to animate elements
-    // as they scroll into view. It runs whenever the list of results changes.
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -76,7 +80,7 @@ function SearchResults() {
         elementsToAnimate.forEach(el => observer.observe(el));
 
         return () => elementsToAnimate.forEach(el => observer.unobserve(el));
-    }, [results]); // Rerun this effect when the search results are updated
+    }, [results]);
 
     return (
         <main className="container page-content">
