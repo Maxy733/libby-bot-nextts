@@ -33,14 +33,12 @@ function GenrePageContent() {
     const [error, setError] = useState<string | null>(null);
     
     const params = useParams();
-    // Decode the genre name from the URL (e.g., "Self-Help" becomes "Self-Help")
     const genreName = decodeURIComponent(params.genreName as string);
 
     useEffect(() => {
         if (genreName) {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
             
-            // We can reuse the 'by-major' endpoint as it searches by genre
             fetch(`${apiUrl}/api/recommendations/by-major?major=${encodeURIComponent(genreName)}`)
                 .then(res => res.json())
                 .then(data => {
@@ -57,6 +55,24 @@ function GenrePageContent() {
                 .finally(() => setIsLoading(false));
         }
     }, [genreName]);
+
+    // --- THIS IS THE FIX ---
+    // This useEffect hook sets up the Intersection Observer to animate elements
+    // as they scroll into view. It runs whenever the list of books changes.
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        const elementsToAnimate = document.querySelectorAll('.book-card');
+        elementsToAnimate.forEach(el => observer.observe(el));
+
+        return () => elementsToAnimate.forEach(el => observer.unobserve(el));
+    }, [books]); // Rerun this effect when the books are updated
 
     return (
         <main className="container page-content">
