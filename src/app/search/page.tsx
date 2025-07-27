@@ -14,8 +14,8 @@ interface Book {
 }
 
 // --- Reusable Components ---
-const BookCard = ({ book, delay }: { book: Book, delay: number }) => (
-    <Link href={`/book/${book.id}`} className="book-card" style={{ transitionDelay: `${delay * 50}ms` }}>
+const BookCard = ({ book }: { book: Book }) => (
+    <Link href={`/book/${book.id}`} className="book-card">
         <img 
             src={book.coverurl || `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
             alt={book.title} 
@@ -38,15 +38,14 @@ function SearchResults() {
     useEffect(() => {
         if (query) {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
+            setIsLoading(true);
+            setError(null);
             
             fetch(`${apiUrl}/api/search?q=${encodeURIComponent(query)}`)
-                .then(res => {
-                    if (!res.ok) throw new Error("Search request failed");
-                    return res.json();
-                })
+                .then(res => res.json())
                 .then(data => {
-                    if (Array.isArray(data)) {
-                        setResults(data);
+                    if (data && Array.isArray(data.books)) {
+                        setResults(data.books);
                     } else {
                         throw new Error("Invalid data format from search API");
                     }
@@ -61,6 +60,24 @@ function SearchResults() {
         }
     }, [query]);
 
+    // --- THIS IS THE FIX ---
+    // This useEffect hook sets up the Intersection Observer to animate elements
+    // as they scroll into view. It runs whenever the list of results changes.
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        const elementsToAnimate = document.querySelectorAll('.book-card');
+        elementsToAnimate.forEach(el => observer.observe(el));
+
+        return () => elementsToAnimate.forEach(el => observer.unobserve(el));
+    }, [results]); // Rerun this effect when the search results are updated
+
     return (
         <main className="container page-content">
             <div>
@@ -72,7 +89,7 @@ function SearchResults() {
                     {isLoading && <p className="loading-text col-span-full">Loading results...</p>}
                     {error && <p className="error-text col-span-full">{error}</p>}
                     {!isLoading && !error && results.length > 0 && (
-                        results.map((book, index) => <BookCard key={book.id} book={book} delay={index} />)
+                        results.map((book) => <BookCard key={book.id} book={book} />)
                     )}
                     {!isLoading && !error && results.length === 0 && (
                         <p className="loading-text col-span-full">No books found matching your search.</p>
