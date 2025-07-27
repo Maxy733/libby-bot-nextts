@@ -1,7 +1,7 @@
 // src/app/discover/page.tsx
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react'; // Import useRef
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 
 // --- Type Definitions ---
@@ -54,7 +54,6 @@ export default function DiscoverPage() {
     const [majorBooks, setMajorBooks] = useState<Book[]>([]);
     const [selectedMajor, setSelectedMajor] = useState('Computer Science');
 
-    // NEW: Refs for the carousels
     const trendingCarouselRef = useRef<HTMLDivElement>(null);
     const majorCarouselRef = useRef<HTMLDivElement>(null);
 
@@ -102,7 +101,7 @@ export default function DiscoverPage() {
         setSelectedMajor(event.target.value);
     };
     
-    // NEW: Reusable scroll handler
+    // FIXED: The type for the 'ref' parameter has been corrected.
     const handleCarouselScroll = (direction: 'left' | 'right', ref: React.RefObject<HTMLDivElement>) => {
         if (ref.current) {
             const scrollAmount = 300;
@@ -151,7 +150,7 @@ export default function DiscoverPage() {
                         </div>
                         <div className="carousel-wrapper">
                             <div ref={trendingCarouselRef} className="carousel-container">
-                                {trendingBooks.map((book, index) => <BookCard key={book.id} book={book} />)}
+                                {trendingBooks.map((book) => <BookCard key={book.id} book={book} />)}
                             </div>
                             <button onClick={() => handleCarouselScroll('left', trendingCarouselRef)} className="carousel-button prev" aria-label="Scroll left">‹</button>
                             <button onClick={() => handleCarouselScroll('right', trendingCarouselRef)} className="carousel-button next" aria-label="Scroll right">›</button>
@@ -161,7 +160,7 @@ export default function DiscoverPage() {
                     <section>
                         <h2 className="section-title">Browse by Genre</h2>
                         <div className="genre-grid">
-                            {genres.map((genre, index) => (
+                            {genres.map((genre) => (
                                 <GenreCard 
                                     key={genre.name}
                                     title={genre.name} 
@@ -185,7 +184,7 @@ export default function DiscoverPage() {
                         <div className="carousel-wrapper">
                             <div ref={majorCarouselRef} className="carousel-container">
                                  {majorBooks.length > 0 ? (
-                                    majorBooks.map((book, index) => <BookCard key={book.id} book={book} />)
+                                    majorBooks.map((book) => <BookCard key={book.id} book={book} />)
                                  ) : (
                                     <p className="loading-text">No books found for this major.</p>
                                  )}
