@@ -102,7 +102,7 @@ export default function DiscoverPage() {
     };
     
     // FIXED: The type for the 'ref' parameter has been corrected to allow for a potentially null .current value.
-    const handleCarouselScroll = (direction: 'left' | 'right', ref: React.RefObject<HTMLDivElement>) => {
+    const handleCarouselScroll = (direction: 'left' | 'right', ref: React.RefObject<HTMLDivElement | null>) => {
         if (ref.current) {
             const scrollAmount = 300;
             const currentScroll = ref.current.scrollLeft;
