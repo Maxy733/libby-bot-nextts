@@ -41,7 +41,8 @@ const BookCard = ({ book }: { book: Book }) => (
 );
 
 const GenreCard = ({ title, imageUrl }: { title: string, imageUrl: string }) => (
-    <Link href="#" className="genre-card">
+    // UPDATED: The link now navigates to the dynamic genre page
+    <Link href={`/genre/${encodeURIComponent(title)}`} className="genre-card">
         <div className="genre-card-bg" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.6)), url(${imageUrl})` }}></div>
         <h3 className="genre-card-title">{title}</h3>
     </Link>
@@ -101,7 +102,6 @@ export default function DiscoverPage() {
         setSelectedMajor(event.target.value);
     };
     
-    // FIXED: The type for the 'ref' parameter has been corrected to allow for a potentially null .current value.
     const handleCarouselScroll = (direction: 'left' | 'right', ref: React.RefObject<HTMLDivElement | null>) => {
         if (ref.current) {
             const scrollAmount = 300;
