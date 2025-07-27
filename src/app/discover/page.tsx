@@ -50,7 +50,7 @@ const GenreCard = ({ title, imageUrl }: { title: string, imageUrl: string }) => 
 
 // --- Main Discover Page Component ---
 export default function DiscoverPage() {
-    const [trendingBooks, setTrendingBooks] useState<Book[]>([]);
+    const [trendingBooks, setTrendingBooks] = useState<Book[]>([]);
     const trendingCarouselRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
