@@ -1,7 +1,7 @@
 // src/app/page.tsx
 'use client'; 
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link'; 
 
 // --- Reusable BookCard Component ---
@@ -30,7 +30,9 @@ export default function Home() {
     const [trendingBooks, setTrendingBooks] = useState<Book[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
+    // NEW: Create a ref to hold a reference to the carousel's DOM element
+    const trendingCarouselRef = useRef<HTMLDivElement>(null);
+    
     useEffect(() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
         setIsLoading(true);
@@ -83,6 +85,18 @@ export default function Home() {
         const query = input?.value.trim();
         if (query) {
             window.location.href = `/search?q=${encodeURIComponent(query)}`;
+        }
+    };
+    const handleCarouselScroll = (direction: 'left' | 'right') => {
+        if (trendingCarouselRef.current) {
+            const scrollAmount = 300; // Amount to scroll in pixels
+            const currentScroll = trendingCarouselRef.current.scrollLeft;
+            
+            if (direction === 'left') {
+                trendingCarouselRef.current.scrollTo({ left: currentScroll - scrollAmount, behavior: 'smooth' });
+            } else {
+                trendingCarouselRef.current.scrollTo({ left: currentScroll + scrollAmount, behavior: 'smooth' });
+            }
         }
     };
 

@@ -857,3 +857,88 @@ body {
     flex-direction: column;
     gap: 0.5rem;
 }
+/* src/app/globals.css */
+
+/* ... (all your existing styles up to the carousel) ... */
+
+/* --- Discover Section --- */
+.discover-section {
+    background-color: var(--brand-surface);
+    padding: 4rem 0;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+/* NEW: Wrapper for the carousel and its buttons */
+.carousel-wrapper {
+    position: relative;
+}
+
+.carousel-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    padding-bottom: 1rem;
+    /* This makes the scrolling smooth when using buttons */
+    scroll-behavior: smooth;
+}
+
+.carousel-container::-webkit-scrollbar { display: none; }
+.carousel-container { -ms-overflow-style: none; scrollbar-width: none; }
+
+.loading-text {
+    color: var(--brand-muted-grey);
+}
+
+/* NEW: Styles for the scroll buttons */
+.carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--brand-light-grey);
+    border-radius: 9999px;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--brand-charcoal);
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    
+    /* Hide buttons by default */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    
+    /* Hide on touch devices */
+    display: none;
+}
+
+/* Show buttons on desktop */
+@media (min-width: 768px) {
+    .carousel-button {
+        display: block;
+    }
+}
+
+
+/* Show buttons when hovering over the wrapper */
+.carousel-wrapper:hover .carousel-button {
+    opacity: 1;
+}
+
+.carousel-button.prev {
+    left: -20px;
+}
+
+.carousel-button.next {
+    right: -20px;
+}
+
+
+/* ... (rest of your CSS styles) ... */
