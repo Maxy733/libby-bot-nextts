@@ -4,12 +4,11 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
-
 export const metadata: Metadata = {
   title: "LIBBY BOT | University Book Recommender",
   description: "A smart book recommender for your university library.",
   icons: {
-    icon: '/logo.svg', // This points to public/logo.svg
+    icon: "/logo.svg", // This points to public/logo.svg
   },
 };
 
@@ -20,10 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        
-        {children}
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
