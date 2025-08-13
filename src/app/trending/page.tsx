@@ -1,7 +1,7 @@
 // src/app/trending/page.tsx
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Dispatch, SetStateAction } from 'react';
 import Link from 'next/link';
 
 // --- Type Definitions ---
@@ -79,7 +79,12 @@ export default function TrendingPage() {
     useEffect(() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
 
-        const fetchData = (period: Period, setData, setLoadingState, setErrorState) => {
+        const fetchData = (
+            period: Period, 
+            setData: Dispatch<SetStateAction<Book[]>>, 
+            setLoadingState: (isLoading: boolean) => void, 
+            setErrorState: (error: string | null) => void
+        ) => {
             fetch(`${apiUrl}/api/recommendations/globally-trending?period=${period}&page=1`)
                 .then(res => res.json())
                 .then(data => {
