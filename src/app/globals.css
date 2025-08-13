@@ -11,7 +11,7 @@
 /* --- Global Styles & Custom Variables (UPDATED FOR DARK THEME) --- */
 :root {
     /* --brand-bg is now the dark background from the image -- */
-    --brand-bg: #574934; 
+    --brand-bg: #333333; 
     /* --brand-surface is a slightly lighter dark grey for cards/sections -- */
     --brand-surface: #2a2a2a; 
     /* --brand-charcoal is now the light text color from the image -- */
@@ -19,7 +19,7 @@
     /* --brand-muted-grey is a lighter grey for secondary text -- */
     --brand-muted-grey: #9E9E9E; 
     /* --brand-light-grey is now a dark grey for borders -- */
-    --brand-light-grey: #333333; 
+    --brand-light-grey: #1f1f1f; 
     /* --brand-accent matches the icon's background color and remains the same -- */
     --brand-accent: #A18A68;
     --brand-accent-hover: #8A7354;
