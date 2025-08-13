@@ -2,7 +2,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { useParams } from 'next/navigation'; // Hook to get URL parameters
 
 // --- Type Definition for a single book ---
