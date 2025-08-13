@@ -13,11 +13,6 @@ interface Book {
 }
 
 type Period = 'weekly' | 'monthly' | 'yearly';
-type ErrorState = {
-  weekly: string | null;
-  monthly: string | null;
-  yearly: string | null;
-}
 
 // --- Reusable Components ---
 const BookCard = ({ book }: { book: Book }) => (
@@ -32,8 +27,8 @@ const BookCard = ({ book }: { book: Book }) => (
     </Link>
 );
 
-// --- NEW: Reusable BookCarousel Component ---
-const BookCarousel = ({ title, books, isLoading, error }: { title: string, books: Book[], isLoading: boolean, error: string | null }) => {
+// --- UPDATED: Reusable BookCarousel now includes a "See More" link ---
+const BookCarousel = ({ title, books, isLoading, error, seeMoreLink }: { title: string, books: Book[], isLoading: boolean, error: string | null, seeMoreLink: string }) => {
     const carouselRef = useRef<HTMLDivElement>(null);
 
     const handleCarouselScroll = (direction: 'left' | 'right') => {
@@ -51,8 +46,8 @@ const BookCarousel = ({ title, books, isLoading, error }: { title: string, books
         <section>
             <div className="section-header">
                 <h2 className="section-title">{title}</h2>
-                {/* Optional: Link to a full page for that period */}
-                {/* <Link href={`/trending/${title.toLowerCase().replace(' ', '-')}`} className="see-more-link">See More &rarr;</Link> */}
+                {/* --- NEW: "See More" button is now a Link --- */}
+                <Link href={seeMoreLink} className="see-more-link">See More &rarr;</Link>
             </div>
             <div className="carousel-wrapper">
                 <div ref={carouselRef} className="carousel-container">
@@ -75,23 +70,26 @@ const BookCarousel = ({ title, books, isLoading, error }: { title: string, books
 
 // --- Main Page Component ---
 export default function TrendingPage() {
+    // State definitions remain the same
     const [weeklyBooks, setWeeklyBooks] = useState<Book[]>([]);
     const [monthlyBooks, setMonthlyBooks] = useState<Book[]>([]);
     const [yearlyBooks, setYearlyBooks] = useState<Book[]>([]);
+    
+    type ErrorState = { weekly: string | null, monthly: string | null, yearly: string | null };
     const [loading, setLoading] = useState({ weekly: true, monthly: true, yearly: true });
     const [error, setError] = useState<ErrorState>({ weekly: null, monthly: null, yearly: null });
-    
 
     useEffect(() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
-        
+
         const fetchData = (
             period: Period, 
             setData: Dispatch<SetStateAction<Book[]>>, 
             setLoadingState: (isLoading: boolean) => void, 
             setErrorState: (error: string | null) => void
         ) => {
-            fetch(`${apiUrl}/api/recommendations/globally-trending?period=${period}&page=1`)
+            // Limiting the fetch to 10 books for the preview carousel
+            fetch(`${apiUrl}/api/recommendations/globally-trending?period=${period}&page=1&per_page=10`)
                 .then(res => res.json())
                 .then(data => {
                     if (data && Array.isArray(data.books)) {
@@ -109,7 +107,7 @@ export default function TrendingPage() {
         fetchData('yearly', setYearlyBooks, (isLoading) => setLoading(prev => ({...prev, yearly: isLoading})), (err) => setError(prev => ({...prev, yearly: err})));
     }, []);
 
-    // Animation effect
+    // Animation effect remains the same
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -135,23 +133,27 @@ export default function TrendingPage() {
                 </div>
 
                 <div className="space-y-16 mt-12">
+                    {/* --- UPDATED: Passing the seeMoreLink to each carousel --- */}
                     <BookCarousel 
                         title="Trending This Week" 
                         books={weeklyBooks} 
                         isLoading={loading.weekly} 
                         error={error.weekly}
+                        seeMoreLink="/trending/weekly"
                     />
                     <BookCarousel 
                         title="Trending This Month" 
                         books={monthlyBooks} 
                         isLoading={loading.monthly} 
                         error={error.monthly}
+                        seeMoreLink="/trending/monthly"
                     />
                     <BookCarousel 
                         title="Trending This Year" 
                         books={yearlyBooks} 
                         isLoading={loading.yearly} 
                         error={error.yearly}
+                        seeMoreLink="/trending/yearly"
                     />
                 </div>
             </main>
