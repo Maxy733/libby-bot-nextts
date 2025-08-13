@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { FiGithub, FiLinkedin, FiTwitter } from 'react-icons/fi';
 // --- FIX 1: Import the Next.js Image component ---
 import Image from 'next/image';
-import Header from '../components/Header';
 
 // --- Type Definitions (no changes needed) ---
 interface TeamMemberCardProps {
@@ -92,7 +91,6 @@ export default function AboutPage() {
 
   return (
     <div>
-      <Header />
       
       <main className="container page-content">
         <div className="space-y-24">
