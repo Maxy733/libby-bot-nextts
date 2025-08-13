@@ -24,8 +24,7 @@ interface Particle {
   duration: number;
 }
 
-const GOOGLE_CLIENT_ID =
-  "431905824213-ljqt3klpf9ul7kcdrkgs8r178depgp18.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""; // read from .env.local
 const totalPages = 3;
 const minInterests = 3;
 
@@ -92,22 +91,38 @@ export default function BookInterestSelector() {
     checkUserSession();
   }, []);
 
-  // google
+  // ----- Google Identity Services init -----
   useEffect(() => {
     const init = () => {
-      if (window.google?.accounts?.id) {
-        try {
-          window.google.accounts.id.initialize({
-            client_id: GOOGLE_CLIENT_ID,
-            callback: handleCredentialResponse,
-            auto_select: false,
-            cancel_on_tap_outside: true,
-          });
-        } catch {
-          setError("Failed to initialize Google Sign-In.");
-        }
+      if (!window.google?.accounts?.id) return;
+
+      if (!GOOGLE_CLIENT_ID) {
+        console.error(
+          "GIS: client_id missing. Set NEXT_PUBLIC_GOOGLE_CLIENT_ID in .env.local"
+        );
+        setError(
+          "Google client ID is not set. Check your .env.local and restart the dev server."
+        );
+        return;
+      }
+
+      // Helpful logs to confirm what Google actually sees:
+      console.log("GIS init origin =", window.location.origin);
+      console.log("GIS init client_id =", GOOGLE_CLIENT_ID);
+
+      try {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleCredentialResponse,
+          auto_select: false,
+          cancel_on_tap_outside: true,
+        });
+      } catch (e) {
+        console.error("Failed to initialize Google Sign-In", e);
+        setError("Failed to initialize Google Sign-In.");
       }
     };
+
     if (!window.google) {
       const s = document.createElement("script");
       s.src = "https://accounts.google.com/gsi/client";
@@ -115,7 +130,9 @@ export default function BookInterestSelector() {
       s.defer = true;
       s.onload = init;
       document.head.appendChild(s);
-    } else init();
+    } else {
+      init();
+    }
   }, []);
 
   const checkUserSession = () => {
@@ -225,7 +242,6 @@ export default function BookInterestSelector() {
     } else if (currentPage < totalPages) setCurrentPage((p) => p + 1);
   };
   const prev = () => currentPage > 1 && setCurrentPage((p) => p - 1);
-
   const isNextDisabled = () =>
     currentPage === totalPages && selectedInterests.size < minInterests;
 
@@ -236,6 +252,7 @@ export default function BookInterestSelector() {
       return;
     }
     try {
+      // Show the One Tap prompt
       window.google.accounts.id.prompt();
     } catch {
       setError("Failed to open Google Sign-In. Refresh and try again.");
@@ -294,7 +311,6 @@ export default function BookInterestSelector() {
 
       {/* PANEL */}
       <section className={styles.panel} aria-label="Choose your interests">
-        {/* title */}
         <h1 className={styles.h1}>Choose Your Interests</h1>
         <p className={styles.sub}>Get personalized book recommendations</p>
 
@@ -420,6 +436,7 @@ export default function BookInterestSelector() {
                 onClick={openGoogle}
                 className="inline-flex items-center justify-center gap-3 bg-blue-600 text-white px-5 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-shadow shadow"
               >
+                {/* Google icon */}
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
                     fill="currentColor"
