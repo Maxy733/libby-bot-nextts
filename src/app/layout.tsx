@@ -6,9 +6,6 @@ import Footer from "./components/Footer";
 import { lora } from './fonts'
 
 
-const inter = Inter({ subsets: ["latin"] });
-
-
 export const metadata: Metadata = {
   title: "LIBBY BOT | University Book Recommender",
   description: "A smart book recommender for your university library.",
