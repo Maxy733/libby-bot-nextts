@@ -101,13 +101,13 @@ export default function AboutPage() {
                 <div className="member-card animated-element" style={{transitionDelay: '100ms'}}>
                     <img src="/Kyi.jpeg" alt="Team Member 2" className="member-image" />
                     <h3 className="member-name">Kyi</h3>
-                    <p className="member-role">UI/UX Designer</p>
+                    <p className="member-role">Backend & Database Specialist</p>
                 </div>
                 {/* Member 3 */}
                 <div className="member-card animated-element" style={{transitionDelay: '200ms'}}>
                     <img src="/IMG_3849.jpeg" alt="Team Member 3" className="member-image" />
                     <h3 className="member-name">Degan</h3>
-                    <p className="member-role">Backend & Database Specialist</p>
+                    <p className="member-role">UI/UX Designer</p>
                 </div>
             </div>
           </section>
