@@ -70,7 +70,7 @@ export default function AboutPage() {
       imageUrl: '/Kyaw.jpeg',
       bio: 'A passionate problem-solver who loves bringing ideas to life. Maxy’s favorite part of this project was designing the seamless user journey from discovery to checkout.',
       delay: '0ms',
-      socialLinks: { github: '#', linkedin: '#' }
+      socialLinks: { github: 'https://github.com/Maxy733', linkedin: '#' }
     },
     {
       name: 'Kyi',
@@ -78,7 +78,7 @@ export default function AboutPage() {
       imageUrl: '/Kyi.jpeg',
       bio: 'The mastermind behind our recommendation engine. Kyi enjoys turning messy data into smart suggestions. Favorite Book Genre: Sci-Fi.',
       delay: '100ms',
-      socialLinks: { github: '#', linkedin: '#' }
+      socialLinks: { github: 'https://github.com/kyisinn', linkedin: '#' }
     },
     {
       name: 'Degan',
@@ -86,7 +86,7 @@ export default function AboutPage() {
       imageUrl: '/IMG_3849.jpeg',
       bio: 'With a keen eye for aesthetics and usability, Degan crafted the look and feel of LIBBY BOT. Believes good design is invisible. Currently obsessed with brutalist web design.',
       delay: '200ms',
-      socialLinks: { github: '#', twitter: '#' }
+      socialLinks: { github: 'https://github.com/Norman7781', twitter: '#' }
     },
   ];
 
