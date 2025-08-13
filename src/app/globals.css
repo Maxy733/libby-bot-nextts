@@ -947,3 +947,71 @@ body {
 .space-y-16 > :not([hidden]) ~ :not([hidden]) {
   margin-top: 4rem; /* 16 * 0.25rem = 4rem */
 }
+/* Add to your existing globals.css or a relevant stylesheet */
+
+/* For the Technology Cards */
+.tech-card {
+  @apply bg-white p-6 rounded-lg shadow-md border border-gray-200 transition-transform transform hover:-translate-y-1;
+}
+
+.tech-card-title {
+  @apply text-xl font-bold text-brand-charcoal mb-2;
+}
+
+.tech-card-body {
+  @apply text-brand-muted-grey;
+}
+
+/* For the Team Cards */
+.member-card {
+  @apply text-center bg-white p-6 rounded-lg shadow-lg;
+}
+
+.member-image {
+  @apply w-32 h-32 rounded-full mx-auto object-cover mb-4 border-4 border-white ring-2 ring-brand-beige;
+}
+
+.member-name {
+  @apply text-xl font-bold text-brand-charcoal;
+}
+
+.member-role {
+  @apply text-brand-primary font-medium; /* Using your brand's primary color */
+}
+
+.member-bio {
+  @apply text-sm text-brand-muted-grey mt-2;
+}
+
+.member-socials {
+  @apply flex justify-center space-x-4 mt-4 text-gray-500;
+}
+
+.member-socials a {
+  @apply transition-colors hover:text-brand-primary;
+}
+
+
+/* For the Final Call-to-Action (CTA) */
+.cta-button {
+  @apply inline-block bg-brand-primary text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105 shadow-lg;
+}
+
+/* Simple Animation Class */
+.animated-element {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.animated-element.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Example Brand Colors (adjust to your actual theme) */
+.bg-brand-beige { background-color: #F8F7F5; }
+.text-brand-primary { color: #A18A68; }
+.bg-brand-primary { background-color: #A18A68; }
+.text-brand-charcoal { color: #2F2F2F; }
+.text-brand-muted-grey { color: #575757; }
