@@ -17,7 +17,7 @@ export default function LoginPage() {
     <div className="auth-page">
       
       {/* Left Side: Decorative Image */}
-      <div className="auth-image-panel" style={{ backgroundImage: "url('/stack-of-library-books.webp')" }}>
+      <div className="auth-image-panel" style={{ backgroundImage: "url('/Musuem-2_1195x794.webp')" }}>
         {/* This div is for the background image, styled in globals.css */}
       </div>
 

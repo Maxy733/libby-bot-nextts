@@ -34,7 +34,7 @@ export default function SignUpPage() {
           <form onSubmit={handleSignUp} className="auth-form">
             <div>
               <label htmlFor="fullname">Full Name</label>
-              <input id="fullname" name="fullname" type="text" autoComplete="name" required placeholder="Jane Doe" />
+              <input id="fullname" name="fullname" type="text" autoComplete="name" required placeholder="John Wick" />
             </div>
 
             <div>
