@@ -126,7 +126,7 @@ export default function TrendingPage() {
 
     return (
         <div>
-            {Header/}
+            <Header />
             <main className="container page-content">
                 <div>
                     <h1 className="page-title">Trending Books</h1>
