@@ -1,8 +1,9 @@
 // src/app/page.tsx
 'use client'; 
-
+import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link'; 
+import Header from './components/Header';
 
 // --- Reusable BookCard Component ---
 interface Book {
@@ -102,8 +103,9 @@ export default function Home() {
 
     return (
         <div>
+            <Header />
+            <main className="container page-content">
             
-            <main>
                 {/* Hero Section */}
                 <div className="hero-wrapper">
                     <section className="hero-bg">
