@@ -1,10 +1,5 @@
 /* src/app/globals.css */
 
-/* --- Import Tailwind's base, components, and utilities styles --- */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* --- Import Google Font --- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -948,4 +943,7 @@ body {
     font-size: 0.875rem;
     color: var(--brand-accent);
     font-weight: 500;
+}
+.space-y-16 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 4rem; /* 16 * 0.25rem = 4rem */
 }
