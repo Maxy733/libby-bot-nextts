@@ -1,9 +1,11 @@
 /* src/app/globals.css */
 
-/* --- Import Google Font --- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* --- Global Styles & Custom Variables (UPDATED FOR DARK THEME) --- */
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap');
+
+
+
+
 :root {
     /* --brand-bg is now the dark background from the image -- */
     --brand-bg: #332c21; 
@@ -22,12 +24,12 @@
 
 body {
     margin: 0;
-    font-family: 'Inter', sans-serif;
-    /* -- The body background now uses the new dark surface color -- */
+    /* --- 2. Update the font-family --- */
+    font-family: 'Lora', serif; 
     background-color: var(--brand-bg); 
-    /* -- The default text color is now light -- */
     color: var(--brand-charcoal);
 }
+
 
 .container {
     max-width: 1200px;
