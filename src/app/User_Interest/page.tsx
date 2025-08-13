@@ -24,7 +24,7 @@ interface Particle {
   duration: number;
 }
 
-const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""; // read from .env.local
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
 const totalPages = 3;
 const minInterests = 3;
 
@@ -74,7 +74,7 @@ export default function BookInterestSelector() {
     ],
   };
 
-  // particles
+  // confetti-ish background
   useEffect(() => {
     const arr: Particle[] = Array.from({ length: 40 }, (_, i) => ({
       id: i,
@@ -86,15 +86,16 @@ export default function BookInterestSelector() {
     setParticles(arr);
   }, []);
 
-  // session
+  // restore session
   useEffect(() => {
     checkUserSession();
   }, []);
 
-  // ----- Google Identity Services init -----
+  // ---------- Google Identity Services ----------
   useEffect(() => {
     const init = () => {
-      if (!window.google?.accounts?.id) return;
+      const ga = window.google?.accounts?.id;
+      if (!ga) return;
 
       if (!GOOGLE_CLIENT_ID) {
         console.error(
@@ -106,19 +107,35 @@ export default function BookInterestSelector() {
         return;
       }
 
-      // Helpful logs to confirm what Google actually sees:
+      // helpful logs
       console.log("GIS init origin =", window.location.origin);
+      console.log("GIS init href =", window.location.href);
       console.log("GIS init client_id =", GOOGLE_CLIENT_ID);
 
       try {
-        window.google.accounts.id.initialize({
+        ga.initialize({
           client_id: GOOGLE_CLIENT_ID,
           callback: handleCredentialResponse,
           auto_select: false,
           cancel_on_tap_outside: true,
+          use_fedcm_for_prompt: true, // avoid FedCM AbortError on some browsers
+          itp_support: true, // Safari "Prevent cross‑site tracking"
         });
-      } catch (e) {
-        console.error("Failed to initialize Google Sign-In", e);
+
+        // Pre-render the fallback button (hidden until needed)
+        const mount = document.getElementById("gsi-button");
+        if (mount) {
+          ga.renderButton(mount, {
+            type: "standard",
+            theme: "outline",
+            size: "large",
+            text: "signin_with",
+            shape: "rectangular",
+          });
+          // keep it hidden until we decide to show it
+          mount.style.display = "none";
+        }
+      } catch {
         setError("Failed to initialize Google Sign-In.");
       }
     };
@@ -134,6 +151,11 @@ export default function BookInterestSelector() {
       init();
     }
   }, []);
+
+  const showFallbackButton = () => {
+    const mount = document.getElementById("gsi-button");
+    if (mount) mount.style.display = "inline-block";
+  };
 
   const checkUserSession = () => {
     const userData = localStorage.getItem("bookAppUser");
@@ -247,15 +269,39 @@ export default function BookInterestSelector() {
 
   const openGoogle = () => {
     setError(null);
-    if (!window.google?.accounts?.id) {
-      setError("Google Sign-In not loaded. Please refresh the page.");
+    const ga = window.google?.accounts?.id;
+    if (!ga) {
+      setError("Google Sign-In not loaded. Please refresh.");
       return;
     }
+
     try {
-      // Show the One Tap prompt
-      window.google.accounts.id.prompt();
+      ga.prompt((notification: any) => {
+        // If One Tap is blocked or skipped, show the fallback button
+        if (notification.isDisplayed && notification.isDisplayed()) {
+          console.log("One Tap displayed");
+        } else if (
+          notification.isSkippedMoment &&
+          notification.isSkippedMoment()
+        ) {
+          console.warn("One Tap skipped:", notification.getSkippedReason?.());
+          showFallbackButton();
+        } else if (
+          notification.isNotDisplayed &&
+          notification.isNotDisplayed()
+        ) {
+          console.warn(
+            "One Tap not displayed:",
+            notification.getNotDisplayedReason?.()
+          );
+          showFallbackButton();
+        } else {
+          // Unknown state; show fallback
+          showFallbackButton();
+        }
+      });
     } catch {
-      setError("Failed to open Google Sign-In. Refresh and try again.");
+      showFallbackButton();
     }
   };
 
@@ -426,17 +472,20 @@ export default function BookInterestSelector() {
               Please sign in with your Google account to save your preferences
               and get personalized recommendations.
             </p>
+
             {error && (
               <div className="mb-3 rounded border border-rose-300 bg-rose-50 text-rose-700 text-sm px-3 py-2">
                 {error}
               </div>
             )}
-            <div className="flex flex-col gap-2">
+
+            <div className="flex flex-col items-center gap-3">
+              {/* One Tap trigger; if blocked we'll show the button below */}
               <button
                 onClick={openGoogle}
                 className="inline-flex items-center justify-center gap-3 bg-blue-600 text-white px-5 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-shadow shadow"
               >
-                {/* Google icon */}
+                {/* Google G icon */}
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
                     fill="currentColor"
@@ -457,6 +506,9 @@ export default function BookInterestSelector() {
                 </svg>
                 Sign in with Google
               </button>
+
+              {/* Fallback button mount */}
+              <div id="gsi-button" />
               <button
                 onClick={() => setShowLoginModal(false)}
                 className="py-2 text-gray-600 hover:text-gray-800"
