@@ -1,9 +1,5 @@
 /* src/app/globals.css */
 
-
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
-
-
 :root {
     /* --brand-bg is now the dark background from the image -- */
     --brand-bg: #332c21; 
@@ -22,12 +18,9 @@
 
 body {
     margin: 0;
-    /* --- 2. Update the font-family --- */
-    font-family: 'Playfair Display', serif; 
     background-color: var(--brand-bg); 
     color: var(--brand-charcoal);
 }
-
 
 .container {
     max-width: 1200px;
