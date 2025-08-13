@@ -328,13 +328,3 @@ body {
 }
 
 /* ... (rest of the file remains the same but will inherit the new dark colors) ... */
-
-/* --- Footer Styles --- */
-.footer {
-    background-color: var(--brand-surface);
-    color: var(--brand-charcoal);
-    padding: 4rem 0 2rem;
-    border-top: 1px solid var(--brand-light-grey);
-}
-
-/* ... etc ... */
