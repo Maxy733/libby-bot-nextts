@@ -13,6 +13,11 @@ interface Book {
 }
 
 type Period = 'weekly' | 'monthly' | 'yearly';
+type ErrorState = {
+  weekly: string | null;
+  monthly: string | null;
+  yearly: string | null;
+}
 
 // --- Reusable Components ---
 const BookCard = ({ book }: { book: Book }) => (
@@ -74,11 +79,12 @@ export default function TrendingPage() {
     const [monthlyBooks, setMonthlyBooks] = useState<Book[]>([]);
     const [yearlyBooks, setYearlyBooks] = useState<Book[]>([]);
     const [loading, setLoading] = useState({ weekly: true, monthly: true, yearly: true });
-    const [error, setError] = useState({ weekly: null, monthly: null, yearly: null });
+    const [error, setError] = useState<ErrorState>({ weekly: null, monthly: null, yearly: null });
+    
 
     useEffect(() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
-
+        
         const fetchData = (
             period: Period, 
             setData: Dispatch<SetStateAction<Book[]>>, 
