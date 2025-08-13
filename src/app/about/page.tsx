@@ -4,27 +4,34 @@
 import React from 'react';
 import Link from 'next/link';
 import { FiGithub, FiLinkedin, FiTwitter } from 'react-icons/fi';
+// --- FIX 1: Import the Next.js Image component ---
+import Image from 'next/image';
 
-// --- NEW: Define a specific type for the component's props ---
+// --- Type Definitions (no changes needed) ---
 interface TeamMemberCardProps {
   name: string;
   role: string;
   imageUrl: string;
   bio: string;
   delay: string;
-  socialLinks?: { // The '?' makes this whole object optional
-    github?: string;   // The '?' makes individual links optional
+  socialLinks?: {
+    github?: string;
     linkedin?: string;
     twitter?: string;
   };
 }
 
 // --- Helper Components ---
-
-// UPDATED: Use the new interface instead of 'any'
 const TeamMemberCard = ({ name, role, imageUrl, bio, delay, socialLinks }: TeamMemberCardProps) => (
   <div className="member-card animated-element" style={{ transitionDelay: delay }}>
-    <img src={imageUrl} alt={`Photo of ${name}, ${role}`} className="member-image" />
+    {/* --- FIX 2: Replaced <img> with the Next.js <Image> component --- */}
+    <Image 
+        src={imageUrl} 
+        alt={`Photo of ${name}, ${role}`} 
+        className="member-image" 
+        width={128} // Required for Next.js Image
+        height={128} // Required for Next.js Image
+    />
     <h3 className="member-name">{name}</h3>
     <p className="member-role">{role}</p>
     <p className="member-bio">{bio}</p>
@@ -40,7 +47,7 @@ const TeamMemberCard = ({ name, role, imageUrl, bio, delay, socialLinks }: TeamM
 
 // The main component for the About Us page
 export default function AboutPage() {
-  // useEffect hook for animations (no changes needed here)
+  // useEffect hook remains the same
   React.useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -49,14 +56,12 @@ export default function AboutPage() {
         }
       });
     }, { threshold: 0.1 });
-
     const elements = document.querySelectorAll('.animated-element');
     elements.forEach(el => observer.observe(el));
-
     return () => elements.forEach(el => observer.unobserve(el));
   }, []);
 
-  // Data for team members (no changes needed here)
+  // Team member data remains the same
   const teamMembers: TeamMemberCardProps[] = [
     {
       name: 'Maxy',
@@ -86,7 +91,7 @@ export default function AboutPage() {
 
   return (
     <div>
-      {/* Header (No changes) */}
+      {/* You should ideally move this to a reusable <Header /> component */}
       <header className="header">
         <div className="container header-content">
           <Link href="/" className="logo">
@@ -98,42 +103,45 @@ export default function AboutPage() {
         </div>
       </header>
       
-      {/* Main Content (No changes) */}
       <main className="container page-content">
         <div className="space-y-24">
-            {/* ... rest of your JSX from the previous step ... */}
-            {/* Page Header */}
             <div className="text-center animated-element">
-              <h1 className="page-title">We're on a Mission to Make the Library Magical.</h1>
-              <p className="page-subtitle max-w-3xl mx-auto">LIBBY BOT is more than just a search bar; it's a new front door to the incredible world of books waiting on our university's shelves.</p>
+              {/* --- FIX 3: Replaced ' with &apos; --- */}
+              <h1 className="page-title">We&apos;re on a Mission to Make the Library Magical.</h1>
+              <p className="page-subtitle max-w-3xl mx-auto">LIBBY BOT is more than just a search bar; it&apos;s a new front door to the incredible world of books waiting on our university&apos;s shelves.</p>
             </div>
 
-            {/* Our Story Section */}
             <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center animated-element">
               <div className="order-2 md:order-1">
                 <h2 className="section-title mb-4">Our Story</h2>
                 <div className="space-y-4 text-lg text-brand-muted-grey leading-relaxed">
-                  <p>It all started with a simple question: "Why do I spend more time looking for a book than actually reading it?" As students, we felt a disconnect. On one hand, we had access to a treasure trove of physical books. On the other, we lived in a world of instant, personalized digital content.</p>
+                  {/* --- FIX 4: Replaced " and ' with &quot; and &apos; --- */}
+                  <p>It all started with a simple question: &quot;Why do I spend more time looking for a book than actually reading it?&quot; As students, we felt a disconnect. On one hand, we had access to a treasure trove of physical books. On the other, we lived in a world of instant, personalized digital content.</p>
                   <p>We imagined a world where the library knew us. Where it could suggest that perfect, obscure philosophy text for our essay or a thrilling novel for a rainy weekend. That vision became LIBBY BOT—our effort to blend the timeless value of the library with the power of modern technology.</p>
                 </div>
               </div>
               <div className="order-1 md:order-2">
-                  <img src="/library-sketch.jpg" alt="A sketch of a modern library interface" className="rounded-lg shadow-lg aspect-video object-cover"/>
+                  {/* --- FIX 5: Replaced <img> with <Image> component --- */}
+                  <Image 
+                    src="/library-sketch.jpg" 
+                    alt="A sketch of a modern library interface" 
+                    className="rounded-lg shadow-lg aspect-video object-cover"
+                    width={600} // Example width
+                    height={338} // Example height to maintain aspect ratio
+                  />
               </div>
             </section>
 
-            {/* The Technology Section */}
             <section className="text-center animated-element">
                 <h2 className="section-title">Built for Discovery</h2>
-                <p className="page-subtitle mt-2 max-w-3xl mx-auto">We chose our technology not just because it's modern, but because it creates a better experience for you.</p>
+                <p className="page-subtitle mt-2 max-w-3xl mx-auto">We chose our technology not just because it&apos;s modern, but because it creates a better experience for you.</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 text-left">
                   <div className="tech-card"><h3 className="tech-card-title">A Lightning-Fast Interface</h3><p className="tech-card-body">Using <span className="font-semibold text-brand-charcoal">Next.js & React</span>, we built a buttery-smooth interface that feels responsive and alive. No more clunky page reloads—just seamless Browse.</p></div>
                   <div className="tech-card"><h3 className="tech-card-title">Intelligent Recommendations</h3><p className="tech-card-body">Our <span className="font-semibold text-brand-charcoal">Python & Flask</span> backend is the brain of the operation, running the logic that finds books tailored to your interests and needs.</p></div>
-                  <div className="tech-card"><h3 className="tech-card-title">Smart Data Processing</h3><p className="tech-card-body">We use the <span className="font-semibold text-brand-charcoal">Pandas</span> library to wrangle the library's vast catalog, ensuring the data is clean, accurate, and ready for our recommendation engine.</p></div>
+                  <div className="tech-card"><h3 className="tech-card-title">Smart Data Processing</h3><p className="tech-card-body">We use the <span className="font-semibold text-brand-charcoal">Pandas</span> library to wrangle the library&apos;s vast catalog, ensuring the data is clean, accurate, and ready for our recommendation engine.</p></div>
                 </div>
             </section>
 
-            {/* Meet the Team Section */}
             <section>
               <div className="text-center animated-element">
                   <h2 className="section-title">Meet the Team</h2>
@@ -146,7 +154,6 @@ export default function AboutPage() {
               </div>
             </section>
 
-            {/* Call to Action Section */}
             <section className="text-center bg-brand-beige p-12 rounded-lg animated-element">
               <h2 className="text-3xl font-bold text-brand-charcoal">Ready to Find Your Next Favorite Book?</h2>
               <p className="mt-4 mb-8 text-lg text-brand-muted-grey max-w-2xl mx-auto">Our digital shelves are open. Start your journey of discovery and see what the library has in store for you.</p>
