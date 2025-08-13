@@ -93,20 +93,20 @@ export default function AboutPage() {
             <div className="team-grid mt-12">
                 {/* Member 1 */}
                 <div className="member-card animated-element">
-                    <img src="https://placehold.co/200x200/A18A68/FFFFFF?text=M" alt="Team Member 1" className="member-image" />
+                    <img src="Kyaw.jpeg" alt="Team Member 1" className="member-image" />
                     <h3 className="member-name">Maxy</h3>
                     <p className="member-role">Project Lead & Full-Stack Developer</p>
                 </div>
                 {/* Member 2 */}
                 <div className="member-card animated-element" style={{transitionDelay: '100ms'}}>
-                    <img src="https://placehold.co/200x200/2F2F2F/FFFFFF?text=A" alt="Team Member 2" className="member-image" />
-                    <h3 className="member-name">Alex</h3>
+                    <img src="/Kyi.jpeg" alt="Team Member 2" className="member-image" />
+                    <h3 className="member-name">Kyi</h3>
                     <p className="member-role">UI/UX Designer</p>
                 </div>
                 {/* Member 3 */}
                 <div className="member-card animated-element" style={{transitionDelay: '200ms'}}>
-                    <img src="https://placehold.co/200x200/858585/FFFFFF?text=J" alt="Team Member 3" className="member-image" />
-                    <h3 className="member-name">Jordan</h3>
+                    <img src="/IMG_3849.jpeg" alt="Team Member 3" className="member-image" />
+                    <h3 className="member-name">Degan</h3>
                     <p className="member-role">Backend & Database Specialist</p>
                 </div>
             </div>
