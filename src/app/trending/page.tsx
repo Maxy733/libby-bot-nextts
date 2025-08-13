@@ -12,12 +12,14 @@ interface Book {
   coverurl: string | null;
 }
 
+type Period = 'weekly' | 'monthly' | 'yearly';
+
 // --- Reusable Components ---
 const BookCard = ({ book }: { book: Book }) => (
     <Link href={`/book/${book.id}`} className="book-card">
-        <img 
-            src={book.coverurl || `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
-            alt={book.title} 
+        <img
+            src={book.coverurl || `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`}
+            alt={book.title}
             className="book-cover"
         />
         <p className="book-title">{book.title || 'No Title'}</p>
@@ -32,14 +34,19 @@ function TrendingPageContent() {
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
+    
+    // --- NEW: State to manage the selected time period ---
+    const [period, setPeriod] = useState<Period>('weekly');
 
-    // This effect fetches data when the currentPage changes
+    // --- UPDATED: useEffect now depends on the 'period' state ---
     useEffect(() => {
         setIsLoading(true);
+        // Reset to page 1 whenever the period changes
+        setCurrentPage(1); 
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
         
-        // We call the 'globally-trending' endpoint with the current page
-        fetch(`${apiUrl}/api/recommendations/globally-trending?page=${currentPage}`)
+        // --- UPDATED: API call now includes both period and page ---
+        fetch(`${apiUrl}/api/recommendations/globally-trending?period=${period}&page=1`)
             .then(res => res.json())
             .then(data => {
                 if (data && Array.isArray(data.books)) {
@@ -50,13 +57,26 @@ function TrendingPageContent() {
                 }
             })
             .catch(err => {
-                console.error(`Failed to fetch trending books:`, err);
+                console.error(`Failed to fetch trending books for period ${period}:`, err);
                 setError(err.message);
             })
             .finally(() => setIsLoading(false));
+    }, [period]); // This effect re-runs only when the period changes
+
+    // This separate effect handles pagination
+    useEffect(() => {
+        // Don't run this on the initial load, only on page changes > 1
+        if (currentPage === 1 && period) return; 
+
+        setIsLoading(true);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
+        fetch(`${apiUrl}/api/recommendations/globally-trending?period=${period}&page=${currentPage}`)
+            .then(res => res.json())
+            //... (same as above)
     }, [currentPage]);
 
-    // This effect handles the animations for cards scrolling into view
+
+    // This effect handles the animations
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -83,14 +103,35 @@ function TrendingPageContent() {
             setCurrentPage(prevPage => prevPage - 1);
         }
     };
+    
+    const getButtonClass = (buttonPeriod: Period) => {
+        return period === buttonPeriod
+            ? 'px-4 py-2 rounded-md bg-brand-accent text-white font-semibold'
+            : 'px-4 py-2 rounded-md bg-brand-light-grey text-brand-muted-grey font-semibold hover:bg-gray-300';
+    };
+
 
     return (
         <main className="container page-content">
             <div>
                 <h1 className="page-title">Trending Books</h1>
-                <p className="page-subtitle">Discover the most popular books from the last five years.</p>
+                <p className="page-subtitle">Discover the most popular books by time period.</p>
             </div>
-            <section className="mt-12">
+
+            {/* --- NEW: Buttons to change the period --- */}
+            <div className="flex items-center gap-4 my-8">
+                <button onClick={() => setPeriod('weekly')} className={getButtonClass('weekly')}>
+                    This Week
+                </button>
+                <button onClick={() => setPeriod('monthly')} className={getButtonClass('monthly')}>
+                    This Month
+                </button>
+                <button onClick={() => setPeriod('yearly')} className={getButtonClass('yearly')}>
+                    This Year
+                </button>
+            </div>
+
+            <section>
                 <div className="results-grid">
                     {isLoading && <p className="loading-text col-span-full">Loading books...</p>}
                     {error && <p className="error-text col-span-full">{error}</p>}
@@ -98,7 +139,7 @@ function TrendingPageContent() {
                         books.map((book) => <BookCard key={book.id} book={book} />)
                     )}
                     {!isLoading && !error && books.length === 0 && (
-                        <p className="loading-text col-span-full">No trending books found.</p>
+                        <p className="loading-text col-span-full">No trending books found for this period.</p>
                     )}
                 </div>
 
