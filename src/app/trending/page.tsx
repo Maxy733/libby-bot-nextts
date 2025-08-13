@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, useRef, Dispatch, SetStateAction } from 'react';
 import Link from 'next/link';
+import Header from '../components/Header';
 
 // --- Type Definitions ---
 interface Book {
@@ -125,7 +126,7 @@ export default function TrendingPage() {
 
     return (
         <div>
-            {/* You would have a shared Header component here */}
+            {Header/}
             <main className="container page-content">
                 <div>
                     <h1 className="page-title">Trending Books</h1>
