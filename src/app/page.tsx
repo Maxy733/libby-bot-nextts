@@ -103,7 +103,6 @@ export default function Home() {
 
     return (
         <div>
-            <Header />
             <main className="container page-content">
             
                 {/* Hero Section */}
