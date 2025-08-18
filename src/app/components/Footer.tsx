@@ -1,4 +1,3 @@
-import Link from "next/link";
 import NewsletterForm from "./NewsletterForm"; // client component
 
 export default function Footer() {
