@@ -1010,6 +1010,7 @@ body {
 /* --- Newsletter Form --- */
 .newsletter-form {
   margin-top: 1rem;
+  margin-bottom: 1rem;
   display: flex;
   gap: 0.5rem;
 }
