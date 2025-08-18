@@ -85,7 +85,7 @@ export default function RecommendationsPage() {
         if (!res.ok) throw new Error(`API ${res.status}`);
         const json = (await res.json()) as ApiTrendingResp;
         if (!cancelled) setDataT(json);
-      } catch (e: unknown) {
+      } catch {
         if (!cancelled) setErrorT('Failed to load trending books.');
       } finally {
         if (!cancelled) setLoadingT(false);
@@ -113,7 +113,7 @@ export default function RecommendationsPage() {
         if (!res.ok) throw new Error(`API ${res.status}`);
         const json = (await res.json()) as ApiByMajorResp;
         if (!cancelled) setDataM(json);
-      } catch (e: unknown) {
+      } catch {
         if (!cancelled) setErrorM('Failed to load books for this major.');
       } finally {
         if (!cancelled) setLoadingM(false);
