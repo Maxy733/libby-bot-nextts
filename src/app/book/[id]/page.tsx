@@ -42,10 +42,15 @@ export default function BookDetailsPage() {
           }
           return response.json();
         })
-        .then((data: Book) => {
-          setBook(data);
+        .then((data) => {
+          const normalized: Book = {
+            ...data,
+            rating: data.rating !== null ? Number(data.rating) : null, // ensure number
+        };
+          setBook(normalized);
           setLoading(false);
         })
+
         .catch(err => {
           console.error("Error fetching book details:", err);
           setError(err.message);
@@ -96,6 +101,7 @@ export default function BookDetailsPage() {
                   <li><strong>Pages:</strong> {book.pages || 'N/A'}</li>
                   <li><strong>Publication Date:</strong> {book.publication_date ? new Date(book.publication_date).toLocaleDateString() : 'N/A'}</li>
                   <li><strong>Rating:</strong> {book.rating !== null ? book.rating.toFixed(1) : 'N/A'}</li>
+                  
                 </ul>
               </div>
 
