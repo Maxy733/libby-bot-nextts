@@ -39,9 +39,9 @@ async function getBook(id: string): Promise<Book | null> {
   return res.json();
 }
 
-
-// --- 1. REMOVE the custom PageProps type and type params inline ---
-// This allows Next.js's build system to use its own generated types without conflict.
+// --- 1. REMOVE the custom PageProps type ---
+// 2. Type the 'params' prop directly in the function signature.
+// This is the key change that fixes the build error.
 export default async function BookDetailsPage({ params }: { params: { id: string } }) {
   const { id } = params;
   const book = await getBook(id);
