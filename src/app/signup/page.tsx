@@ -7,7 +7,14 @@ import { useRouter } from "next/navigation";
 
 type ApiError = { error?: string };
 
-const API_BASE = process.env.NEXT_PUBLIC_API ?? "http://localhost:5000"; // set in .env
+const API_BASE =
+  typeof window !== "undefined" && window.location.hostname === "localhost"
+    ? "http://localhost:5000" // local dev
+    : process.env.NEXT_PUBLIC_API!; // must exist on Vercel
+
+if (!API_BASE) {
+  throw new Error("NEXT_PUBLIC_API is not set — add it in Vercel project settings and redeploy.");
+}
 
 export default function SignUpPage() {
   const router = useRouter();
