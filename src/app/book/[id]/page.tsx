@@ -1,98 +1,99 @@
 // src/app/book/[id]/page.tsx
-'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation'; // Hook to get URL parameters
+import React from 'react';
+import { notFound } from 'next/navigation';
 
-// --- Type Definition for a single book ---
-interface Book {
-  id: number;
-  title: string;
-  author: string;
-  genre: string | null;
-  description: string | null;
-  coverurl: string | null;
-  // Add other fields from your database as needed
-  edition: string | null;
-  imprint: string | null;
-  callno: string | null;
+// --- 1. Updated Author interface to match your new table columns ---
+interface Author {
+  author_id: number;
+  first_name: string;
+  last_name: string;
+  date_of_birth: string | null; // Dates are typically strings after JSON serialization
 }
 
-// --- Main Book Details Page Component ---
-export default function BookDetailsPage() {
-  const [book, setBook] = useState<Book | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+// --- Book interface (no changes here) ---
+interface Book {
+  book_id: number;
+  title: string;
+  description: string | null;
+  author: Author; 
+  isbn: string | null;
+  genre: string | null;
+  publication_date: string | null;
+  pages: number | null;
+  language: string | null;
+  rating: number | null;
+  cover_image_url: string | null;
+}
+
+// Helper function to fetch a single book (no changes here)
+async function getBook(id: string): Promise<Book | null> {
+  const apiUrl = process.env.API_URL || 'http://127.0.0.1:5000';
+  const res = await fetch(`${apiUrl}/api/books/${id}`, {
+    next: { revalidate: 3600 }, 
+  });
+
+  if (!res.ok) {
+    return null;
+  }
+  return res.json();
+}
+
+
+// --- Main Page Component ---
+export default async function BookDetailsPage({ params }: { params: { id: string } }) {
+  const { id } = params;
+  const book = await getBook(id);
+
+  if (!book) {
+    notFound();
+  }
   
-  const params = useParams(); // Get the dynamic parameters from the URL
-  const { id } = params; // Extract the 'id' part
-
-  useEffect(() => {
-    // Fetch the book details only if the ID is available
-    if (id) {
-      // FIXED: Use the environment variable for the API URL
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
-
-      fetch(`${apiUrl}/api/books/${id}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Book not found');
-          }
-          return response.json();
-        })
-        .then((data: Book) => {
-          setBook(data);
-          setLoading(false);
-        })
-        .catch(err => {
-          console.error("Error fetching book details:", err);
-          setError(err.message);
-          setLoading(false);
-        });
-    }
-  }, [id]); // This effect re-runs whenever the 'id' from the URL changes
+  // A helper to safely construct the full name
+  const authorFullName = book.author 
+    ? `${book.author.first_name || ''} ${book.author.last_name || ''}`.trim() 
+    : 'Unknown Author';
 
   return (
-    <div>
+    <main className="container page-content">
+      <a href="/discover" className="back-button" style={{ marginBottom: '20px', display: 'inline-block' }}>
+        &larr; Back to Discover
+      </a>
 
-      <main className="container page-content">
-        {loading && <p className="loading-text">Loading book details...</p>}
-        {error && <p className="error-text">Error: {error}</p>}
-        {book && (
-          <div className="book-details-layout">
-            {/* Left side: Cover Image */}
-            <div className="book-details-cover">
-              <img 
-                src={book.coverurl || `https://placehold.co/600x900/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
-                alt={book.title}
-              />
-            </div>
+      <div className="book-details-layout">
+        <div className="book-details-cover">
+          <img 
+            src={book.cover_image_url || `https://placehold.co/600x900/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
+            alt={book.title}
+          />
+        </div>
 
-            {/* Right side: Information */}
-            <div className="book-details-info">
-              <h1 className="book-details-title">{book.title}</h1>
-              <p className="book-details-author">by {book.author || 'Unknown Author'}</p>
-              
-              {book.genre && <span className="book-details-genre">{book.genre}</span>}
-
-              <div className="book-details-section">
-                <h2>Summary</h2>
-                <p>{book.description || 'No summary available.'}</p>
-              </div>
-
-              <div className="book-details-section">
-                <h2>Details</h2>
-                <ul>
-                  <li><strong>ISBN/Item No:</strong> {book.id}</li>
-                  <li><strong>Edition:</strong> {book.edition || 'N/A'}</li>
-                  <li><strong>Imprint:</strong> {book.imprint || 'N/A'}</li>
-                  <li><strong>Call Number:</strong> {book.callno || 'N/A'}</li>
-                </ul>
-              </div>
-            </div>
+        <div className="book-details-info">
+          <h1 className="book-details-title">{book.title}</h1>
+          {/* --- 2. Construct the full name from first_name and last_name --- */}
+          <p className="book-details-author">by {authorFullName}</p>
+          
+          <div className="meta-tags">
+            {book.genre && <span className="book-details-genre">{book.genre}</span>}
+            {book.rating && <span className="book-details-rating">⭐ {book.rating} / 5</span>}
           </div>
-        )}
-      </main>
-    </div>
+
+          <div className="book-details-section">
+            <h2>Summary</h2>
+            <p>{book.description || 'No summary available.'}</p>
+          </div>
+
+          <div className="book-details-section">
+            <h2>Details</h2>
+            <ul>
+              <li><strong>ISBN:</strong> {book.isbn || 'N/A'}</li>
+              <li><strong>Pages:</strong> {book.pages || 'N/A'}</li>
+              <li><strong>Language:</strong> {book.language || 'N/A'}</li>
+              <li><strong>Published:</strong> {book.publication_date || 'N/A'}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
