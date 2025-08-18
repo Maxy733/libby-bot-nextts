@@ -5,18 +5,18 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation'; // Hook to get URL parameters
 import { useRouter } from 'next/navigation';
 
-// --- Type Definition for a single book ---
 interface Book {
-  id: number;
+  book_id: number;
   title: string;
   author: string;
   genre: string | null;
   description: string | null;
-  coverurl: string | null;
-  // Add other fields from your database as needed
-  edition: string | null;
-  imprint: string | null;
-  callno: string | null;
+  cover_image_url: string | null;
+  rating: number | null;
+  publication_date: string | null;
+  pages: number | null;
+  language: string | null;
+  isbn: string | null;
 }
 
 // --- Main Book Details Page Component ---
@@ -72,7 +72,7 @@ export default function BookDetailsPage() {
             {/* Left side: Cover Image */}
             <div className="book-details-cover">
               <img 
-                src={book.coverurl || `https://placehold.co/600x900/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
+                src={book.cover_image_url || `https://placehold.co/600x900/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
                 alt={book.title}
               />
             </div>
@@ -88,16 +88,17 @@ export default function BookDetailsPage() {
                 <h2>Summary</h2>
                 <p>{book.description || 'No summary available.'}</p>
               </div>
-
               <div className="book-details-section">
                 <h2>Details</h2>
                 <ul>
-                  <li><strong>ISBN/Item No:</strong> {book.id}</li>
-                  <li><strong>Edition:</strong> {book.edition || 'N/A'}</li>
-                  <li><strong>Imprint:</strong> {book.imprint || 'N/A'}</li>
-                  <li><strong>Call Number:</strong> {book.callno || 'N/A'}</li>
+                  <li><strong>ISBN:</strong> {book.isbn || 'N/A'}</li>
+                  <li><strong>Language:</strong> {book.language || 'N/A'}</li>
+                  <li><strong>Pages:</strong> {book.pages || 'N/A'}</li>
+                  <li><strong>Publication Date:</strong> {book.publication_date ? new Date(book.publication_date).toLocaleDateString() : 'N/A'}</li>
+                  <li><strong>Rating:</strong> {book.rating !== null ? book.rating.toFixed(1) : 'N/A'}</li>
                 </ul>
               </div>
+
             </div>
           </div>
         )}
