@@ -3,13 +3,6 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 
-// --- 1. Rename 'Props' to 'PageProps' ---
-// This aligns the type name with the expected convention.
-type PageProps = {
-  params: { id: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-};
-
 // --- Author interface ---
 interface Author {
   author_id: number;
@@ -47,8 +40,9 @@ async function getBook(id: string): Promise<Book | null> {
 }
 
 
-// --- 2. Apply the 'PageProps' type to the component ---
-export default async function BookDetailsPage({ params }: PageProps) {
+// --- 1. REMOVE the custom PageProps type and type params inline ---
+// This allows Next.js's build system to use its own generated types without conflict.
+export default async function BookDetailsPage({ params }: { params: { id: string } }) {
   const { id } = params;
   const book = await getBook(id);
 
