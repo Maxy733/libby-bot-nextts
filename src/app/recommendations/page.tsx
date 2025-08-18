@@ -223,7 +223,7 @@ export default function RecommendationsPage() {
                 <button
                   key={b.id}
                   onClick={() => handleOpenBook(b.id)}
-                  className="book-card"
+                  className="book-card is-visible"
                   aria-label={`Open ${b.title}`}
                 >
                   <img
