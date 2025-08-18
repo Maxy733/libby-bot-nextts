@@ -86,6 +86,7 @@ export default function SignUpPage() {
       // Redirect to a logged-in page
       router.replace("/recommendations"); // change to '/' or '/discover' if you prefer
     } catch (err) {
+      console.error("Signup error:", err); // ✅ now 'err' is used
       setError("Network error. Please check your connection.");
       setStatus("idle");
     }
@@ -191,7 +192,7 @@ export default function SignUpPage() {
           </form>
 
           <p className="auth-footer-link">
-            Already have an account?
+            Already have an account?{" "}
             <Link href="/login">Log in</Link>
           </p>
         </div>
