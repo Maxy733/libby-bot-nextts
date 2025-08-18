@@ -308,20 +308,20 @@ export default function BookInterestSelector() {
     }
     try {
       ga.prompt(notification => {
-        if (notification.isDisplayed?.()) return;
-        if (notification.isSkippedMoment?.()) {
-          console.warn('One Tap skipped:', notification.getSkippedReason?.());
-          showFallbackButton();
-          return;
+        if (notification.isDisplayed && notification.isDisplayed()) {
+          console.log("One Tap displayed");
         }
-        if (notification.isNotDisplayed?.()) {
-          console.warn('One Tap not displayed:', notification.getNotDisplayedReason?.());
+        if (notification.isSkippedMoment && notification.isSkippedMoment()) {
+          console.warn("One Tap skipped:", notification.getSkippedReason?.());
           showFallbackButton();
-          return;
         }
-        showFallbackButton();
+        if (notification.isNotDisplayed && notification.isNotDisplayed()) {
+          console.warn("One Tap not displayed:", notification.getNotDisplayedReason?.());
+          showFallbackButton();
+        }
       });
-    } catch {
+    } catch (err) {
+      setError('Failed to open Google Sign-In.');
       showFallbackButton();
     }
   }, [showFallbackButton]);
