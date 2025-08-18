@@ -1,13 +1,13 @@
 // src/app/login/page.tsx
-'use client'; // This is a client component because it involves user interaction.
+'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link'; // Use the Next.js Link component for navigation
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
-// The main component for the login page
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +29,7 @@ export default function LoginPage() {
       }
       const data = await res.json();
       localStorage.setItem("token", data.token);
-      router.push("/");
+      router.push('/recommendations');
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
