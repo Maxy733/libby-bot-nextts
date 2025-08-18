@@ -124,6 +124,30 @@ export default function BookInterestSelector() {
     setParticles(arr);
   }, []);
 
+  const loadUserPreferences = useCallback(async (user: User) => {
+    try {
+      // Local cache first
+      const stored = localStorage.getItem(`userPreferences_${user.id}`);
+      if (stored) {
+        const prefs = JSON.parse(stored);
+        if (Array.isArray(prefs.interests)) {
+          setSelectedInterests(new Set(prefs.interests));
+        }
+      }
+
+      // Backend (adjust endpoint to your Flask route when you add it)
+      const res = await fetch(`${API_BASE}/api/profile/interests/${encodeURIComponent(user.id)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.interests)) {
+          setSelectedInterests(new Set(data.interests));
+        }
+      }
+    } catch {
+      // ignore network errors; local cache still works
+    }
+  }, []);
+
   // restore session
   useEffect(() => {
     const userData = typeof window !== 'undefined' ? localStorage.getItem('bookAppUser') : null;
@@ -134,6 +158,25 @@ export default function BookInterestSelector() {
       void loadUserPreferences(u);
     } catch {
       localStorage.removeItem('bookAppUser');
+    }
+  }, [loadUserPreferences]);
+
+  const handleCredentialResponse = useCallback((res: { credential: string }) => {
+    try {
+      const payload = JSON.parse(atob(res.credential.split('.')[1]));
+      const user: User = {
+        id: String(payload.sub),
+        name: payload.name,
+        email: payload.email,
+        picture: payload.picture,
+      };
+      localStorage.setItem('bookAppUser', JSON.stringify(user));
+      setCurrentUser(user);
+      setShowLoginModal(false);
+      setError(null);
+      void loadUserPreferences(user);
+    } catch {
+      setError('Failed to process login response. Please try again.');
     }
   }, [loadUserPreferences]);
 
@@ -189,49 +232,6 @@ export default function BookInterestSelector() {
   const showFallbackButton = useCallback(() => {
     const mount = document.getElementById('gsi-button');
     if (mount) mount.style.display = 'inline-block';
-  }, []);
-
-  const handleCredentialResponse = useCallback((res: { credential: string }) => {
-    try {
-      const payload = JSON.parse(atob(res.credential.split('.')[1]));
-      const user: User = {
-        id: String(payload.sub),
-        name: payload.name,
-        email: payload.email,
-        picture: payload.picture,
-      };
-      localStorage.setItem('bookAppUser', JSON.stringify(user));
-      setCurrentUser(user);
-      setShowLoginModal(false);
-      setError(null);
-      void loadUserPreferences(user);
-    } catch {
-      setError('Failed to process login response. Please try again.');
-    }
-  }, [loadUserPreferences]);
-
-  const loadUserPreferences = useCallback(async (user: User) => {
-    try {
-      // Local cache first
-      const stored = localStorage.getItem(`userPreferences_${user.id}`);
-      if (stored) {
-        const prefs = JSON.parse(stored);
-        if (Array.isArray(prefs.interests)) {
-          setSelectedInterests(new Set(prefs.interests));
-        }
-      }
-
-      // Backend (adjust endpoint to your Flask route when you add it)
-      const res = await fetch(`${API_BASE}/api/profile/interests/${encodeURIComponent(user.id)}`);
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data.interests)) {
-          setSelectedInterests(new Set(data.interests));
-        }
-      }
-    } catch {
-      // ignore network errors; local cache still works
-    }
   }, []);
 
   const saveUserPreferences = useCallback(async () => {
