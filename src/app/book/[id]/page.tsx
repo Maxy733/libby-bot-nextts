@@ -3,14 +3,14 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 
-// --- 1. Define the full props type for the page ---
-// This satisfies the expected structure for a Next.js Page Component.
-type Props = {
+// --- 1. Rename 'Props' to 'PageProps' ---
+// This aligns the type name with the expected convention.
+type PageProps = {
   params: { id: string };
   searchParams?: { [key: string]: string | string[] | undefined };
 };
 
-// --- Updated Author interface to match your new table columns ---
+// --- Author interface ---
 interface Author {
   author_id: number;
   first_name: string;
@@ -47,8 +47,8 @@ async function getBook(id: string): Promise<Book | null> {
 }
 
 
-// --- 2. Apply the 'Props' type to the component ---
-export default async function BookDetailsPage({ params }: Props) {
+// --- 2. Apply the 'PageProps' type to the component ---
+export default async function BookDetailsPage({ params }: PageProps) {
   const { id } = params;
   const book = await getBook(id);
 
