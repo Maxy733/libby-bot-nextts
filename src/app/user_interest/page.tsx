@@ -155,7 +155,7 @@ export default function BookInterestSelector() {
     try {
       const u: User = JSON.parse(userData);
       setCurrentUser(u);
-      void loadUserPreferences(u);
+      loadUserPreferences(u);
     } catch {
       localStorage.removeItem('bookAppUser');
     }
@@ -174,7 +174,7 @@ export default function BookInterestSelector() {
       setCurrentUser(user);
       setShowLoginModal(false);
       setError(null);
-      void loadUserPreferences(user);
+      loadUserPreferences(user);
     } catch {
       setError('Failed to process login response. Please try again.');
     }
