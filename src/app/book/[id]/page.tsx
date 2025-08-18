@@ -3,7 +3,7 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 
-// --- Author interface ---
+// --- Interfaces for your data structure ---
 interface Author {
   author_id: number;
   first_name: string;
@@ -11,7 +11,6 @@ interface Author {
   date_of_birth: string | null;
 }
 
-// --- Book interface ---
 interface Book {
   book_id: number;
   title: string;
@@ -26,7 +25,7 @@ interface Book {
   cover_image_url: string | null;
 }
 
-// Helper function to fetch a single book
+// --- Data fetching function ---
 async function getBook(id: string): Promise<Book | null> {
   const apiUrl = process.env.API_URL || 'http://127.0.0.1:5000';
   const res = await fetch(`${apiUrl}/api/books/${id}`, {
@@ -39,9 +38,10 @@ async function getBook(id: string): Promise<Book | null> {
   return res.json();
 }
 
-// --- 1. REMOVE the custom PageProps type ---
-// 2. Type the 'params' prop directly in the function signature.
-// This is the key change that fixes the build error.
+
+// --- THE FIX IS HERE ---
+// Remove any custom 'PageProps' type and define the props inline.
+// This allows Next.js's build system to work without conflict.
 export default async function BookDetailsPage({ params }: { params: { id: string } }) {
   const { id } = params;
   const book = await getBook(id);
