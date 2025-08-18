@@ -141,7 +141,7 @@ export default function RecommendationsPage() {
   const error = activeTab === 'trending' ? errorT : errorM;
 
   const handleOpenBook = (id: number) => {
-    router.push(`/books/${id}`);
+    router.push(`/book/${id}`);
   };
 
   return (
