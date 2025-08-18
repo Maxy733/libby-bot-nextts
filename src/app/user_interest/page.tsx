@@ -135,7 +135,7 @@ export default function BookInterestSelector() {
     } catch {
       localStorage.removeItem('bookAppUser');
     }
-  }, []);
+  }, [loadUserPreferences]);
 
   // ---------- Google Identity Services (optional) ----------
   useEffect(() => {
@@ -184,7 +184,7 @@ export default function BookInterestSelector() {
       };
     }
     init();
-  }, []);
+  }, [handleCredentialResponse]);
 
   const showFallbackButton = useCallback(() => {
     const mount = document.getElementById('gsi-button');
@@ -208,7 +208,7 @@ export default function BookInterestSelector() {
     } catch {
       setError('Failed to process login response. Please try again.');
     }
-  }, []);
+  }, [loadUserPreferences]);
 
   const loadUserPreferences = useCallback(async (user: User) => {
     try {
@@ -262,7 +262,7 @@ export default function BookInterestSelector() {
       setError('Failed to save preferences. Please try again.');
       return false;
     }
-  }, [API_BASE, currentUser, selectedInterests]);
+  }, [currentUser, selectedInterests]);
 
   const toggle = useCallback((id: string) => {
     setSelectedInterests(prev => {
@@ -359,7 +359,7 @@ export default function BookInterestSelector() {
   return (
     <div className={styles.wrapper}>
       {/* particles */}
-      <div className={styles.particles} aria-hidden>
+      <div className={styles.particles} aria-hidden={true}>
         {particles.map(p => {
           const ps: ParticleStyle = {
             left: `${p.left}%`,
@@ -398,7 +398,7 @@ export default function BookInterestSelector() {
         )}
 
         {/* progress */}
-        <div className={styles.progress} aria-hidden>
+        <div className={styles.progress} aria-hidden={true}>
           <div
             className={styles.progressFill}
             style={{ width: `${(currentPage / TOTAL_PAGES) * 100}%` }}
