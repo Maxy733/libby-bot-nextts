@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation'; // Hook to get URL parameters
+import { useRouter } from 'next/navigation';
 
 // --- Type Definition for a single book ---
 interface Book {
@@ -23,6 +24,7 @@ export default function BookDetailsPage() {
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
   
   const params = useParams(); // Get the dynamic parameters from the URL
   const { id } = params; // Extract the 'id' part
@@ -56,10 +58,17 @@ export default function BookDetailsPage() {
     <div>
 
       <main className="container page-content">
-        {loading && <p className="loading-text">Loading book details...</p>}
-        {error && <p className="error-text">Error: {error}</p>}
-        {book && (
-          <div className="book-details-layout">
+  <button
+    onClick={() => router.back()}
+    className="px-4 py-2 mb-4 rounded-lg bg-gray-700 text-white hover:bg-gray-600"
+  >
+    ← Back
+  </button>
+
+  {loading && <p className="loading-text">Loading book details...</p>}
+  {error && <p className="error-text">Error: {error}</p>}
+  {book && (
+    <div className="book-details-layout">
             {/* Left side: Cover Image */}
             <div className="book-details-cover">
               <img 
