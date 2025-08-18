@@ -362,7 +362,7 @@ body {
 
 .app-store-button {
   height: 40px;
-  background-color: var(--brand-surface); /* darker background */
+  background-color: var(--brand-accent); /* darker background */
   color: var(--brand-charcoal);           /* light text */
   border: 1px solid var(--brand-light-grey);
   border-radius: 0.375rem;
@@ -376,7 +376,7 @@ body {
 }
 
 .app-store-button:hover {
-  background-color: var(--brand-accent);
+  background-color: var(--brand-accent-hover);
   color: white;
 }
 
