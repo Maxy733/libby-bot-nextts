@@ -1,104 +1,98 @@
 // src/app/book/[id]/page.tsx
+'use client';
 
-import React from 'react';
-import { notFound } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation'; // Hook to get URL parameters
 
-// --- Interfaces for your final data structure ---
-interface Author {
-  author_id: number;
-  first_name: string;
-  last_name: string;
-}
-
+// --- Type Definition for a single book ---
 interface Book {
-  book_id: number;
+  id: number;
   title: string;
-  description: string | null;
-  author: Author; 
-  isbn: string | null;
+  author: string;
   genre: string | null;
-  publication_date: string | null;
-  pages: number | null;
-  language: string | null;
-  rating: number | null;
-  cover_image_url: string | null;
+  description: string | null;
+  coverurl: string | null;
+  // Add other fields from your database as needed
+  edition: string | null;
+  imprint: string | null;
+  callno: string | null;
 }
 
-// --- Data fetching function (runs on the server) ---
-async function getBook(id: string): Promise<Book | null> {
-  // Use the server-side environment variable (no NEXT_PUBLIC_ prefix needed)
-  const apiUrl = process.env.API_URL || 'http://127.0.0.1:5000';
+// --- Main Book Details Page Component ---
+export default function BookDetailsPage() {
+  const [book, setBook] = useState<Book | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
-  const res = await fetch(`${apiUrl}/api/books/${id}`, {
-    // This tells Next.js to cache the result for one hour
-    next: { revalidate: 3600 }, 
-  });
+  const params = useParams(); // Get the dynamic parameters from the URL
+  const { id } = params; // Extract the 'id' part
 
-  if (!res.ok) {
-    // If the API returns a 404 or other error, we'll treat it as not found
-    return null;
-  }
-  return res.json();
-}
+  useEffect(() => {
+    // Fetch the book details only if the ID is available
+    if (id) {
+      // FIXED: Use the environment variable for the API URL
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
 
-// --- Main Page Component ---
-// It's now an 'async' function that gets 'params' as a prop.
-// We type 'params' inline, which avoids all 'PageProps' errors.
-export default async function BookDetailsPage({ params }: { params: { id: string } }) {
-  const { id } = params;
-  const book = await getBook(id);
-
-  // If the book doesn't exist, render the not-found page
-  if (!book) {
-    notFound();
-  }
-  
-  // Helper to safely construct the author's full name
-  const authorFullName = book.author 
-    ? `${book.author.first_name || ''} ${book.author.last_name || ''}`.trim() 
-    : 'Unknown Author';
+      fetch(`${apiUrl}/api/books/${id}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Book not found');
+          }
+          return response.json();
+        })
+        .then((data: Book) => {
+          setBook(data);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error("Error fetching book details:", err);
+          setError(err.message);
+          setLoading(false);
+        });
+    }
+  }, [id]); // This effect re-runs whenever the 'id' from the URL changes
 
   return (
-    <main className="container page-content">
-      <a href="/discover" className="back-button" style={{ marginBottom: '20px', display: 'inline-block' }}>
-        &larr; Back to Discover
-      </a>
+    <div>
 
-      <div className="book-details-layout">
-        {/* Left side: Cover Image */}
-        <div className="book-details-cover">
-          <img 
-            src={book.cover_image_url || `https://placehold.co/600x900/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
-            alt={book.title}
-          />
-        </div>
+      <main className="container page-content">
+        {loading && <p className="loading-text">Loading book details...</p>}
+        {error && <p className="error-text">Error: {error}</p>}
+        {book && (
+          <div className="book-details-layout">
+            {/* Left side: Cover Image */}
+            <div className="book-details-cover">
+              <img 
+                src={book.coverurl || `https://placehold.co/600x900/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
+                alt={book.title}
+              />
+            </div>
 
-        {/* Right side: Information */}
-        <div className="book-details-info">
-          <h1 className="book-details-title">{book.title}</h1>
-          <p className="book-details-author">by {authorFullName}</p>
-          
-          <div className="meta-tags">
-            {book.genre && <span className="book-details-genre">{book.genre}</span>}
-            {book.rating && <span className="book-details-rating">⭐ {book.rating} / 5</span>}
+            {/* Right side: Information */}
+            <div className="book-details-info">
+              <h1 className="book-details-title">{book.title}</h1>
+              <p className="book-details-author">by {book.author || 'Unknown Author'}</p>
+              
+              {book.genre && <span className="book-details-genre">{book.genre}</span>}
+
+              <div className="book-details-section">
+                <h2>Summary</h2>
+                <p>{book.description || 'No summary available.'}</p>
+              </div>
+
+              <div className="book-details-section">
+                <h2>Details</h2>
+                <ul>
+                  <li><strong>ISBN/Item No:</strong> {book.id}</li>
+                  <li><strong>Edition:</strong> {book.edition || 'N/A'}</li>
+                  <li><strong>Imprint:</strong> {book.imprint || 'N/A'}</li>
+                  <li><strong>Call Number:</strong> {book.callno || 'N/A'}</li>
+                </ul>
+              </div>
+            </div>
           </div>
-
-          <div className="book-details-section">
-            <h2>Summary</h2>
-            <p>{book.description || 'No summary available.'}</p>
-          </div>
-
-          <div className="book-details-section">
-            <h2>Details</h2>
-            <ul>
-              <li><strong>ISBN:</strong> {book.isbn || 'N/A'}</li>
-              <li><strong>Pages:</strong> {book.pages || 'N/A'}</li>
-              <li><strong>Language:</strong> {book.language || 'N/A'}</li>
-              <li><strong>Published:</strong> {book.publication_date || 'N/A'}</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </main>
+        )}
+      </main>
+    </div>
   );
 }
