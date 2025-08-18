@@ -1,4 +1,4 @@
-// src/app/page.tsx
+//home page
 'use client'; 
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
@@ -58,27 +58,22 @@ export default function Home() {
             });
     }, []); 
 
-    // --- THIS IS THE FIX ---
-    // This useEffect hook sets up the Intersection Observer to animate elements
-    // as they scroll into view. It runs whenever the list of books changes.
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry, index) => {
                 if (entry.isIntersecting) {
-                    // Apply a staggered delay for a nice effect
+                    
                     entry.target.classList.add('is-visible');
                     (entry.target as HTMLElement).style.transitionDelay = `${index * 50}ms`;
                 }
             });
         }, { threshold: 0.1 });
 
-        // Find all elements that need animating and start observing them.
         const elementsToAnimate = document.querySelectorAll('.animated-element, .book-card');
         elementsToAnimate.forEach(el => observer.observe(el));
 
-        // Cleanup function to stop observing when the component unmounts
         return () => elementsToAnimate.forEach(el => observer.unobserve(el));
-    }, [trendingBooks]); // Rerun this effect when trendingBooks is updated
+    }, [trendingBooks]);
 
     const handleSearch = () => {
         const input = document.getElementById('hero-search-input') as HTMLInputElement;
@@ -89,7 +84,7 @@ export default function Home() {
     };
     const handleCarouselScroll = (direction: 'left' | 'right') => {
         if (trendingCarouselRef.current) {
-            const scrollAmount = 300; // Amount to scroll in pixels
+            const scrollAmount = 300;
             const currentScroll = trendingCarouselRef.current.scrollLeft;
             
             if (direction === 'left') {
