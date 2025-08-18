@@ -1,5 +1,5 @@
+// src/app/components/NewsletterForm.tsx
 "use client";
-
 import React, { useState } from "react";
 
 export default function NewsletterForm() {
@@ -8,22 +8,13 @@ export default function NewsletterForm() {
 
   async function handleSubscribe(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
-      setStatus("error");
-      return;
-    }
+    if (!/^\S+@\S+\.\S+$/.test(email)) { setStatus("error"); return; }
     try {
       setStatus("loading");
-      await fetch("/api/newsletter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
+      await fetch("/api/newsletter", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
       setStatus("success");
       setEmail("");
-    } catch {
-      setStatus("error");
-    }
+    } catch { setStatus("error"); }
   }
 
   return (
@@ -36,11 +27,7 @@ export default function NewsletterForm() {
         className="newsletter-input"
         aria-invalid={status === "error"}
       />
-      <button
-        type="submit"
-        className="newsletter-button"
-        disabled={status === "loading" || status === "success"}
-      >
+      <button type="submit" className="newsletter-button" disabled={status === "loading" || status === "success"}>
         {status === "loading" ? "Subscribing…" : status === "success" ? "Subscribed" : "Subscribe"}
       </button>
       {status === "error" && <p className="newsletter-message error">Please enter a valid email.</p>}

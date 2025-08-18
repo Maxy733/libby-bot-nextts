@@ -1,58 +1,76 @@
-// Server component (no "use client" here)
+// src/app/components/Footer.tsx (server component)
 import Link from "next/link";
 import NewsletterForm from "./NewsletterForm";
 
+const FooterLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
+  <li>
+    <Link href={href} className="footer-link">
+      {children}
+    </Link>
+  </li>
+);
+
 export default function Footer() {
   return (
-    <footer className="border-t">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="grid grid-cols-1 gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4">
-          {/* About */}
-          <div>
-            <h3 className="text-sm font-semibold">LIBBY BOT</h3>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li><Link href="/about">About Us</Link></li>
-              <li><Link href="/how-it-works">How It Works</Link></li>
-              <li><Link href="/mission">Our Mission</Link></li>
-              <li><Link href="/careers">Careers</Link></li>
-              <li><Link href="/press">Press</Link></li>
+    <footer className="footer">
+      <div className="container">
+        {/* Top section with link columns */}
+        <div className="footer-main">
+          {/* Column 1: LIBBY BOT */}
+          <div className="footer-col">
+            <h3 className="footer-col-title">LIBBY BOT</h3>
+            <ul>
+              <FooterLink href="/about">About Us</FooterLink>
+              <FooterLink href="/how-it-works">How It Works</FooterLink>
+              <FooterLink href="/mission">Our Mission</FooterLink>
+              <FooterLink href="/careers">Careers</FooterLink>
+              <FooterLink href="/press">Press</FooterLink>
             </ul>
           </div>
 
-          {/* Community */}
-          <div>
-            <h3 className="text-sm font-semibold">Community</h3>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li><Link href="/readers">For Readers</Link></li>
-              <li><Link href="/authors">For Authors</Link></li>
-              <li><Link href="/publishers">For Publishers</Link></li>
-              <li><Link href="/partners">Partnerships</Link></li>
-              <li><Link href="/blog">Blog</Link></li>
+          {/* Column 2: Community */}
+          <div className="footer-col">
+            <h3 className="footer-col-title">Community</h3>
+            <ul>
+              <FooterLink href="/readers">For Readers</FooterLink>
+              <FooterLink href="/authors">For Authors</FooterLink>
+              <FooterLink href="/publishers">For Publishers</FooterLink>
+              <FooterLink href="/partners">Partnerships</FooterLink>
+              <FooterLink href="/blog">Blog</FooterLink>
             </ul>
           </div>
 
-          {/* Support */}
-          <div>
-            <h3 className="text-sm font-semibold">Support</h3>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li><Link href="/help">Help Center</Link></li>
-              <li><Link href="/contact">Contact Us</Link></li>
-              <li><Link href="/accessibility">Accessibility</Link></li>
-              <li><Link href="/terms">Terms of Service</Link></li>
-              <li><Link href="/privacy">Privacy Policy</Link></li>
+          {/* Column 3: Support */}
+          <div className="footer-col">
+            <h3 className="footer-col-title">Support</h3>
+            <ul>
+              <FooterLink href="/help">Help Center</FooterLink>
+              <FooterLink href="/contact">Contact Us</FooterLink>
+              <FooterLink href="/accessibility">Accessibility</FooterLink>
+              <FooterLink href="/terms">Terms of Service</FooterLink>
+              <FooterLink href="/privacy">Privacy Policy</FooterLink>
             </ul>
           </div>
 
-          {/* Stay Connected (NEWSLETTER HERE) */}
-          <div>
-            <h3 className="text-sm font-semibold">Stay Connected</h3>
-            <p className="mt-4 text-sm">Get weekly book picks, reading lists, and feature releases.</p>
+          {/* Column 4: Stay Connected (Newsletter + placeholders) */}
+          <div className="footer-col">
+            <h3 className="footer-col-title">Stay Connected</h3>
+            <p className="copyright">Get weekly book picks, reading lists, and feature releases.</p>
             <NewsletterForm />
+            <div className="app-store-button">App Store</div>
+            <div className="app-store-button">Google Play</div>
           </div>
         </div>
 
-        <div className="border-t py-6 text-sm text-center">
-          &copy; 2025 LIBBY BOT. All rights reserved.
+        {/* Bottom section */}
+        <div className="footer-bottom">
+          <p className="copyright">&copy; 2025 LIBBY BOT Inc. All rights reserved.</p>
+          <div className="social-icons">
+            <a href="#" className="social-icon" aria-label="Facebook">FB</a>
+            <a href="#" className="social-icon" aria-label="Twitter/X">TW</a>
+            <a href="#" className="social-icon" aria-label="Instagram">IG</a>
+            <a href="#" className="social-icon" aria-label="LinkedIn">LI</a>
+          </div>
         </div>
       </div>
     </footer>
