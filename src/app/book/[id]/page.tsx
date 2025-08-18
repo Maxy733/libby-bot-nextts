@@ -3,15 +3,22 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 
-// --- 1. Updated Author interface to match your new table columns ---
+// --- 1. Define the full props type for the page ---
+// This satisfies the expected structure for a Next.js Page Component.
+type Props = {
+  params: { id: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+};
+
+// --- Updated Author interface to match your new table columns ---
 interface Author {
   author_id: number;
   first_name: string;
   last_name: string;
-  date_of_birth: string | null; // Dates are typically strings after JSON serialization
+  date_of_birth: string | null;
 }
 
-// --- Book interface (no changes here) ---
+// --- Book interface ---
 interface Book {
   book_id: number;
   title: string;
@@ -26,7 +33,7 @@ interface Book {
   cover_image_url: string | null;
 }
 
-// Helper function to fetch a single book (no changes here)
+// Helper function to fetch a single book
 async function getBook(id: string): Promise<Book | null> {
   const apiUrl = process.env.API_URL || 'http://127.0.0.1:5000';
   const res = await fetch(`${apiUrl}/api/books/${id}`, {
@@ -40,8 +47,8 @@ async function getBook(id: string): Promise<Book | null> {
 }
 
 
-// --- Main Page Component ---
-export default async function BookDetailsPage({ params }: { params: { id: string } }) {
+// --- 2. Apply the 'Props' type to the component ---
+export default async function BookDetailsPage({ params }: Props) {
   const { id } = params;
   const book = await getBook(id);
 
@@ -49,7 +56,6 @@ export default async function BookDetailsPage({ params }: { params: { id: string
     notFound();
   }
   
-  // A helper to safely construct the full name
   const authorFullName = book.author 
     ? `${book.author.first_name || ''} ${book.author.last_name || ''}`.trim() 
     : 'Unknown Author';
@@ -70,7 +76,6 @@ export default async function BookDetailsPage({ params }: { params: { id: string
 
         <div className="book-details-info">
           <h1 className="book-details-title">{book.title}</h1>
-          {/* --- 2. Construct the full name from first_name and last_name --- */}
           <p className="book-details-author">by {authorFullName}</p>
           
           <div className="meta-tags">
