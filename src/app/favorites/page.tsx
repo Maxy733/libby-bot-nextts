@@ -99,7 +99,7 @@ export default function FavoritesPage() {
     fetchFavorites();
   }, [token]);
 
-  const openBook = (id: number) => router.push(`/book/${id}`);
+  //const openBook = (id: number) => router.push(`/book/${id}`);
 
   return (
     <main className={styles.page}>
