@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import React, { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -13,27 +13,27 @@ export default function Header() {
 
   // Re-check token on mount, on route change, on focus, on custom auth event, and when storage changes (other tabs)
   useEffect(() => {
-    const check = () => setIsLoggedIn(!!localStorage.getItem('token'));
+    const check = () => setIsLoggedIn(!!localStorage.getItem("token"));
     check();
   }, [pathname]);
 
   useEffect(() => {
-    const check = () => setIsLoggedIn(!!localStorage.getItem('token'));
+    const check = () => setIsLoggedIn(!!localStorage.getItem("token"));
 
     const onStorage = (e: StorageEvent) => {
-      if (e.key === 'token') check();
+      if (e.key === "token") check();
     };
     const onFocus = () => check();
     const onAuth = () => check(); // custom event we can dispatch after login/signup
 
-    window.addEventListener('storage', onStorage);
-    window.addEventListener('focus', onFocus);
-    window.addEventListener('libby:auth', onAuth as EventListener);
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("libby:auth", onAuth as EventListener);
 
     return () => {
-      window.removeEventListener('storage', onStorage);
-      window.removeEventListener('focus', onFocus);
-      window.removeEventListener('libby:auth', onAuth as EventListener);
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("focus", onFocus);
+      window.removeEventListener("libby:auth", onAuth as EventListener);
     };
   }, []);
 
@@ -46,17 +46,17 @@ export default function Header() {
       if (btnRef.current?.contains(t)) return;
       setMenuOpen(false);
     };
-    document.addEventListener('mousedown', onDocClick);
-    return () => document.removeEventListener('mousedown', onDocClick);
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
   }, [menuOpen]);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user'); // optional if you store user
+    localStorage.removeItem("token");
+    localStorage.removeItem("user"); // optional if you store user
     setIsLoggedIn(false);
     setMenuOpen(false);
-    window.dispatchEvent(new Event('libby:auth'));
-    window.location.href = '/';
+    window.dispatchEvent(new Event("libby:auth"));
+    window.location.href = "/";
   };
 
   return (
@@ -94,7 +94,7 @@ export default function Header() {
           <Link href="/trending">Trending</Link>
         </nav>
 
-        <div className="header-actions" style={{ position: 'relative' }}>
+        <div className="header-actions" style={{ position: "relative" }}>
           {isLoggedIn ? (
             <>
               {/* Profile trigger */}
@@ -107,15 +107,15 @@ export default function Header() {
                 onClick={() => setMenuOpen((v) => !v)}
                 title="Open profile menu"
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '.5rem',
-                  padding: '.25rem .5rem',
-                  background: 'transparent',
-                  border: '1px solid var(--brand-light-grey)',
-                  borderRadius: '9999px',
-                  cursor: 'pointer',
-                  color: 'var(--brand-charcoal)',
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: ".5rem",
+                  padding: ".25rem .5rem",
+                  background: "transparent",
+                  border: "1px solid var(--brand-light-grey)",
+                  borderRadius: "9999px",
+                  cursor: "pointer",
+                  color: "var(--brand-charcoal)",
                 }}
               >
                 {/* Simple avatar icon (fallback circle) */}
@@ -124,9 +124,9 @@ export default function Header() {
                   style={{
                     width: 32,
                     height: 32,
-                    borderRadius: '9999px',
-                    background: 'var(--brand-charcoal)',
-                    display: 'inline-block',
+                    borderRadius: "9999px",
+                    background: "var(--brand-charcoal)",
+                    display: "inline-block",
                   }}
                 />
                 <svg
@@ -148,15 +148,15 @@ export default function Header() {
                   aria-label="Profile menu"
                   className="profile-menu"
                   style={{
-                    position: 'absolute',
-                    top: 'calc(100% + 8px)',
+                    position: "absolute",
+                    top: "calc(100% + 8px)",
                     right: 0,
-                    minWidth: '200px',
-                    background: 'var(--brand-surface)',
-                    border: '1px solid var(--brand-light-grey)',
-                    borderRadius: '0.5rem',
-                    boxShadow: '0 10px 30px rgba(0,0,0,.25)',
-                    padding: '.25rem',
+                    minWidth: "200px",
+                    background: "var(--brand-surface)",
+                    border: "1px solid var(--brand-light-grey)",
+                    borderRadius: "0.5rem",
+                    boxShadow: "0 10px 30px rgba(0,0,0,.25)",
+                    padding: ".25rem",
                     zIndex: 50,
                   }}
                 >
@@ -165,10 +165,10 @@ export default function Header() {
                     role="menuitem"
                     className="footer-link"
                     style={{
-                      display: 'block',
-                      padding: '.6rem .75rem',
-                      borderRadius: '.375rem',
-                      textDecoration: 'none',
+                      display: "block",
+                      padding: ".6rem .75rem",
+                      borderRadius: ".375rem",
+                      textDecoration: "none",
                     }}
                     onClick={() => setMenuOpen(false)}
                   >
@@ -179,10 +179,10 @@ export default function Header() {
                     role="menuitem"
                     className="footer-link"
                     style={{
-                      display: 'block',
-                      padding: '.6rem .75rem',
-                      borderRadius: '.375rem',
-                      textDecoration: 'none',
+                      display: "block",
+                      padding: ".6rem .75rem",
+                      borderRadius: ".375rem",
+                      textDecoration: "none",
                     }}
                     onClick={() => setMenuOpen(false)}
                   >
@@ -192,14 +192,14 @@ export default function Header() {
                     role="menuitem"
                     className="logout-btn"
                     style={{
-                      width: '100%',
-                      textAlign: 'left',
-                      background: 'transparent',
-                      border: 'none',
-                      color: 'var(--brand-charcoal)',
-                      padding: '.6rem .75rem',
-                      borderRadius: '.375rem',
-                      cursor: 'pointer',
+                      width: "100%",
+                      textAlign: "left",
+                      background: "transparent",
+                      border: "none",
+                      color: "var(--brand-charcoal)",
+                      padding: ".6rem .75rem",
+                      borderRadius: ".375rem",
+                      cursor: "pointer",
                     }}
                     onClick={handleLogout}
                   >
@@ -210,8 +210,12 @@ export default function Header() {
             </>
           ) : (
             <>
-              <Link href="/login" className="login-btn">Log In</Link>
-              <Link href="/signup" className="signup-btn">Sign Up</Link>
+              <Link href="/login" className="login-btn">
+                Log In
+              </Link>
+              <Link href="/user_interest" className="signup-btn">
+                Sign Up
+              </Link>
             </>
           )}
         </div>
