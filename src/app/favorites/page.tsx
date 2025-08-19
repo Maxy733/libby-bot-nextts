@@ -126,20 +126,20 @@ export default function FavoritesPage() {
           {!loading && !error && books.length > 0 && (
             <div className="results-grid">
               {books.map((b) => (
-                <button
-                  key={b.id}
-                  className="book-card is-visible"
-                  onClick={() => openBook(b.id)}
-                  aria-label={`Open ${b.title}`}
+                <Link
+                    key={b.id}
+                    href={`/book/${b.id}`}
+                    className="book-card is-visible"
+                    aria-label={`Open ${b.title}`}
                 >
-                  <img
+                    <img
                     className="book-cover"
                     src={b.coverurl || '/placeholder-cover.png'}
                     alt={b.title}
-                  />
-                  <div className="book-title">{b.title}</div>
-                  <div className="book-author">{b.author || 'Unknown'}</div>
-                </button>
+                    />
+                    <div className="book-title">{b.title}</div>
+                    <div className="book-author">{b.author || 'Unknown'}</div>
+                </Link>
               ))}
             </div>
           )}
