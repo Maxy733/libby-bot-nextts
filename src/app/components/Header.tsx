@@ -2,22 +2,39 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const btnRef = useRef<HTMLButtonElement | null>(null);
+  const pathname = usePathname();
 
-  // Check login state on mount and when storage changes (e.g., after login in another tab)
+  // Re-check token on mount, on route change, on focus, on custom auth event, and when storage changes (other tabs)
   useEffect(() => {
     const check = () => setIsLoggedIn(!!localStorage.getItem('token'));
     check();
+  }, [pathname]);
+
+  useEffect(() => {
+    const check = () => setIsLoggedIn(!!localStorage.getItem('token'));
+
     const onStorage = (e: StorageEvent) => {
       if (e.key === 'token') check();
     };
+    const onFocus = () => check();
+    const onAuth = () => check(); // custom event we can dispatch after login/signup
+
     window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
+    window.addEventListener('focus', onFocus);
+    window.addEventListener('libby:auth', onAuth as EventListener);
+
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('focus', onFocus);
+      window.removeEventListener('libby:auth', onAuth as EventListener);
+    };
   }, []);
 
   // Close on click outside
@@ -38,6 +55,7 @@ export default function Header() {
     localStorage.removeItem('user'); // optional if you store user
     setIsLoggedIn(false);
     setMenuOpen(false);
+    window.dispatchEvent(new Event('libby:auth'));
     window.location.href = '/';
   };
 
