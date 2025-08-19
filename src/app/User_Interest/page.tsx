@@ -114,10 +114,10 @@ export default function BookInterestSelector() {
 
       try {
         ga.initialize({
-          client_id: GOOGLE_CLIENT_ID,
+          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
           callback: handleCredentialResponse,
           auto_select: false,
-          cancel_on_tap_outside: true,
+          cancel_on_tap_outside: false,
           use_fedcm_for_prompt: true, // avoid FedCM AbortError on some browsers
           itp_support: true, // Safari "Prevent cross‑site tracking"
         });
