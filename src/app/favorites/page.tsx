@@ -51,7 +51,7 @@ export default function FavoritesPage() {
 
       // 1) Try backend endpoint
       try {
-        const res = await fetch(`${API_BASE}/api/user/favorites`, {
+        const res = await fetch(`${API_BASE}/api/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
