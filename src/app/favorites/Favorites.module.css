@@ -1,0 +1,40 @@
+.page {
+  padding-top: 3rem;
+  padding-bottom: 4rem;
+}
+
+.headerRow {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--brand-charcoal);
+}
+
+.subtitle {
+  color: var(--brand-muted-grey);
+}
+
+.section {
+  background-color: var(--brand-surface);
+  margin-top: 1.25rem;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--brand-light-grey);
+}
+
+.loading,
+.empty {
+  color: var(--brand-muted-grey);
+  padding: 1rem;
+}
+
+.error {
+  color: #ef4444;
+  font-weight: 600;
+  padding: 1rem;
+}
