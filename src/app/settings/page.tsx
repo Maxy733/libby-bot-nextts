@@ -42,7 +42,7 @@ export default function SettingsPage() {
         const data: MeResponse = await res.json();
         setMe(data);
         setForm({ full_name: data.full_name || '' });
-      } catch (e) {
+      } catch {
         setErr('Unable to load your account. Please try again.');
       } finally {
         setLoading(false);
@@ -186,7 +186,7 @@ export default function SettingsPage() {
                   type="password"
                   className={styles.input}
                   value={pw.current}
-                  onChange={(e) => setPw((s) => ({ ...s, current: e.target.value }))}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPw((s) => ({ ...s, current: e.target.value }))}
                 />
               </div>
               <div>
@@ -196,7 +196,7 @@ export default function SettingsPage() {
                   type="password"
                   className={styles.input}
                   value={pw.next}
-                  onChange={(e) => setPw((s) => ({ ...s, next: e.target.value }))}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPw((s) => ({ ...s, next: e.target.value }))}
                 />
               </div>
               <div>
@@ -206,7 +206,7 @@ export default function SettingsPage() {
                   type="password"
                   className={styles.input}
                   value={pw.confirm}
-                  onChange={(e) => setPw((s) => ({ ...s, confirm: e.target.value }))}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPw((s) => ({ ...s, confirm: e.target.value }))}
                 />
               </div>
               <div>

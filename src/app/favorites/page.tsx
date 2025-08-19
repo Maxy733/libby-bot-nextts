@@ -3,11 +3,21 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './Favorites.module.css';
+import Link from 'next/link';
 
 type Book = {
   id: number;
   title: string;
   author?: string | null;
+  coverurl?: string | null;
+  rating?: number | null;
+};
+type ApiBook = {
+  book_id?: number;
+  id?: number;
+  title: string;
+  author?: string | null;
+  cover_image_url?: string | null;
   coverurl?: string | null;
   rating?: number | null;
 };
@@ -56,37 +66,34 @@ export default function FavoritesPage() {
       }
 
       // 2) Fallback: pull fav IDs from localStorage and hydrate via /api/books/:id
-      try {
+    try {
         const raw = localStorage.getItem('favorites') || '[]';
         const ids: number[] = JSON.parse(raw);
         if (!ids.length) {
-          setBooks([]);
-          setLoading(false);
-          return;
+            setBooks([]);
+            setLoading(false);
+            return;
         }
 
-        // Fetch details for each ID (do a small parallel pool)
         const chunks = ids.map((id) =>
-          fetch(`${API_BASE}/api/books/${id}`).then((r) =>
-            r.ok ? r.json() : null
-          )
+            fetch(`${API_BASE}/api/books/${id}`).then((r) => (r.ok ? r.json() : null))
         );
         const results = await Promise.all(chunks);
         const cleaned: Book[] = results
-          .filter(Boolean)
-          .map((b: any) => ({
-            id: b.book_id ?? b.id,
+            .filter((b: ApiBook | null) => b && (b.book_id ?? b.id) !== undefined)
+            .map((b: ApiBook) => ({
+            id: (b.book_id ?? b.id) as number,
             title: b.title,
             author: b.author ?? null,
             coverurl: b.cover_image_url ?? b.coverurl ?? null,
             rating: b.rating ?? null,
-          }));
+            }));
         setBooks(cleaned);
-      } catch (e) {
+    } catch {
         setError('Failed to load favorites. Please try again.');
-      } finally {
+    } finally {
         setLoading(false);
-      }
+        }
     };
 
     fetchFavorites();
