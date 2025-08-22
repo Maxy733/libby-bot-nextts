@@ -66,7 +66,7 @@ const MAJORS = [
 export default function RecommendationsPage() {
   const router = useRouter();
 
-  // 🔒 Auth gate at the very top
+  // 🔒 Auth gate state (keep hooks at the top)
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   useEffect(() => {
     try {
@@ -76,6 +76,104 @@ export default function RecommendationsPage() {
       setIsLoggedIn(false);
     }
   }, []);
+
+  // Tabs and data states — declared BEFORE any early return
+  const [activeTab, setActiveTab] = useState<Tab>('trending');
+
+  // Trending state
+  const [period, setPeriod] = useState('5years');
+  const [pageT, setPageT] = useState(1);
+  const [loadingT, setLoadingT] = useState(false);
+  const [errorT, setErrorT] = useState<string | null>(null);
+  const [dataT, setDataT] = useState<ApiTrendingResp | null>(null);
+
+  // By Major state
+  const [major, setMajor] = useState(DEFAULT_MAJOR);
+  const [pageM, setPageM] = useState(1);
+  const [loadingM, setLoadingM] = useState(false);
+  const [errorM, setErrorM] = useState<string | null>(null);
+  const [dataM, setDataM] = useState<ApiByMajorResp | null>(null);
+
+  // Fetch Trending (guarded by auth + tab)
+  useEffect(() => {
+    if (isLoggedIn !== true) return;
+    if (activeTab !== 'trending') return;
+    let cancelled = false;
+
+    const fetchTrending = async () => {
+      setLoadingT(true);
+      setErrorT(null);
+      try {
+        const res = await fetch(
+          `${API_BASE}/api/recommendations/globally-trending?period=${encodeURIComponent(
+            period
+          )}&page=${pageT}`
+        );
+        if (!res.ok) throw new Error(`API ${res.status}`);
+        const json = (await res.json()) as ApiTrendingResp;
+        if (!cancelled) setDataT(json);
+      } catch {
+        if (!cancelled) setErrorT('Failed to load trending books.');
+      } finally {
+        if (!cancelled) setLoadingT(false);
+      }
+    };
+
+    fetchTrending();
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoggedIn, activeTab, period, pageT]);
+
+  // Fetch By Major (guarded by auth + tab)
+  useEffect(() => {
+    if (isLoggedIn !== true) return;
+    if (activeTab !== 'major') return;
+    let cancelled = false;
+
+    const fetchByMajor = async () => {
+      setLoadingM(true);
+      setErrorM(null);
+      try {
+        const res = await fetch(
+          `${API_BASE}/api/recommendations/by-major?major=${encodeURIComponent(
+            major
+          )}&page=${pageM}`
+        );
+        if (!res.ok) throw new Error(`API ${res.status}`);
+        const json = (await res.json()) as ApiByMajorResp;
+        if (!cancelled) setDataM(json);
+      } catch {
+        if (!cancelled) setErrorM('Failed to load books for this major.');
+      } finally {
+        if (!cancelled) setLoadingM(false);
+      }
+    };
+
+    fetchByMajor();
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoggedIn, activeTab, major, pageM]);
+
+  // Helpers
+  const totalPagesT = useMemo(() => {
+    if (!dataT) return 1;
+    return Math.max(1, Math.ceil(dataT.total_books / dataT.per_page));
+  }, [dataT]);
+
+  const totalPagesM = useMemo(() => {
+    if (!dataM) return 1;
+    return Math.max(1, Math.ceil(dataM.total_books / dataM.per_page));
+  }, [dataM]);
+
+  const books = activeTab === 'trending' ? dataT?.books ?? [] : dataM?.books ?? [];
+  const loading = activeTab === 'trending' ? loadingT : loadingM;
+  const error = activeTab === 'trending' ? errorT : errorM;
+
+  // =====================
+  // Render
+  // =====================
 
   if (isLoggedIn === null) {
     return <p className="loading-text">Checking login...</p>;
@@ -95,97 +193,6 @@ export default function RecommendationsPage() {
       </main>
     );
   }
-
-  const [activeTab, setActiveTab] = useState<Tab>('trending');
-
-  // Trending state
-  const [period, setPeriod] = useState('5years');
-  const [pageT, setPageT] = useState(1);
-  const [loadingT, setLoadingT] = useState(false);
-  const [errorT, setErrorT] = useState<string | null>(null);
-  const [dataT, setDataT] = useState<ApiTrendingResp | null>(null);
-
-  // By Major state
-  const [major, setMajor] = useState(DEFAULT_MAJOR);
-  const [pageM, setPageM] = useState(1);
-  const [loadingM, setLoadingM] = useState(false);
-  const [errorM, setErrorM] = useState<string | null>(null);
-  const [dataM, setDataM] = useState<ApiByMajorResp | null>(null);
-
-  // Fetch Trending
-  useEffect(() => {
-    if (activeTab !== 'trending') return;
-    let cancelled = false;
-    const fetchTrending = async () => {
-      setLoadingT(true);
-      setErrorT(null);
-      try {
-        const res = await fetch(
-          `${API_BASE}/api/recommendations/globally-trending?period=${encodeURIComponent(
-            period
-          )}&page=${pageT}`
-        );
-        if (!res.ok) throw new Error(`API ${res.status}`);
-        const json = (await res.json()) as ApiTrendingResp;
-        if (!cancelled) setDataT(json);
-      } catch {
-        if (!cancelled) setErrorT('Failed to load trending books.');
-      } finally {
-        if (!cancelled) setLoadingT(false);
-      }
-    };
-    fetchTrending();
-    return () => {
-      cancelled = true;
-    };
-  }, [activeTab, period, pageT]);
-
-  // Fetch By Major
-  useEffect(() => {
-    if (activeTab !== 'major') return;
-    let cancelled = false;
-    const fetchByMajor = async () => {
-      setLoadingM(true);
-      setErrorM(null);
-      try {
-        const res = await fetch(
-          `${API_BASE}/api/recommendations/by-major?major=${encodeURIComponent(
-            major
-          )}&page=${pageM}`
-        );
-        if (!res.ok) throw new Error(`API ${res.status}`);
-        const json = (await res.json()) as ApiByMajorResp;
-        if (!cancelled) setDataM(json);
-      } catch {
-        if (!cancelled) setErrorM('Failed to load books for this major.');
-      } finally {
-        if (!cancelled) setLoadingM(false);
-      }
-    };
-    fetchByMajor();
-    return () => {
-      cancelled = true;
-    };
-  }, [activeTab, major, pageM]);
-
-  // Helpers
-  const totalPagesT = useMemo(() => {
-    if (!dataT) return 1;
-    return Math.max(1, Math.ceil(dataT.total_books / dataT.per_page));
-  }, [dataT]);
-
-  const totalPagesM = useMemo(() => {
-    if (!dataM) return 1;
-    return Math.max(1, Math.ceil(dataM.total_books / dataM.per_page));
-  }, [dataM]);
-
-  const books = activeTab === 'trending' ? dataT?.books ?? [] : dataM?.books ?? [];
-  const loading = activeTab === 'trending' ? loadingT : loadingM;
-  const error = activeTab === 'trending' ? errorT : errorM;
-
-  const handleOpenBook = (id: number) => {
-    router.push(`/book/${id}`);
-  };
 
   return (
     <main className="page-content">
@@ -264,7 +271,7 @@ export default function RecommendationsPage() {
               {books.map((b) => (
                 <button
                   key={b.id}
-                  onClick={() => handleOpenBook(b.id)}
+                  onClick={() => router.push(`/book/${b.id}`)}
                   className="book-card is-visible"
                   aria-label={`Open ${b.title}`}
                 >
