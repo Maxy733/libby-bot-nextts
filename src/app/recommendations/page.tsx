@@ -107,7 +107,12 @@ export default function RecommendationsPage() {
         const res = await fetch(
           `${API_BASE}/api/recommendations/globally-trending?period=${encodeURIComponent(
             period
-          )}&page=${pageT}`
+          )}&page=${pageT}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          }
         );
         if (!res.ok) throw new Error(`API ${res.status}`);
         const json = (await res.json()) as ApiTrendingResp;
@@ -138,7 +143,12 @@ export default function RecommendationsPage() {
         const res = await fetch(
           `${API_BASE}/api/recommendations/by-major?major=${encodeURIComponent(
             major
-          )}&page=${pageM}`
+          )}&page=${pageM}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          }
         );
         if (!res.ok) throw new Error(`API ${res.status}`);
         const json = (await res.json()) as ApiByMajorResp;

@@ -52,7 +52,10 @@ export default function FavoritesPage() {
       // 1) Try backend endpoint
       try {
         const res = await fetch(`${API_BASE}/api/user/favorites`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
         });
 
         if (res.ok) {
@@ -76,7 +79,12 @@ export default function FavoritesPage() {
         }
 
         const chunks = ids.map((id) =>
-            fetch(`${API_BASE}/api/books/${id}`).then((r) => (r.ok ? r.json() : null))
+            fetch(`${API_BASE}/api/books/${id}`, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            }).then((r) => (r.ok ? r.json() : null))
         );
         const results = await Promise.all(chunks);
         const cleaned: Book[] = results
