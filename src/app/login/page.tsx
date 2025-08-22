@@ -1,18 +1,19 @@
 // src/app/login/page.tsx
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
+
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-
+  
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
@@ -28,7 +29,7 @@ export default function LoginPage() {
       }
       const data = await res.json();
       localStorage.setItem("token", data.token);
-      router.push("/recommendations");
+      router.push('/recommendations');
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -40,11 +41,9 @@ export default function LoginPage() {
 
   return (
     <div className="auth-page">
+      
       {/* Left Side: Decorative Image */}
-      <div
-        className="auth-image-panel"
-        style={{ backgroundImage: "url('/Musuem-2_1195x794.webp')" }}
-      >
+      <div className="auth-image-panel" style={{ backgroundImage: "url('/Musuem-2_1195x794.webp')" }}>
         {/* This div is for the background image, styled in globals.css */}
       </div>
 
@@ -55,44 +54,22 @@ export default function LoginPage() {
           <Link href="/" className="logo auth-logo">
             LIBBY BOT
           </Link>
-
+          
           <h1 className="auth-title">Welcome Back</h1>
-          <p className="auth-subtitle">
-            Log in to access your personalized recommendations and lists.
-          </p>
+          <p className="auth-subtitle">Log in to access your personalized recommendations and lists.</p>
 
           <form onSubmit={handleLogin} className="auth-form">
             <div>
               <label htmlFor="email">Email Address</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <input id="email" name="email" type="email" autoComplete="email" required placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
 
             <div>
               <div className="form-label-group">
                 <label htmlFor="password">Password</label>
-                <Link href="#" className="form-link">
-                  Forgot your password?
-                </Link>
+                <Link href="#" className="form-link">Forgot your password?</Link>
               </div>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <input id="password" name="password" type="password" autoComplete="current-password" required placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
 
             {error && <p className="auth-error">{error}</p>}
@@ -107,10 +84,13 @@ export default function LoginPage() {
           {/* FIXED: Replaced ' with &apos; */}
           <p className="auth-footer-link">
             Don&apos;t have an account?
-            <Link href="/user_interest">Sign up</Link>
+            <Link href="/signup">
+              Sign up
+            </Link>
           </p>
         </div>
       </div>
+
     </div>
   );
 }
