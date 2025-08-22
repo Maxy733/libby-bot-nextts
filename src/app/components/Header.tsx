@@ -10,6 +10,7 @@ export default function Header() {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const pathname = usePathname();
+  const recHref = isLoggedIn ? '/recommendations' : '/login?next=/recommendations';
 
   // Re-check token on mount, on route change, on focus, on custom auth event, and when storage changes (other tabs)
   useEffect(() => {
@@ -90,8 +91,9 @@ export default function Header() {
 
         <nav className="main-nav">
           <Link href="/discover">Discover</Link>
-          <Link href="/about">About Us</Link>
           <Link href="/trending">Trending</Link>
+          <Link href={recHref}>Recommendations</Link>
+          <Link href="/about">About Us</Link>
         </nav>
 
         <div className="header-actions" style={{ position: 'relative' }}>
