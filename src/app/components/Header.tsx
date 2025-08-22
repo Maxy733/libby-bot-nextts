@@ -1,31 +1,45 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 export default function Header() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // null = unknown (avoid flicker on hydrate), true/false after first effect
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const pathname = usePathname();
-  const recHref = isLoggedIn ? '/recommendations' : '/login?next=/recommendations';
 
-  // Re-check token on mount, on route change, on focus, on custom auth event, and when storage changes (other tabs)
+  // Compute target for Recommendations, using a consistent `redirect` param
+  const recHref = useMemo(() => {
+    return isLoggedIn ? '/recommendations' : '/login?redirect=/recommendations';
+  }, [isLoggedIn]);
+
+  // Helper to read token safely
+  const checkAuth = () => {
+    try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      setIsLoggedIn(!!token);
+    } catch {
+      setIsLoggedIn(false);
+    }
+  };
+
+  // Check on mount & pathname change (route change)
   useEffect(() => {
-    const check = () => setIsLoggedIn(!!localStorage.getItem('token'));
-    check();
+    checkAuth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
+  // Listen to cross-tab storage, window focus, and custom auth events
   useEffect(() => {
-    const check = () => setIsLoggedIn(!!localStorage.getItem('token'));
-
     const onStorage = (e: StorageEvent) => {
-      if (e.key === 'token') check();
+      if (e.key === 'token') checkAuth();
     };
-    const onFocus = () => check();
-    const onAuth = () => check(); // custom event we can dispatch after login/signup
+    const onFocus = () => checkAuth();
+    const onAuth = () => checkAuth(); // custom event we can dispatch after login/signup
 
     window.addEventListener('storage', onStorage);
     window.addEventListener('focus', onFocus);
@@ -36,9 +50,10 @@ export default function Header() {
       window.removeEventListener('focus', onFocus);
       window.removeEventListener('libby:auth', onAuth as EventListener);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Close on click outside
+  // Close menu on outside click or Escape
   useEffect(() => {
     if (!menuOpen) return;
     const onDocClick = (e: MouseEvent) => {
@@ -47,23 +62,33 @@ export default function Header() {
       if (btnRef.current?.contains(t)) return;
       setMenuOpen(false);
     };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    };
     document.addEventListener('mousedown', onDocClick);
-    return () => document.removeEventListener('mousedown', onDocClick);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDocClick);
+      document.removeEventListener('keydown', onKey);
+    };
   }, [menuOpen]);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user'); // optional if you store user
-    setIsLoggedIn(false);
-    setMenuOpen(false);
-    window.dispatchEvent(new Event('libby:auth'));
-    window.location.href = '/';
+    try {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user'); // optional if you store user
+    } finally {
+      setIsLoggedIn(false);
+      setMenuOpen(false);
+      window.dispatchEvent(new Event('libby:auth'));
+      window.location.href = '/';
+    }
   };
 
   return (
     <header className="header">
       <div className="container header-content">
-        <Link href="/" className="logo">
+        <Link href="/" className="logo" prefetch>
           <svg
             width="32"
             height="32"
@@ -211,10 +236,13 @@ export default function Header() {
               ) : null}
             </>
           ) : (
-            <>
-              <Link href="/login" className="login-btn">Log In</Link>
-              <Link href="/signup" className="signup-btn">Sign Up</Link>
-            </>
+            // When auth state is unknown (null), avoid flashing login buttons
+            isLoggedIn === false && (
+              <>
+                <Link href="/login" className="login-btn">Log In</Link>
+                <Link href="/signup" className="signup-btn">Sign Up</Link>
+              </>
+            )
           )}
         </div>
       </div>
