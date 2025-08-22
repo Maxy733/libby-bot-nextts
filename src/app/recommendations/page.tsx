@@ -4,6 +4,10 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './Recommendations.module.css';
 
+// =====================
+// Types
+// =====================
+
 type Book = {
   id: number;
   title: string;
@@ -20,6 +24,12 @@ type ApiTrendingResp = {
 };
 
 type ApiByMajorResp = ApiTrendingResp;
+
+type Tab = 'trending' | 'major';
+
+// =====================
+// Constants
+// =====================
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ??
@@ -49,10 +59,43 @@ const MAJORS = [
   'Mathematics',
 ];
 
-type Tab = 'trending' | 'major';
+// =====================
+// Component
+// =====================
 
 export default function RecommendationsPage() {
   const router = useRouter();
+
+  // 🔒 Auth gate at the very top
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  useEffect(() => {
+    try {
+      const token = localStorage.getItem('token');
+      setIsLoggedIn(!!token);
+    } catch {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
+  if (isLoggedIn === null) {
+    return <p className="loading-text">Checking login...</p>;
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <main className="page-content flex flex-col items-center justify-center">
+        <h2 className="text-xl font-bold">Sign in required</h2>
+        <p className="mb-4">Please log in to see your personalized recommendations.</p>
+        <button
+          onClick={() => router.push('/login?redirect=/recommendations')}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+        >
+          Go to Login
+        </button>
+      </main>
+    );
+  }
+
   const [activeTab, setActiveTab] = useState<Tab>('trending');
 
   // Trending state
@@ -149,7 +192,6 @@ export default function RecommendationsPage() {
       <div className="container">
         <header className="section-header">
           <h1 className="section-title">Recommendations</h1>
-          {/* Optional: a small subtitle */}
         </header>
 
         {/* Tabs */}
