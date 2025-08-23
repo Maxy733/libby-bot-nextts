@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
 
 export default function Header() {
-  const { user } = useUser(); // Optional, in case you want to use user info
+  // const { user } = useUser(); // Optional, in case you want to use user info
 
   return (
     <header className="header">

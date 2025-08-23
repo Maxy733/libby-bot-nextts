@@ -1,4 +1,5 @@
 import { SignUp } from '@clerk/nextjs'
+import Link from 'next/link'
 
 export default function SignUpPage() {
   return (
@@ -27,7 +28,7 @@ export default function SignUpPage() {
           />
           <div className="auth-footer-link">
             Already have an account?
-            <a href="/sign-in">Sign in</a>
+            <Link href="/sign-in">Sign in</Link>
           </div>
         </div>
       </div>
