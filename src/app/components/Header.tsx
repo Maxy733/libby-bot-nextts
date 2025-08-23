@@ -1,93 +1,15 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
 
 export default function Header() {
-  // null = unknown (avoid flicker on hydrate), true/false after first effect
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement | null>(null);
-  const btnRef = useRef<HTMLButtonElement | null>(null);
-  const pathname = usePathname();
-
-  // Compute target for Recommendations, using a consistent `redirect` param
-  const recHref = useMemo(() => {
-    return isLoggedIn ? '/recommendations' : '/login?redirect=/recommendations';
-  }, [isLoggedIn]);
-
-  // Helper to read token safely
-  const checkAuth = () => {
-    try {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-      setIsLoggedIn(!!token);
-    } catch {
-      setIsLoggedIn(false);
-    }
-  };
-
-  // Check on mount & pathname change (route change)
-  useEffect(() => {
-    checkAuth();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
-
-  // Listen to cross-tab storage, window focus, and custom auth events
-  useEffect(() => {
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === 'token') checkAuth();
-    };
-    const onFocus = () => checkAuth();
-    const onAuth = () => checkAuth(); // custom event we can dispatch after login/signup
-
-    window.addEventListener('storage', onStorage);
-    window.addEventListener('focus', onFocus);
-    window.addEventListener('libby:auth', onAuth as EventListener);
-
-    return () => {
-      window.removeEventListener('storage', onStorage);
-      window.removeEventListener('focus', onFocus);
-      window.removeEventListener('libby:auth', onAuth as EventListener);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Close menu on outside click or Escape
-  useEffect(() => {
-    if (!menuOpen) return;
-    const onDocClick = (e: MouseEvent) => {
-      const t = e.target as Node;
-      if (menuRef.current?.contains(t)) return;
-      if (btnRef.current?.contains(t)) return;
-      setMenuOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setMenuOpen(false);
-    };
-    document.addEventListener('mousedown', onDocClick);
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('mousedown', onDocClick);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, [menuOpen]);
-
-  const handleLogout = () => {
-    try {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user'); // optional if you store user
-    } finally {
-      setIsLoggedIn(false);
-      setMenuOpen(false);
-      window.dispatchEvent(new Event('libby:auth'));
-      window.location.href = '/';
-    }
-  };
+  const { user } = useUser(); // Optional, in case you want to use user info
 
   return (
     <header className="header">
       <div className="container header-content">
+        {/* Logo */}
         <Link href="/" className="logo" prefetch>
           <svg
             width="32"
@@ -114,136 +36,34 @@ export default function Header() {
           <span>LIBBY BOT</span>
         </Link>
 
+        {/* Navigation */}
         <nav className="main-nav">
           <Link href="/discover">Discover</Link>
           <Link href="/trending">Trending</Link>
-          <Link href={recHref}>Recommendations</Link>
+          <Link href="/recommendations">Recommendations</Link>
           <Link href="/about">About Us</Link>
         </nav>
 
-        <div className="header-actions" style={{ position: 'relative' }}>
-          {isLoggedIn ? (
-            <>
-              {/* Profile trigger */}
-              <button
-                ref={btnRef}
-                type="button"
-                className="profile-trigger"
-                aria-haspopup="menu"
-                aria-expanded={menuOpen}
-                onClick={() => setMenuOpen((v) => !v)}
-                title="Open profile menu"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '.5rem',
-                  padding: '.25rem .5rem',
-                  background: 'transparent',
-                  border: '1px solid var(--brand-light-grey)',
-                  borderRadius: '9999px',
-                  cursor: 'pointer',
-                  color: 'var(--brand-charcoal)',
-                }}
-              >
-                {/* Simple avatar icon (fallback circle) */}
-                <span
-                  aria-hidden
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: '9999px',
-                    background: 'var(--brand-charcoal)',
-                    display: 'inline-block',
-                  }}
-                />
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden
-                >
-                  <path d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.143l3.71-3.91a.75.75 0 0 1 1.08 1.04l-4.24 4.47a.75.75 0 0 1-1.08 0L5.21 8.27a.75.75 0 0 1 .02-1.06z" />
-                </svg>
-              </button>
+        {/* Auth Buttons */}
+        <div className="header-actions flex gap-4 items-center">
+          <SignedOut>
+            <div className="flex gap-4">
+              <SignInButton>
+                <button className="login-btn">
+                  Log In
+                </button>
+              </SignInButton>
+              <SignUpButton>
+                <button className="signup-btn">
+                  Sign Up
+                </button>
+              </SignUpButton>
+            </div>
+          </SignedOut>
 
-              {/* Dropdown */}
-              {menuOpen ? (
-                <div
-                  ref={menuRef}
-                  role="menu"
-                  aria-label="Profile menu"
-                  className="profile-menu"
-                  style={{
-                    position: 'absolute',
-                    top: 'calc(100% + 8px)',
-                    right: 0,
-                    minWidth: '200px',
-                    background: 'var(--brand-surface)',
-                    border: '1px solid var(--brand-light-grey)',
-                    borderRadius: '0.5rem',
-                    boxShadow: '0 10px 30px rgba(0,0,0,.25)',
-                    padding: '.25rem',
-                    zIndex: 50,
-                  }}
-                >
-                  <Link
-                    href="/favorites"
-                    role="menuitem"
-                    className="footer-link"
-                    style={{
-                      display: 'block',
-                      padding: '.6rem .75rem',
-                      borderRadius: '.375rem',
-                      textDecoration: 'none',
-                    }}
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    ★ Favorites
-                  </Link>
-                  <Link
-                    href="/settings"
-                    role="menuitem"
-                    className="footer-link"
-                    style={{
-                      display: 'block',
-                      padding: '.6rem .75rem',
-                      borderRadius: '.375rem',
-                      textDecoration: 'none',
-                    }}
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    ⚙️ Settings
-                  </Link>
-                  <button
-                    role="menuitem"
-                    className="logout-btn"
-                    style={{
-                      width: '100%',
-                      textAlign: 'left',
-                      background: 'transparent',
-                      border: 'none',
-                      color: 'var(--brand-charcoal)',
-                      padding: '.6rem .75rem',
-                      borderRadius: '.375rem',
-                      cursor: 'pointer',
-                    }}
-                    onClick={handleLogout}
-                  >
-                    ⎋ Logout
-                  </button>
-                </div>
-              ) : null}
-            </>
-          ) : (
-            // When auth state is unknown (null), avoid flashing login buttons
-            isLoggedIn === false && (
-              <>
-                <Link href="/login" className="login-btn">Log In</Link>
-                <Link href="/signup" className="signup-btn">Sign Up</Link>
-              </>
-            )
-          )}
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" /> {/* v7 is still beta, v6 works fine i guess */}
+          </SignedIn>
         </div>
       </div>
     </header>
