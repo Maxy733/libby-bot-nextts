@@ -1,12 +1,15 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton //, useUser 
-        } from '@clerk/nextjs';
+import Link from "next/link";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
 
 export default function Header() {
-  // const { user } = useUser(); // Optional, in case you want to use user info
-
   return (
     <header className="header">
       <div className="container header-content">
@@ -50,20 +53,21 @@ export default function Header() {
           <SignedOut>
             <div className="flex gap-4">
               <SignInButton>
-                <button className="login-btn">
-                  Log In
-                </button>
+                <button className="login-btn">Log In</button>
               </SignInButton>
               <SignUpButton>
-                <button className="signup-btn">
-                  Sign Up
-                </button>
+                <button className="signup-btn">Sign Up</button>
               </SignUpButton>
             </div>
           </SignedOut>
 
           <SignedIn>
-            <UserButton afterSignOutUrl="/" /> {/* v7 is still beta, v6 works fine i guess */}
+            <div className="signed-in-actions">
+              <Link href="/profile" className="profile-link">
+                Profile
+              </Link>
+              <UserButton afterSignOutUrl="/" />
+            </div>
           </SignedIn>
         </div>
       </div>
