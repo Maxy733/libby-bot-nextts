@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import Image from "next/image"; // ✅ Import Next.js Image
 
 interface Book {
   id: number;
@@ -27,14 +28,16 @@ const BookCard = ({
 }) => (
   <div className="wishlist-book-card">
     <Link href={`/book/${book.id}`} className="book-link">
-      <img
+      <Image
         src={
           book.coverurl ||
           `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(
             book.title
           )}`
         }
-        alt={book.title}
+        alt={book.title || "Book cover"}
+        width={60} // match your CSS small cover size
+        height={80}
         className="book-cover-small"
       />
       <div className="book-info">
@@ -79,12 +82,10 @@ export default function ProfilePage() {
     try {
       setIsLoading(true);
 
-      // Load wishlist from localStorage (in a real app, this would come from your backend)
       const savedWishlist = localStorage.getItem(`wishlist_${user?.id}`);
       const wishlist = savedWishlist ? JSON.parse(savedWishlist) : [];
       setWishlistBooks(wishlist);
 
-      // Mock user stats (in a real app, this would come from your backend)
       setUserStats({
         booksWishlisted: wishlist.length,
         accountCreated: user?.createdAt
@@ -102,15 +103,12 @@ export default function ProfilePage() {
 
   const removeFromWishlist = (bookId: number) => {
     if (!user) return;
-
     const updatedWishlist = wishlistBooks.filter((book) => book.id !== bookId);
     setWishlistBooks(updatedWishlist);
     localStorage.setItem(
       `wishlist_${user.id}`,
       JSON.stringify(updatedWishlist)
     );
-
-    // Update stats
     setUserStats((prev) =>
       prev ? { ...prev, booksWishlisted: updatedWishlist.length } : null
     );
@@ -151,7 +149,13 @@ export default function ProfilePage() {
       {/* Profile Header */}
       <div className="profile-header">
         <div className="profile-info">
-          <img src={user.imageUrl} alt="Profile" className="profile-avatar" />
+          <Image
+            src={user.imageUrl}
+            alt="Profile avatar"
+            width={80}
+            height={80}
+            className="profile-avatar"
+          />
           <div>
             <h1 className="profile-name">
               {user.firstName} {user.lastName}

@@ -22,6 +22,11 @@ const API_BASE =
     ? `http://${location.hostname}:${process.env.NEXT_PUBLIC_API_PORT || 5000}`
     : "http://localhost:5000");
 
+type UserMetadata = {
+  interestsCompleted?: boolean;
+  [key: string]: unknown;
+};
+
 export default function InterestsOverlay() {
   const { user } = useUser();
   const { getToken, isSignedIn } = useAuth();
