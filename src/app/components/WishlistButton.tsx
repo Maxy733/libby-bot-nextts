@@ -27,26 +27,17 @@ export default function WishlistButton({
   const inWishlist = isInWishlist(book.id);
 
   const handleToggleWishlist = async (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation if button is inside a link
+    e.preventDefault();
     e.stopPropagation();
 
     setIsAnimating(true);
 
     if (inWishlist) {
-      const success = removeFromWishlist(book.id);
-      if (success && showText) {
-        // Optional: Show toast notification
-        console.log("Removed from wishlist");
-      }
+      removeFromWishlist(book.id);
     } else {
-      const success = addToWishlist(book);
-      if (success && showText) {
-        // Optional: Show toast notification
-        console.log("Added to wishlist");
-      }
+      addToWishlist(book);
     }
 
-    // Reset animation after a short delay
     setTimeout(() => setIsAnimating(false), 300);
   };
 

@@ -1,0 +1,211 @@
+/* interests.module.css - Deep Blue Teal Theme */
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #0f1a2a, #0e3b57, #1f4f6b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.loadingContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom right, #0f1a2a, #0e3b57, #1f4f6b);
+}
+
+.loadingText {
+  color: #f5f5f5;
+  font-size: 1.125rem;
+}
+
+.card {
+  width: 90%;
+  max-width: 900px;
+  text-align: center;
+  color: #f5f5f5;
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2rem;
+  padding: 3rem 2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.header {
+  margin-bottom: 2.5rem;
+}
+
+.iconContainer {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 1.5rem auto;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.icon {
+  font-size: 2rem;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 0 0 1rem 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.titleGradient {
+  background: linear-gradient(45deg, #3b82f6, #0ea5e9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  opacity: 0.85;
+  margin: 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.progressContainer {
+  margin-bottom: 2rem;
+  max-width: 350px;
+  margin: 0 auto 2rem auto;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.progressLabel,
+.progressCounter {
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.progressTrack {
+  width: 100%;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #0ea5e9);
+  transition: width 0.3s ease-out;
+  box-shadow: 0 0 8px rgba(14, 165, 233, 0.4);
+}
+
+.genreGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.genreButton {
+  padding: 1.2rem 0.8rem;
+  border-radius: 0.8rem;
+  color: #f5f5f5;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s ease-out;
+  backdrop-filter: blur(10px);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.genreButton:not(.active) {
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  background-color: rgba(255, 255, 255, 0.05);
+  font-weight: normal;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.genreButton:not(.active):hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.genreButton.active {
+  border: 2px solid rgba(14, 165, 233, 0.8);
+  background-color: rgba(14, 165, 233, 0.2);
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+}
+
+.checkmark {
+  margin-left: 0.5rem;
+}
+
+.continueButton {
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 1.5rem;
+  color: #f5f5f5;
+  transition: all 0.3s ease-out;
+  backdrop-filter: blur(10px);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.continueButton.enabled {
+  cursor: pointer;
+  background: linear-gradient(45deg, #3b82f6, #0ea5e9);
+  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.4);
+  transform: scale(1);
+}
+
+.continueButton.enabled:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.5);
+}
+
+.continueButton.disabled {
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transform: scale(0.98);
+}
+
+.continueButton.saving {
+  opacity: 0.7;
+}
+
+.skipContainer {
+  margin-top: 1rem;
+}
+
+.skipButton {
+  background: none;
+  border: none;
+  color: rgba(245, 245, 245, 0.7);
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.skipButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

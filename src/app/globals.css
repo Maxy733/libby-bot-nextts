@@ -1,19 +1,26 @@
 /* src/app/globals.css */
 
 :root {
-  /* --brand-bg is now the dark background from the image -- */
-  --brand-bg: #332c21;
-  /* --brand-surface is a slightly lighter dark grey for cards/sections -- */
-  --brand-surface: #2a2a2a;
-  /* --brand-charcoal is now the light text color from the image -- */
-  --brand-charcoal: #e0e0e0;
-  /* --brand-muted-grey is a lighter grey for secondary text -- */
-  --brand-muted-grey: #9e9e9e;
-  /* --brand-light-grey is now a dark grey for borders -- */
-  --brand-light-grey: #1f1f1f;
-  /* --brand-accent matches the icon's background color and remains the same -- */
-  --brand-accent: #a18a68;
-  --brand-accent-hover: #8a7354;
+  /* Background: old leather or deep parchment */
+  --brand-bg: #1c1b18;            /* deep brown-olive parchment */
+
+  /* Surface: aged dark wood or worn cover */
+  --brand-surface: #2f261e;       /* dark saddle brown */
+
+  /* Primary text: warm ivory or antique paper ink */
+  --brand-charcoal: #e8dcc6;      /* soft parchment white */
+
+  /* Secondary text: muted brass or bronze */
+  --brand-muted-grey: #a3937b;    /* faded gold-grey */
+
+  /* Borders / lines: sepia ink */
+  --brand-light-grey: #4b3f35;    /* dark walnut */
+
+  /* Accent: rusty red (book edges, wax seals) */
+  --brand-accent: #a14d3a;        /* rich rust */
+
+  /* Accent hover: antique brass shimmer */
+  --brand-accent-hover: #c2a560;  /* burnished gold */
 }
 
 body {

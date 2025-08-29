@@ -5,7 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
-import OnboardingGate from "@/app/components/OnboardingGate";
+
 
 export const metadata: Metadata = {
   title: "Libby - Your Personal Library Assistant",
@@ -30,12 +30,6 @@ export default function RootLayout({
           </main>
 
           <Footer />
-
-          {/* 
-            Onboarding overlay - renders as full-screen takeover when needed
-            This checks user state and shows the interests selection if required
-          */}
-          <OnboardingGate />
         </body>
       </html>
     </ClerkProvider>
