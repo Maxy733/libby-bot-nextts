@@ -55,16 +55,6 @@ export default function InterestsPage() {
       return;
     }
 
-    // Check if user has already completed interests
-    if (user) {
-      const metadata = user.unsafeMetadata as UserMetadata;
-      
-      if (metadata?.interestsCompleted) {
-        // User already completed interests, redirect to dashboard/home
-        router.push("/dashboard");
-        return;
-      }
-    }
   }, [authLoaded, userLoaded, isSignedIn, user, router]);
 
   function toggle(k: string) {
@@ -93,14 +83,6 @@ export default function InterestsPage() {
         console.log("API call failed:", err);
       }
 
-      // One-time completion flag so the gate hides forever
-      await user.update({
-        unsafeMetadata: {
-          ...(user.unsafeMetadata as UserMetadata),
-          interestsCompleted: true,
-        },
-      });
-
       // Redirect to dashboard
       router.push("/dashboard");
     } catch (err) {
@@ -115,14 +97,6 @@ export default function InterestsPage() {
     
     setSaving(true);
     try {
-      // Mark as completed even when skipped
-      await user.update({
-        unsafeMetadata: {
-          ...(user.unsafeMetadata as UserMetadata),
-          interestsCompleted: true,
-        },
-      });
-
       // Redirect to dashboard
       router.push("/dashboard");
     } catch (err) {
@@ -164,8 +138,7 @@ export default function InterestsPage() {
             <span className={styles.titleGradient}>Libby-Bot</span>
           </h1>
           <p className={styles.subtitle}>
-            Pick {minRequired} or more genres to get personalized book
-            recommendations
+            Select your favorite genres. You can update them anytime in Preferences.
           </p>
         </div>
 
