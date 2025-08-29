@@ -161,7 +161,7 @@ export default function InterestsPage() {
           </div>
           <h1 className={styles.title}>
             Welcome to{" "}
-            <span className={styles.titleGradient}>Libby</span>
+            <span className={styles.titleGradient}>Libby-Bot</span>
           </h1>
           <p className={styles.subtitle}>
             Pick {minRequired} or more genres to get personalized book

@@ -171,7 +171,7 @@ export default function PreferencesPage() {
           <li className={styles.sidebarItem}>Reading Goals</li>
           <li className={styles.sidebarItem}>Preferred Book Length</li>
           <li className={styles.sidebarItem}>
-            <a href="/onboarding/interests" className={styles.sidebarLink}>Edit Genres</a>
+            <a href="/interests" className={styles.sidebarLink}>Edit Genres</a>
           </li>
         </ul>
       </div>
