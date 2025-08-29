@@ -16,12 +16,13 @@
   /* Borders / lines: sepia ink */
   --brand-light-grey: #4b3f35;    /* dark walnut */
 
-  /* Accent: rusty red (book edges, wax seals) */
-  --brand-accent: #a14d3a;        /* rich rust */
+  /* Accent: earthy terracotta (muted orange-brown) */
+  --brand-accent: #9c6237;        /* warm clay / aged copper */
 
-  /* Accent hover: antique brass shimmer */
-  --brand-accent-hover: #c2a560;  /* burnished gold */
+  /* Accent hover: softer burnt sienna */
+  --brand-accent-hover: #b2744b;  /* muted sienna-bronze */
 }
+
 
 body {
   margin: 0;
