@@ -49,6 +49,10 @@ export default function PreferencesPage() {
 
     // Get saved genres from metadata (if available)
     const savedGenres = user.unsafeMetadata?.genres;
+    if (!Array.isArray(savedGenres) || savedGenres.length < 5) {
+      router.push("/interests");
+      return;
+    }
     if (Array.isArray(savedGenres)) {
       setSelected(savedGenres);
     }

@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./Profile.module.css";
@@ -65,19 +67,44 @@ const BookCard = ({
 
 export default function ProfilePage() {
   const { user, isLoaded } = useUser();
+  const { getToken, isSignedIn } = useAuth();
+  const router = useRouter();
   const [wishlistBooks, setWishlistBooks] = useState<Book[]>([]);
   const [userStats, setUserStats] = useState<UserStats | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "wishlist">(
+  const [activeTab, setActiveTab] = useState<"overview" | "wishlist" | "preferences" | "notifications">(
     "overview"
   );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [preferencesGenres, setPreferencesGenres] = useState<string[]>([]);
 
   useEffect(() => {
     if (isLoaded && user) {
       loadUserData();
     }
   }, [isLoaded, user]);
+
+  useEffect(() => {
+    const fetchPreferences = async () => {
+      if (activeTab === "preferences" && user) {
+        try {
+          const token = await getToken();
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/profile/interests?user_id=${user.id}`, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          });
+          const data = await res.json();
+          if (!Array.isArray(data.genres) || data.genres.length < 5) {
+            router.push("/interests");
+            return;
+          }
+          setPreferencesGenres(data.genres);
+        } catch (err) {
+          console.error("Error loading preferences:", err);
+        }
+      }
+    };
+    fetchPreferences();
+  }, [activeTab, user, getToken, router]);
 
   const loadUserData = async () => {
     try {
@@ -94,6 +121,17 @@ export default function ProfilePage() {
           : "Unknown",
         lastActive: new Date().toLocaleDateString(),
       });
+
+      const token = await getToken();
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/profile/interests?user_id=${user.id}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+
+      const data = await res.json();
+      if (!Array.isArray(data.genres) || data.genres.length < 5) {
+        router.push("/interests");
+        return;
+      }
     } catch (err) {
       console.error("Error loading user data:", err);
       setError("Failed to load profile data");
@@ -152,9 +190,11 @@ export default function ProfilePage() {
         <div className={styles.settingsMenu}>
           <h3>Settings</h3>
           <ul>
-            <li><Link href="/account-settings">Account Settings</Link></li>
-            <li><Link href="/preferences">Preferences</Link></li>
-            <li><Link href="/notifications">Notifications</Link></li>
+            <li><button className={styles.tabBtn} onClick={() => setActiveTab("overview")}>Account Overview</button></li>
+            <li><button className={styles.tabBtn} onClick={() => setActiveTab("wishlist")}>Wishlist</button></li>
+            <li><button className={styles.tabBtn} onClick={() => setActiveTab("preferences")}>Preferences</button></li>
+            <li><button className={styles.tabBtn} onClick={() => setActiveTab("notifications")}>Notifications</button></li>
+            <li><button onClick={clearWishlist} className={`${styles.actionBtn} ${styles.danger}`}>Clear Wishlist</button></li>
           </ul>
         </div>
       </div>
@@ -183,21 +223,6 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Tab Navigation */}
-          <div className={styles.tabNavigation}>
-            <button
-              className={`${styles.tabBtn} ${activeTab === "overview" ? styles.active : ""}`}
-              onClick={() => setActiveTab("overview")}
-            >
-              Account Overview
-            </button>
-            <button
-              className={`${styles.tabBtn} ${activeTab === "wishlist" ? styles.active : ""}`}
-              onClick={() => setActiveTab("wishlist")}
-            >
-              My Wishlist ({wishlistBooks.length})
-            </button>
-          </div>
 
           {/* Tab Content */}
           {activeTab === "overview" && (
@@ -229,20 +254,6 @@ export default function ProfilePage() {
                   </div>
                 )}
 
-                <div className={styles.accountActions}>
-                  <h3>Account Actions</h3>
-                  <div className={styles.actionButtons}>
-                    <Link href="/account-settings" className={`${styles.actionBtn} ${styles.secondary}`}>
-                      Edit Profile
-                    </Link>
-                    <Link href="/preferences" className={`${styles.actionBtn} ${styles.secondary}`}>
-                      Reading Preferences
-                    </Link>
-                    <button onClick={clearWishlist} className={`${styles.actionBtn} ${styles.danger}`}>
-                      Clear Wishlist
-                    </button>
-                  </div>
-                </div>
               </div>
             </div>
           )}
@@ -281,6 +292,24 @@ export default function ProfilePage() {
                   </div>
                 )}
               </div>
+            </div>
+          )}
+
+          {activeTab === "preferences" && (
+            <div className={styles.tabContent}>
+              <h2>Preferences</h2>
+              <ul>
+                {preferencesGenres.map((genre: string, index: number) => (
+                  <li key={index}>{genre}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {activeTab === "notifications" && (
+            <div className={styles.tabContent}>
+              <h2>Notifications</h2>
+              <p>[TODO: Add notification settings here]</p>
             </div>
           )}
         </div>
