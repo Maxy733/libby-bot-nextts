@@ -35,8 +35,9 @@
 }
 
 .availabilitySection h3 {
-  margin-top: 0;
-  margin-bottom: 12px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  margin-left: 12px;
   font-size: 18px;
   color: var(--brand-accent);
 }
@@ -71,6 +72,7 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  margin-bottom: 5px;
 }
 
 .bookStoreCard:hover {
