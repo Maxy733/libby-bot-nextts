@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import Image from "next/image"; // ✅ Import Next.js Image
+import Image from "next/image";
+import styles from "./profile.module.css";
 
 interface Book {
   id: number;
@@ -26,8 +27,8 @@ const BookCard = ({
   book: Book;
   onRemove?: (bookId: number) => void;
 }) => (
-  <div className="wishlist-book-card">
-    <Link href={`/book/${book.id}`} className="book-link">
+  <div className={styles.wishlistBookCard}>
+    <Link href={`/book/${book.id}`} className={styles.bookLink}>
       <Image
         src={
           book.coverurl ||
@@ -38,13 +39,13 @@ const BookCard = ({
         alt={book.title || "Book cover"}
         width={60} // match your CSS small cover size
         height={80}
-        className="book-cover-small"
+        className={styles.bookCoverSmall}
       />
-      <div className="book-info">
-        <h4 className="book-title">{book.title || "No Title"}</h4>
-        <p className="book-author">{book.author || "Unknown Author"}</p>
+      <div className={styles.bookInfo}>
+        <h4 className={styles.bookTitle}>{book.title || "No Title"}</h4>
+        <p className={styles.bookAuthor}>{book.author || "Unknown Author"}</p>
         {book.dateAdded && (
-          <p className="date-added">
+          <p className={styles.dateAdded}>
             Added: {new Date(book.dateAdded).toLocaleDateString()}
           </p>
         )}
@@ -53,7 +54,7 @@ const BookCard = ({
     {onRemove && (
       <button
         onClick={() => onRemove(book.id)}
-        className="remove-btn"
+        className={styles.removeBtn}
         aria-label={`Remove ${book.title} from wishlist`}
       >
         ✕
@@ -145,139 +146,156 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="container page-content profile-page">
-      {/* Profile Header */}
-      <div className="profile-header">
-        <div className="profile-info">
-          <Image
-            src={user.imageUrl}
-            alt="Profile avatar"
-            width={80}
-            height={80}
-            className="profile-avatar"
-          />
-          <div>
-            <h1 className="profile-name">
-              {user.firstName} {user.lastName}
-            </h1>
-            <p className="profile-email">
-              {user.primaryEmailAddress?.emailAddress}
-            </p>
-          </div>
+    <div className={styles.threeColumnLayout}>
+      <div className={styles.leftColumn}>
+        <div className={styles.settingsMenu}>
+          <h3>Settings</h3>
+          <ul>
+            <li><Link href="/account-settings">Account Settings</Link></li>
+            <li><Link href="/preferences">Preferences</Link></li>
+            <li><Link href="/notifications">Notifications</Link></li>
+          </ul>
         </div>
       </div>
-
-      {/* Tab Navigation */}
-      <div className="tab-navigation">
-        <button
-          className={`tab-btn ${activeTab === "overview" ? "active" : ""}`}
-          onClick={() => setActiveTab("overview")}
-        >
-          Account Overview
-        </button>
-        <button
-          className={`tab-btn ${activeTab === "wishlist" ? "active" : ""}`}
-          onClick={() => setActiveTab("wishlist")}
-        >
-          My Wishlist ({wishlistBooks.length})
-        </button>
-      </div>
-
-      {/* Tab Content */}
-      {activeTab === "overview" && (
-        <div className="tab-content">
-          <div className="account-overview">
-            <h2>Account Status</h2>
-            {isLoading ? (
-              <div className="loading-stats">
-                Loading account information...
-              </div>
-            ) : error ? (
-              <div className="error-message">{error}</div>
-            ) : (
-              <div className="stats-grid">
-                <div className="stat-card">
-                  <h3>Books in Wishlist</h3>
-                  <p className="stat-number">
-                    {userStats?.booksWishlisted || 0}
-                  </p>
-                </div>
-                <div className="stat-card">
-                  <h3>Member Since</h3>
-                  <p className="stat-text">
-                    {userStats?.accountCreated || "Unknown"}
-                  </p>
-                </div>
-                <div className="stat-card">
-                  <h3>Last Active</h3>
-                  <p className="stat-text">
-                    {userStats?.lastActive || "Unknown"}
-                  </p>
-                </div>
-                <div className="stat-card">
-                  <h3>Account Type</h3>
-                  <p className="stat-text">Standard Member</p>
-                </div>
-              </div>
-            )}
-
-            <div className="account-actions">
-              <h3>Account Actions</h3>
-              <div className="action-buttons">
-                <Link href="/account-settings" className="action-btn secondary">
-                  Edit Profile
-                </Link>
-                <Link href="/preferences" className="action-btn secondary">
-                  Reading Preferences
-                </Link>
-                <button onClick={clearWishlist} className="action-btn danger">
-                  Clear Wishlist
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {activeTab === "wishlist" && (
-        <div className="tab-content">
-          <div className="wishlist-section">
-            <div className="wishlist-header">
-              <h2>My Book Wishlist</h2>
-              {wishlistBooks.length > 0 && (
-                <button onClick={clearWishlist} className="clear-wishlist-btn">
-                  Clear All
-                </button>
-              )}
-            </div>
-
-            {isLoading ? (
-              <div className="loading-wishlist">Loading your wishlist...</div>
-            ) : wishlistBooks.length === 0 ? (
-              <div className="empty-wishlist">
-                <h3>Your wishlist is empty</h3>
-                <p>
-                  Start exploring books and add them to your wishlist to keep
-                  track of what you want to read!
+      <div className={styles.middleColumn}>
+        <div className="container page-content profile-page">
+          {/* Profile Header */}
+          <div className={styles.profileHeader}>
+            <div className={styles.profileInfo}>
+              <Image
+                src={user.imageUrl}
+                alt="Profile avatar"
+                width={80}
+                height={80}
+                className={styles.profileAvatar}
+              />
+              <div>
+                <h1 className={styles.profileName}>
+                  {user.firstName} {user.lastName}
+                </h1>
+                <p className={styles.profileEmail}>
+                  {user.primaryEmailAddress?.emailAddress}
                 </p>
-                <Link href="/discover" className="discover-btn">
-                  Discover Books
-                </Link>
               </div>
-            ) : (
-              <div className="wishlist-grid">
-                {wishlistBooks.map((book) => (
-                  <BookCard
-                    key={book.id}
-                    book={book}
-                    onRemove={removeFromWishlist}
-                  />
-                ))}
-              </div>
-            )}
+            </div>
           </div>
+
+          {/* Tab Navigation */}
+          <div className={styles.tabNavigation}>
+            <button
+              className={`${styles.tabBtn} ${activeTab === "overview" ? styles.active : ""}`}
+              onClick={() => setActiveTab("overview")}
+            >
+              Account Overview
+            </button>
+            <button
+              className={`${styles.tabBtn} ${activeTab === "wishlist" ? styles.active : ""}`}
+              onClick={() => setActiveTab("wishlist")}
+            >
+              My Wishlist ({wishlistBooks.length})
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          {activeTab === "overview" && (
+            <div className={styles.tabContent}>
+              <div className={styles.accountOverview}>
+                <h2>Account Status</h2>
+                {isLoading ? (
+                  <div className={styles.loadingStats}>
+                    Loading account information...
+                  </div>
+                ) : error ? (
+                  <div className={styles.errorMessage}>{error}</div>
+                ) : (
+                  <div className={styles.statsGrid}>
+                    <div className={styles.statCard}>
+                      <h3>Books in Wishlist</h3>
+                      <p className={styles.statNumber}>
+                        {userStats?.booksWishlisted || 0}
+                      </p>
+                    </div>
+                    <div className={styles.statCard}>
+                      <h3>Member Since</h3>
+                      <p className={styles.statText}>
+                        {userStats?.accountCreated || "Unknown"}
+                      </p>
+                    </div>
+                    <div className={styles.statCard}>
+                      <h3>Last Active</h3>
+                      <p className={styles.statText}>
+                        {userStats?.lastActive || "Unknown"}
+                      </p>
+                    </div>
+                    <div className={styles.statCard}>
+                      <h3>Account Type</h3>
+                      <p className={styles.statText}>Standard Member</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className={styles.accountActions}>
+                  <h3>Account Actions</h3>
+                  <div className={styles.actionButtons}>
+                    <Link href="/account-settings" className={`${styles.actionBtn} ${styles.secondary}`}>
+                      Edit Profile
+                    </Link>
+                    <Link href="/preferences" className={`${styles.actionBtn} ${styles.secondary}`}>
+                      Reading Preferences
+                    </Link>
+                    <button onClick={clearWishlist} className={`${styles.actionBtn} ${styles.danger}`}>
+                      Clear Wishlist
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "wishlist" && (
+            <div className={styles.tabContent}>
+              <div className={styles.wishlistSection}>
+                <div className={styles.wishlistHeader}>
+                  <h2>My Book Wishlist</h2>
+                  {wishlistBooks.length > 0 && (
+                    <button onClick={clearWishlist} className={styles.clearWishlistBtn}>
+                      Clear All
+                    </button>
+                  )}
+                </div>
+
+                {isLoading ? (
+                  <div className={styles.loadingWishlist}>Loading your wishlist...</div>
+                ) : wishlistBooks.length === 0 ? (
+                  <div className={styles.emptyWishlist}>
+                    <h3>Your wishlist is empty</h3>
+                    <p>
+                      Start exploring books and add them to your wishlist to keep
+                      track of what you want to read!
+                    </p>
+                    <Link href="/discover" className={styles.discoverBtn}>
+                      Discover Books
+                    </Link>
+                  </div>
+                ) : (
+                  <div className={styles.wishlistGrid}>
+                    {wishlistBooks.map((book) => (
+                      <BookCard
+                        key={book.id}
+                        book={book}
+                        onRemove={removeFromWishlist}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
+      <div className={styles.rightColumn}>
+        <p>More features coming soon...</p>
+      </div>
     </div>
   );
 }

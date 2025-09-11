@@ -1,0 +1,114 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
+
+.left-column {
+  flex: 0 0 220px;
+  background-color: #1f2937;
+  color: #ffffff;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-right: 1px solid #374151;
+}
+
+.left-column h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.left-column a {
+  color: #9ca3af;
+  text-decoration: none;
+  padding: 0.5rem 0;
+  transition: color 0.2s ease;
+}
+
+.left-column a:hover {
+  color: #ffffff;
+}
+
+.middle-column {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.right-column {
+  flex: 0 0 300px;
+  background-color: #f9fafb;
+  border-left: 1px solid #e5e7eb;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.profile-header,
+.tab-navigation,
+.tab-content {
+  margin-bottom: 2rem;
+}
+
+.profile-avatar {
+  border-radius: 50%;
+}
+
+.tab-btn {
+  padding: 0.5rem 1rem;
+  margin-right: 0.5rem;
+  border: none;
+  background-color: #e5e7eb;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.tab-btn.active,
+.tab-btn:hover {
+  background-color: #3b82f6;
+  color: #ffffff;
+}
+
+.stat-card {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.secondary {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.secondary:hover {
+  background-color: #e5e7eb;
+}
+
+.danger {
+  background-color: #ef4444;
+  color: white;
+}
+
+.danger:hover {
+  background-color: #dc2626;
+}
