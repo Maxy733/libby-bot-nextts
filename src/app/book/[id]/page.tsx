@@ -26,14 +26,12 @@ export default function BookDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  
+
   const params = useParams(); // Get the dynamic parameters from the URL
   const { id } = params; // Extract the 'id' part
 
   useEffect(() => {
-    // Fetch the book details only if the ID is available
     if (id) {
-      // FIXED: Use the environment variable for the API URL
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
 
       fetch(`${apiUrl}/api/books/books/${id}`)
@@ -46,118 +44,117 @@ export default function BookDetailsPage() {
         .then((data) => {
           const normalized: Book = {
             ...data,
-            rating: data.rating !== null ? Number(data.rating) : null, // ensure number
-        };
+            rating: data.rating !== null ? Number(data.rating) : null,
+          };
           setBook(normalized);
           setLoading(false);
         })
-
         .catch(err => {
           console.error("Error fetching book details:", err);
           setError(err.message);
           setLoading(false);
         });
     }
-  }, [id]); // This effect re-runs whenever the 'id' from the URL changes
+  }, [id]);
 
   return (
-    <div>
-
+    <>
       <main className="container page-content">
-  <button onClick={() => router.back()} className={styles.backButton}>
-    ← Back
-  </button>
+        <button onClick={() => router.back()} className={styles.backButton}>
+          ← Back
+        </button>
 
-  {loading && <p className="loading-text">Loading book details...</p>}
-  {error && <p className="error-text">Error: {error}</p>}
-  {book && (
-    <div className={styles.bookDetailsGrid}>
-      {/* Left Column: Cover + Details */}
-      <div className={styles.bookLeftColumn}>
-        <div className="book-details-cover">
-          <img 
-            src={book.cover_image_url || `https://placehold.co/600x900/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
-            alt={book.title}
-          />
-        </div>
+        {loading && <p className="loading-text">Loading book details...</p>}
+        {error && <p className="error-text">Error: {error}</p>}
 
-        <div className="book-details-section">
-          <h2>Details</h2>
-          <ul>
-            <li><strong>ISBN:</strong> {book.isbn || 'N/A'}</li>
-            <li><strong>Language:</strong> {book.language || 'N/A'}</li>
-            <li><strong>Pages:</strong> {book.pages || 'N/A'}</li>
-            <li><strong>Publication Date:</strong> {book.publication_date ? new Date(book.publication_date).toLocaleDateString() : 'N/A'}</li>
-            <li><strong>Rating:</strong> {book.rating !== null ? book.rating.toFixed(1) : 'N/A'}</li>
-          </ul>
-        </div>
-      </div>
+        {book && (
+          <>
+            <div className={styles.bookDetailsGrid}>
+              <div className={styles.bookLeftColumn}>
+                <div className="book-details-cover">
+                  <img
+                    src={book.cover_image_url || `https://placehold.co/600x900/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`}
+                    alt={book.title}
+                  />
+                </div>
 
-      {/* Right Column: Summary */}
-      <div className={styles.bookRightColumn}>
-        <h1 className="book-details-title">{book.title}</h1>
-        <p className="book-details-author">by {book.author || 'Unknown Author'}</p>
-        {book.genre && <span className="book-details-genre">{book.genre}</span>}
+                <div className="book-details-section">
+                  <h2>Details</h2>
+                  <ul>
+                    <li><strong>ISBN:</strong> {book.isbn || 'N/A'}</li>
+                    <li><strong>Language:</strong> {book.language || 'N/A'}</li>
+                    <li><strong>Pages:</strong> {book.pages || 'N/A'}</li>
+                    <li><strong>Publication Date:</strong> {book.publication_date ? new Date(book.publication_date).toLocaleDateString() : 'N/A'}</li>
+                    <li><strong>Rating:</strong> {book.rating !== null ? book.rating.toFixed(1) : 'N/A'}</li>
+                  </ul>
+                </div>
+              </div>
 
-        <div className="book-details-section">
-          <h2>Summary</h2>
-          <p>{book.description || 'No summary available.'}</p>
-        </div>
-      </div>
-    </div>
-    {/* Availability section now outside and after the grid */}
-    <div className={styles.availabilitySection}>
-      <h3>Availability</h3>
-      <div className={styles.purchaseLinks}>
-        <a href="mailto:library@university.edu" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
-          <div className={styles.bookCardWrapper}>
-            <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
-            <div className={styles.bookCardInfo}>
-              <h4>Library</h4>
-              <p>Check availability</p>
+              <div className={styles.bookRightColumn}>
+                <h1 className="book-details-title">{book.title}</h1>
+                <p className="book-details-author">by {book.author || 'Unknown Author'}</p>
+                {book.genre && <span className="book-details-genre">{book.genre}</span>}
+
+                <div className="book-details-section">
+                  <h2>Summary</h2>
+                  <p>{book.description || 'No summary available.'}</p>
+                </div>
+              </div>
             </div>
-          </div>
-        </a>
-        <a href="https://line.me/R/ti/p/@libbybot" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
-          <div className={styles.bookCardWrapper}>
-            <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
-            <div className={styles.bookCardInfo}>
-              <h4>LINE</h4>
-              <p>Check availability</p>
+
+            <div className={styles.availabilitySection}>
+              <h3>Availability</h3>
+              <div className={styles.purchaseLinks}>
+                <a href="mailto:library@university.edu" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+                  <div className={styles.bookCardWrapper}>
+                    <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
+                    <div className={styles.bookCardInfo}>
+                      <h4>Library</h4>
+                      <p>Check availability</p>
+                    </div>
+                  </div>
+                </a>
+                <a href="https://line.me/R/ti/p/@libbybot" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+                  <div className={styles.bookCardWrapper}>
+                    <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
+                    <div className={styles.bookCardInfo}>
+                      <h4>LINE</h4>
+                      <p>Check availability</p>
+                    </div>
+                  </div>
+                </a>
+                <a href={`https://www.amazon.com/s?k=${encodeURIComponent(book.title)}`} className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+                  <div className={styles.bookCardWrapper}>
+                    <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
+                    <div className={styles.bookCardInfo}>
+                      <h4>Amazon</h4>
+                      <p>Check availability</p>
+                    </div>
+                  </div>
+                </a>
+                <a href={`https://www.bookdepository.com/search?searchTerm=${encodeURIComponent(book.title)}`} className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+                  <div className={styles.bookCardWrapper}>
+                    <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
+                    <div className={styles.bookCardInfo}>
+                      <h4>Book Depository</h4>
+                      <p>Check availability</p>
+                    </div>
+                  </div>
+                </a>
+                <a href={`https://books.google.com/books?vid=ISBN:${book.isbn || ''}`} className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+                  <div className={styles.bookCardWrapper}>
+                    <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
+                    <div className={styles.bookCardInfo}>
+                      <h4>Google Books</h4>
+                      <p>Check availability</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
             </div>
-          </div>
-        </a>
-        <a href={`https://www.amazon.com/s?k=${encodeURIComponent(book.title)}`} className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
-          <div className={styles.bookCardWrapper}>
-            <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
-            <div className={styles.bookCardInfo}>
-              <h4>Amazon</h4>
-              <p>Check availability</p>
-            </div>
-          </div>
-        </a>
-        <a href={`https://www.bookdepository.com/search?searchTerm=${encodeURIComponent(book.title)}`} className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
-          <div className={styles.bookCardWrapper}>
-            <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
-            <div className={styles.bookCardInfo}>
-              <h4>Book Depository</h4>
-              <p>Check availability</p>
-            </div>
-          </div>
-        </a>
-        <a href={`https://books.google.com/books?vid=ISBN:${book.isbn || ''}`} className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
-          <div className={styles.bookCardWrapper}>
-            <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
-            <div className={styles.bookCardInfo}>
-              <h4>Google Books</h4>
-              <p>Check availability</p>
-            </div>
-          </div>
-        </a>
-      </div>
-    </div>
+          </>
         )}
       </main>
-    </div>
+    </>
   );
 }
