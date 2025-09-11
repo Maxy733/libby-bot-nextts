@@ -37,3 +37,26 @@
   font-size: 14px;
   color: var(--brand-muted-grey);
 }
+
+.purchaseLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.bookStoreCard {
+  background-color: var(--brand-light-grey);
+  padding: 12px 16px;
+  border-radius: 10px;
+  color: var(--brand-charcoal);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.bookStoreCard:hover {
+  background-color: var(--brand-accent-hover);
+  color: #fff;
+}

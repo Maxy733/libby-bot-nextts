@@ -64,10 +64,7 @@ export default function BookDetailsPage() {
     <div>
 
       <main className="container page-content">
-  <button
-    onClick={() => router.back()}
-    className="px-4 py-2 mb-4 rounded-lg bg-gray-700 text-white hover:bg-gray-600"
-  >
+  <button onClick={() => router.back()} className={styles.backButton}>
     ← Back
   </button>
 
@@ -104,6 +101,32 @@ export default function BookDetailsPage() {
                   <li><strong>Rating:</strong> {book.rating !== null ? book.rating.toFixed(1) : 'N/A'}</li>
                   
                 </ul>
+              </div>
+              <div className={styles.availabilitySection}>
+                <h3>Availability</h3>
+                <p>This book is available in the library. Please check the shelf or ask a librarian.</p>
+                <div>
+                  <h4>🔄 Borrow</h4>
+                  <div className={styles.purchaseLinks}>
+                    <a href="mailto:library@university.edu" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+                      Library Email
+                    </a>
+                    <a href="https://line.me/R/ti/p/@libbybot" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+                      LINE Account
+                    </a>
+                    <a
+                      href={`https://www.worldcat.org/search?q=${encodeURIComponent(book.title)}`}
+                      className={styles.bookStoreCard}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      WorldCat
+                    </a>
+                    <a href="#" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+                      In-Library Request
+                    </a>
+                  </div>
+                </div>
               </div>
 
             </div>
