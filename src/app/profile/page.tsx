@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
-import styles from "./profile.module.css";
+import styles from "./Profile.module.css";
 
 interface Book {
   id: number;
