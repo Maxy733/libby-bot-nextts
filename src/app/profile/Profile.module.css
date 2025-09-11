@@ -193,6 +193,42 @@
   background-color: #b02a37;
 }
 
+/* Preferences grid and genre tab styles */
+.preferencesGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.genreTab {
+  padding: 10px 16px;
+  background-color: #4b3f35;
+  color: #e8dcc6;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: default;
+  transition: background 0.3s;
+}
+
+.genreTab:hover {
+  background-color: #9c6237;
+  color: #fff;
+}
+
+.redoInterestsBtn {
+  background-color: transparent;
+  color: #9c6237;
+  font-weight: 600;
+  text-decoration: underline;
+  border: none;
+  cursor: pointer;
+  margin-top: 16px;
+}
+
+.redoInterestsBtn:hover {
+  color: #b2744b;
+}
 @media (max-width: 1024px) {
   .threeColumnLayout {
     grid-template-columns: 1fr; /* stack columns */
