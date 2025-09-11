@@ -93,12 +93,13 @@ export default function ProfilePage() {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
           });
           const data = await res.json();
-          if (Array.isArray(data.genres) && data.genres.length >= 5) {
-            setPreferencesGenres(data.genres);
-          } else {
+          console.log("Fetched genres:", data.genres);
+
+          if (!Array.isArray(data.genres) || data.genres.length < 5) {
             router.push("/interests");
             return;
           }
+
           setPreferencesGenres(data.genres);
         } catch (err) {
           console.error("Error loading preferences:", err);
