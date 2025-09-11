@@ -42,7 +42,7 @@
 }
 
 .availabilitySection p {
-  margin: 0;
+  margin-left: 20px;
   font-size: 14px;
   color: var(--brand-muted-grey);
 }
