@@ -55,7 +55,7 @@ export default function DiscoverPage() {
 
     useEffect(() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
-        fetch(`${apiUrl}/api/recommendations/globally-trending`)
+        fetch(`${apiUrl}/api/books/recommendations/globally-trending`)
             .then(res => res.json())
             .then(data => {
                 if (data && Array.isArray(data.books)) {

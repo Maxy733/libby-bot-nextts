@@ -22,7 +22,7 @@ export default function HomeContent({ showJoinUs = true,
     setIsLoading(true);
     setError(null);
 
-    fetch(`${apiUrl}/api/recommendations/globally-trending`)
+    fetch(`${apiUrl}/api/books/recommendations/globally-trending`)
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
