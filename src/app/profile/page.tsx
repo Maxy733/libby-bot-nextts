@@ -89,6 +89,7 @@ export default function ProfilePage() {
       if (activeTab === "preferences" && user) {
         try {
           const token = await getToken();
+          if (!user) return;
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/profile/interests?user_id=${user.id}`, {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
           });
