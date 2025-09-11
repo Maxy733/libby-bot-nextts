@@ -95,12 +95,10 @@ export default function ProfilePage() {
           const data = await res.json();
           console.log("Fetched genres:", data.genres);
 
-          if (!Array.isArray(data.genres) || data.genres.length < 5) {
-            router.push("/interests");
-            return;
+          if (Array.isArray(data.genres)) {
+            const lastFiveGenres = data.genres.slice(-5); // Get the last 5 genres
+            setPreferencesGenres(lastFiveGenres);
           }
-
-          setPreferencesGenres(data.genres);
         } catch (err) {
           console.error("Error loading preferences:", err);
         }
@@ -137,9 +135,8 @@ export default function ProfilePage() {
         throw new Error("Fetch failed");
       }
       const data = await res.json();
-      if (!Array.isArray(data.genres) || data.genres.length < 5) {
-        router.push("/interests");
-        return;
+      if (Array.isArray(data.genres)) {
+        console.log("Loaded interests in overview tab:", data.genres);
       }
     } catch (err) {
       console.error("Error loading user data:", err);
