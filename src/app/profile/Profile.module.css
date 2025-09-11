@@ -2,15 +2,17 @@
   display: flex;
   flex-direction: row;
   height: 100vh;
+  gap: 2rem;
 }
 
 .left-column {
-  flex: 0 0 220px;
+  flex: 0 0 250px;
   background-color: #1f2937;
   color: #ffffff;
   padding: 1rem;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 1rem;
   border-right: 1px solid #374151;
 }
@@ -36,11 +38,14 @@
   flex: 1;
   padding: 2rem;
   overflow-y: auto;
+  background-color: #f1f5f9;
+  border-left: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
 }
 
 .right-column {
   flex: 0 0 300px;
-  background-color: #f9fafb;
+  background-color: #ffffff;
   border-left: 1px solid #e5e7eb;
   padding: 2rem;
   overflow-y: auto;
