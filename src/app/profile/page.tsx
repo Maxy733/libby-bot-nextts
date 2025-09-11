@@ -196,7 +196,6 @@ export default function ProfilePage() {
         <div className={styles.settingsMenu}>
           <h3>Settings</h3>
           <ul>
-            <li><button className={styles.tabBtn} onClick={() => setActiveTab("overview")}>Account Overview</button></li>
             <li><button className={styles.tabBtn} onClick={() => setActiveTab("wishlist")}>Wishlist</button></li>
             <li><button className={styles.tabBtn} onClick={() => setActiveTab("preferences")}>Preferences</button></li>
             <li><button className={styles.tabBtn} onClick={() => setActiveTab("notifications")}>Notifications</button></li>
@@ -231,39 +230,6 @@ export default function ProfilePage() {
 
 
           {/* Tab Content */}
-          {activeTab === "overview" && (
-            <div className={styles.tabContent}>
-              <div className={styles.accountOverview}>
-                <h2>Account Status</h2>
-                {isLoading ? (
-                  <div className={styles.loadingStats}>Loading account information...</div>
-                ) : error ? (
-                  <div className={styles.errorMessage}>{error}</div>
-                ) : (
-                  <div className={styles.statsGrid}>
-                    <div className={styles.statCard}>
-                      <h3>Books in Wishlist</h3>
-                      <p className={styles.statNumber}>{userStats?.booksWishlisted || 0}</p>
-                    </div>
-                    <div className={styles.statCard}>
-                      <h3>Member Since</h3>
-                      <p className={styles.statText}>{userStats?.accountCreated || "Unknown"}</p>
-                    </div>
-                    <div className={styles.statCard}>
-                      <h3>Last Active</h3>
-                      <p className={styles.statText}>{userStats?.lastActive || "Unknown"}</p>
-                    </div>
-                    <div className={styles.statCard}>
-                      <h3>Account Type</h3>
-                      <p className={styles.statText}>Standard Member</p>
-                    </div>
-                  </div>
-                )}
-
-              </div>
-            </div>
-          )}
-
           {activeTab === "wishlist" && (
             <div className={styles.tabContent}>
               <div className={styles.wishlistSection}>
@@ -304,11 +270,19 @@ export default function ProfilePage() {
           {activeTab === "preferences" && (
             <div className={styles.tabContent}>
               <h2>Preferences</h2>
-              <ul>
+              <div className={styles.preferencesGrid}>
                 {preferencesGenres.map((genre: string, index: number) => (
-                  <li key={index}>{genre}</li>
+                  <div key={index} className={styles.genreTab}>
+                    {genre}
+                  </div>
                 ))}
-              </ul>
+              </div>
+              <button
+                onClick={() => router.push("/interests")}
+                className={`${styles.actionBtn} ${styles.redoInterestsBtn}`}
+              >
+                Redo Interests
+              </button>
             </div>
           )}
 
