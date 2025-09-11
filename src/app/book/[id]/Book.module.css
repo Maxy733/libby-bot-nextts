@@ -35,8 +35,7 @@
 }
 
 .availabilitySection h3 {
-  margin-top: 10px;
-  margin-bottom: 5px;
+  margin-top: 20px;
   margin-left: 12px;
   font-size: 18px;
   color: var(--brand-accent);
@@ -52,7 +51,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  justify-content: flex-start;
+  justify-content: center;
   margin-top: 20px;
 }
 
