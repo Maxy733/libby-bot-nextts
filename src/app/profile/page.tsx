@@ -89,7 +89,7 @@ export default function ProfilePage() {
       if (activeTab === "preferences" && user) {
         try {
           const token = await getToken();
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/profile/interests?user_id=${user.id}`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/interests?user_id=${user.id}`, {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
           });
           const data = await res.json();
@@ -111,7 +111,7 @@ export default function ProfilePage() {
     try {
       setIsLoading(true);
 
-      const savedWishlist = localStorage.getItem(`wishlist_${user?.id}`);
+      const savedWishlist = localStorage.getItem(`wishlist_${user.id}`);
       const wishlist = savedWishlist ? JSON.parse(savedWishlist) : [];
       setWishlistBooks(wishlist);
 
@@ -124,10 +124,15 @@ export default function ProfilePage() {
       });
 
       const token = await getToken();
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/profile/interests?user_id=${user.id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/interests?user_id=${user.id}`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
 
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("❌ Fetch failed:", res.status, errorText);
+        throw new Error("Fetch failed");
+      }
       const data = await res.json();
       if (!Array.isArray(data.genres) || data.genres.length < 5) {
         router.push("/interests");
