@@ -78,3 +78,18 @@
   border-radius: 8px;
   background-color: #ccc;
 }
+
+.topBookSection {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.coverColumn {
+  flex-shrink: 0;
+}
+
+.detailsColumn {
+  flex: 1;
+}
