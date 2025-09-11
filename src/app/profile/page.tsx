@@ -147,6 +147,7 @@ export default function ProfilePage() {
 
   return (
     <div className={styles.threeColumnLayout}>
+      {/* Left Sidebar */}
       <div className={styles.leftColumn}>
         <div className={styles.settingsMenu}>
           <h3>Settings</h3>
@@ -157,8 +158,10 @@ export default function ProfilePage() {
           </ul>
         </div>
       </div>
+
+      {/* Middle Content (Profile) */}
       <div className={styles.middleColumn}>
-        <div className="container page-content profile-page">
+        <div className={styles.profileContainer}>
           {/* Profile Header */}
           <div className={styles.profileHeader}>
             <div className={styles.profileInfo}>
@@ -202,30 +205,22 @@ export default function ProfilePage() {
               <div className={styles.accountOverview}>
                 <h2>Account Status</h2>
                 {isLoading ? (
-                  <div className={styles.loadingStats}>
-                    Loading account information...
-                  </div>
+                  <div className={styles.loadingStats}>Loading account information...</div>
                 ) : error ? (
                   <div className={styles.errorMessage}>{error}</div>
                 ) : (
                   <div className={styles.statsGrid}>
                     <div className={styles.statCard}>
                       <h3>Books in Wishlist</h3>
-                      <p className={styles.statNumber}>
-                        {userStats?.booksWishlisted || 0}
-                      </p>
+                      <p className={styles.statNumber}>{userStats?.booksWishlisted || 0}</p>
                     </div>
                     <div className={styles.statCard}>
                       <h3>Member Since</h3>
-                      <p className={styles.statText}>
-                        {userStats?.accountCreated || "Unknown"}
-                      </p>
+                      <p className={styles.statText}>{userStats?.accountCreated || "Unknown"}</p>
                     </div>
                     <div className={styles.statCard}>
                       <h3>Last Active</h3>
-                      <p className={styles.statText}>
-                        {userStats?.lastActive || "Unknown"}
-                      </p>
+                      <p className={styles.statText}>{userStats?.lastActive || "Unknown"}</p>
                     </div>
                     <div className={styles.statCard}>
                       <h3>Account Type</h3>
@@ -269,10 +264,7 @@ export default function ProfilePage() {
                 ) : wishlistBooks.length === 0 ? (
                   <div className={styles.emptyWishlist}>
                     <h3>Your wishlist is empty</h3>
-                    <p>
-                      Start exploring books and add them to your wishlist to keep
-                      track of what you want to read!
-                    </p>
+                    <p>Start exploring books and add them to your wishlist to keep track of what you want to read!</p>
                     <Link href="/discover" className={styles.discoverBtn}>
                       Discover Books
                     </Link>
@@ -293,6 +285,8 @@ export default function ProfilePage() {
           )}
         </div>
       </div>
+
+      {/* Right Column (Blank for now) */}
       <div className={styles.rightColumn}>
         <p>More features coming soon...</p>
       </div>
