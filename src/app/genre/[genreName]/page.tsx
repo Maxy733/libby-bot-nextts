@@ -47,7 +47,7 @@ function GenrePageContent() {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
             
             // --- UPDATED: Fetch now includes the page number ---
-            fetch(`${apiUrl}/api/recommendations/by-major?major=${encodeURIComponent(genreName)}&page=${currentPage}`)
+            fetch(`${apiUrl}/api/books/recommendations/by-major?major=${encodeURIComponent(genreName)}&page=${currentPage}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data && Array.isArray(data.books)) {

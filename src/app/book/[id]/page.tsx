@@ -71,7 +71,7 @@ export default function BookDetailsPage() {
   {loading && <p className="loading-text">Loading book details...</p>}
   {error && <p className="error-text">Error: {error}</p>}
   {book && (
-    <div className="book-details-layout">
+    <div className="book-details-layout-vertical">
             {/* Left side: Cover Image */}
             <div className="book-details-cover">
               <img 
@@ -99,36 +99,44 @@ export default function BookDetailsPage() {
                   <li><strong>Pages:</strong> {book.pages || 'N/A'}</li>
                   <li><strong>Publication Date:</strong> {book.publication_date ? new Date(book.publication_date).toLocaleDateString() : 'N/A'}</li>
                   <li><strong>Rating:</strong> {book.rating !== null ? book.rating.toFixed(1) : 'N/A'}</li>
-                  
                 </ul>
               </div>
+
               <div className={styles.availabilitySection}>
                 <h3>Availability</h3>
-                <p>This book is available in the library. Please check the shelf or ask a librarian.</p>
-                <div>
-                  <h4>🔄 Borrow</h4>
-                  <div className={styles.purchaseLinks}>
-                    <a href="mailto:library@university.edu" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
-                      Library Email
-                    </a>
-                    <a href="https://line.me/R/ti/p/@libbybot" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
-                      LINE Account
-                    </a>
-                    <a
-                      href={`https://www.worldcat.org/search?q=${encodeURIComponent(book.title)}`}
-                      className={styles.bookStoreCard}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      WorldCat
-                    </a>
-                    <a href="#" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
-                      In-Library Request
-                    </a>
-                  </div>
+                <div className={styles.purchaseLinks}>
+                  <a href="mailto:library@university.edu" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <img src="https://placehold.co/24x24/CCCCCC/FFFFFF?text=📚" alt="icon" width={24} height={24} />
+                      <span>Library Email</span>
+                    </div>
+                  </a>
+                  <a href="https://line.me/R/ti/p/@libbybot" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <img src="https://placehold.co/24x24/CCCCCC/FFFFFF?text=📚" alt="icon" width={24} height={24} />
+                      <span>LINE Account</span>
+                    </div>
+                  </a>
+                  <a href={`https://www.amazon.com/s?k=${encodeURIComponent(book.title)}`} className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <img src="https://placehold.co/24x24/CCCCCC/FFFFFF?text=📚" alt="icon" width={24} height={24} />
+                      <span>Amazon</span>
+                    </div>
+                  </a>
+                  <a href={`https://www.bookdepository.com/search?searchTerm=${encodeURIComponent(book.title)}`} className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <img src="https://placehold.co/24x24/CCCCCC/FFFFFF?text=📚" alt="icon" width={24} height={24} />
+                      <span>Book Depository</span>
+                    </div>
+                  </a>
+                  <a href={`https://books.google.com/books?vid=ISBN:${book.isbn || ''}`} className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <img src="https://placehold.co/24x24/CCCCCC/FFFFFF?text=📚" alt="icon" width={24} height={24} />
+                      <span>Google Books</span>
+                    </div>
+                  </a>
                 </div>
               </div>
-
             </div>
           </div>
         )}
