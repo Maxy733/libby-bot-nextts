@@ -93,7 +93,7 @@ export default function BookDetailsPage() {
         </div>
       </div>
 
-      {/* Right Column: Summary + Availability */}
+      {/* Right Column: Summary */}
       <div className={styles.bookRightColumn}>
         <h1 className="book-details-title">{book.title}</h1>
         <p className="book-details-author">by {book.author || 'Unknown Author'}</p>
@@ -103,6 +103,7 @@ export default function BookDetailsPage() {
           <h2>Summary</h2>
           <p>{book.description || 'No summary available.'}</p>
         </div>
+      </div>
 
         <div className={styles.availabilitySection}>
           <h3>Availability</h3>
@@ -154,7 +155,7 @@ export default function BookDetailsPage() {
             </a>
           </div>
         </div>
-      </div>
+      
     </div>
         )}
       </main>
