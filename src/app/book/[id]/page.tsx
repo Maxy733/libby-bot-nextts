@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation'; // Hook to get URL parameters
 import { useRouter } from 'next/navigation';
+import styles from "./Book.module.css";
 
 interface Book {
   book_id: number;
@@ -35,7 +36,7 @@ export default function BookDetailsPage() {
       // FIXED: Use the environment variable for the API URL
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
 
-      fetch(`${apiUrl}/api/books/${id}`)
+      fetch(`${apiUrl}/api/books/books/${id}`)
         .then(response => {
           if (!response.ok) {
             throw new Error('Book not found');

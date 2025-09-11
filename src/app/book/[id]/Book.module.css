@@ -1,0 +1,39 @@
+.backButton {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: var(--brand-light-grey);
+  color: var(--brand-charcoal);
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.backButton:hover {
+  background-color: var(--brand-accent-hover);
+  color: #fff;
+}
+
+.availabilitySection {
+  background-color: var(--brand-surface);
+  color: var(--brand-charcoal);
+  padding: 16px;
+  margin-top: 32px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.availabilitySection h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 18px;
+  color: var(--brand-accent);
+}
+
+.availabilitySection p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--brand-muted-grey);
+}
