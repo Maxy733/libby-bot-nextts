@@ -93,7 +93,9 @@ export default function ProfilePage() {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
           });
           const data = await res.json();
-          if (!Array.isArray(data.genres) || data.genres.length < 5) {
+          if (Array.isArray(data.genres) && data.genres.length >= 5) {
+            setPreferencesGenres(data.genres);
+          } else {
             router.push("/interests");
             return;
           }
