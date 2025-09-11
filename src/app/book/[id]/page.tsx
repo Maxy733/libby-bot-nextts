@@ -104,58 +104,57 @@ export default function BookDetailsPage() {
           <p>{book.description || 'No summary available.'}</p>
         </div>
       </div>
-
-        <div className={styles.availabilitySection}>
-          <h3>Availability</h3>
-          <div className={styles.purchaseLinks}>
-            <a href="mailto:library@university.edu" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
-              <div className={styles.bookCardWrapper}>
-                <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
-                <div className={styles.bookCardInfo}>
-                  <h4>Library</h4>
-                  <p>Check availability</p>
-                </div>
-              </div>
-            </a>
-            <a href="https://line.me/R/ti/p/@libbybot" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
-              <div className={styles.bookCardWrapper}>
-                <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
-                <div className={styles.bookCardInfo}>
-                  <h4>LINE</h4>
-                  <p>Check availability</p>
-                </div>
-              </div>
-            </a>
-            <a href={`https://www.amazon.com/s?k=${encodeURIComponent(book.title)}`} className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
-              <div className={styles.bookCardWrapper}>
-                <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
-                <div className={styles.bookCardInfo}>
-                  <h4>Amazon</h4>
-                  <p>Check availability</p>
-                </div>
-              </div>
-            </a>
-            <a href={`https://www.bookdepository.com/search?searchTerm=${encodeURIComponent(book.title)}`} className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
-              <div className={styles.bookCardWrapper}>
-                <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
-                <div className={styles.bookCardInfo}>
-                  <h4>Book Depository</h4>
-                  <p>Check availability</p>
-                </div>
-              </div>
-            </a>
-            <a href={`https://books.google.com/books?vid=ISBN:${book.isbn || ''}`} className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
-              <div className={styles.bookCardWrapper}>
-                <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
-                <div className={styles.bookCardInfo}>
-                  <h4>Google Books</h4>
-                  <p>Check availability</p>
-                </div>
-              </div>
-            </a>
+    </div>
+    {/* Availability section now outside and after the grid */}
+    <div className={styles.availabilitySection}>
+      <h3>Availability</h3>
+      <div className={styles.purchaseLinks}>
+        <a href="mailto:library@university.edu" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+          <div className={styles.bookCardWrapper}>
+            <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
+            <div className={styles.bookCardInfo}>
+              <h4>Library</h4>
+              <p>Check availability</p>
+            </div>
           </div>
-        </div>
-      
+        </a>
+        <a href="https://line.me/R/ti/p/@libbybot" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+          <div className={styles.bookCardWrapper}>
+            <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
+            <div className={styles.bookCardInfo}>
+              <h4>LINE</h4>
+              <p>Check availability</p>
+            </div>
+          </div>
+        </a>
+        <a href={`https://www.amazon.com/s?k=${encodeURIComponent(book.title)}`} className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+          <div className={styles.bookCardWrapper}>
+            <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
+            <div className={styles.bookCardInfo}>
+              <h4>Amazon</h4>
+              <p>Check availability</p>
+            </div>
+          </div>
+        </a>
+        <a href={`https://www.bookdepository.com/search?searchTerm=${encodeURIComponent(book.title)}`} className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+          <div className={styles.bookCardWrapper}>
+            <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
+            <div className={styles.bookCardInfo}>
+              <h4>Book Depository</h4>
+              <p>Check availability</p>
+            </div>
+          </div>
+        </a>
+        <a href={`https://books.google.com/books?vid=ISBN:${book.isbn || ''}`} className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+          <div className={styles.bookCardWrapper}>
+            <img src="https://placehold.co/100x150?text=Book" alt="icon" className={styles.bookCardImage} />
+            <div className={styles.bookCardInfo}>
+              <h4>Google Books</h4>
+              <p>Check availability</p>
+            </div>
+          </div>
+        </a>
+      </div>
     </div>
         )}
       </main>
