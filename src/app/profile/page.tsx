@@ -234,11 +234,26 @@ export default function ProfilePage() {
             <div className={styles.tabContent}>
               <h2>Profile Overview</h2>
               {userStats ? (
-                <ul className={styles.overviewList}>
-                  <li><strong>Books Wishlisted:</strong> {userStats.booksWishlisted}</li>
-                  <li><strong>Account Created:</strong> {userStats.accountCreated}</li>
-                  <li><strong>Last Active:</strong> {userStats.lastActive}</li>
-                </ul>
+                <div className={styles.wishlistGrid}>
+                  <div className={styles.wishlistBookCard}>
+                    <div className={styles.bookInfo}>
+                      <h4 className={styles.bookTitle}>Books Wishlisted</h4>
+                      <p>{userStats.booksWishlisted}</p>
+                    </div>
+                  </div>
+                  <div className={styles.wishlistBookCard}>
+                    <div className={styles.bookInfo}>
+                      <h4 className={styles.bookTitle}>Account Created</h4>
+                      <p>{userStats.accountCreated}</p>
+                    </div>
+                  </div>
+                  <div className={styles.wishlistBookCard}>
+                    <div className={styles.bookInfo}>
+                      <h4 className={styles.bookTitle}>Last Active</h4>
+                      <p>{userStats.lastActive}</p>
+                    </div>
+                  </div>
+                </div>
               ) : (
                 <p>Loading overview...</p>
               )}
