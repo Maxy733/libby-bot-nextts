@@ -89,7 +89,7 @@ export default function TrendingPage() {
             setErrorState: (error: string | null) => void
         ) => {
             // Limiting the fetch to 10 books for the preview carousel
-            fetch(`${apiUrl}/api/books/recommendations/globally-trending?period=${period}&page=1&per_page=10`)
+            fetch(`${apiUrl}/api/recommendations/globally-trending?period=${period}&page=1&per_page=10`)
                 .then(res => res.json())
                 .then(data => {
                     if (data && Array.isArray(data.books)) {

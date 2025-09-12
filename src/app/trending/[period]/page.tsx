@@ -42,7 +42,7 @@ function TrendingPeriodContent() {
             setIsLoading(true);
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
             
-            fetch(`${apiUrl}/api/recommendations/globally-trending?period=${period}&page=${currentPage}`)
+            fetch(`${apiUrl}/api/books/recommendations/globally-trending?period=${period}&page=${currentPage}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data && Array.isArray(data.books)) {
