@@ -196,6 +196,7 @@ export default function ProfilePage() {
         <div className={styles.settingsMenu}>
           <h3>Settings</h3>
           <ul>
+            <li><button className={styles.tabBtn} onClick={() => setActiveTab("overview")}>Overview</button></li>
             <li><button className={styles.tabBtn} onClick={() => setActiveTab("wishlist")}>Wishlist</button></li>
             <li><button className={styles.tabBtn} onClick={() => setActiveTab("preferences")}>Preferences</button></li>
             <li><button className={styles.tabBtn} onClick={() => setActiveTab("notifications")}>Notifications</button></li>
@@ -228,8 +229,22 @@ export default function ProfilePage() {
             </div>
           </div>
 
-
           {/* Tab Content */}
+          {activeTab === "overview" && (
+            <div className={styles.tabContent}>
+              <h2>Profile Overview</h2>
+              {userStats ? (
+                <ul className={styles.overviewList}>
+                  <li><strong>Books Wishlisted:</strong> {userStats.booksWishlisted}</li>
+                  <li><strong>Account Created:</strong> {userStats.accountCreated}</li>
+                  <li><strong>Last Active:</strong> {userStats.lastActive}</li>
+                </ul>
+              ) : (
+                <p>Loading overview...</p>
+              )}
+            </div>
+          )}
+
           {activeTab === "wishlist" && (
             <div className={styles.tabContent}>
               <div className={styles.wishlistSection}>
