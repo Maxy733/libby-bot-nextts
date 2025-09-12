@@ -109,3 +109,32 @@
   justify-content: flex-start;
   gap: 16px;
 }
+.overviewList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  padding: 0;
+  list-style: none;
+  margin-top: 16px;
+}
+
+.overviewList li {
+  background-color: var(--brand-surface);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  color: var(--brand-charcoal);
+  font-weight: 500;
+  font-size: 14px;
+  width: 160px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.overviewList li:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+  background-color: var(--brand-accent-hover);
+  color: #fff;
+}
