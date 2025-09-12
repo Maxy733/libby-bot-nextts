@@ -115,7 +115,7 @@ export default function BookDetailsPage() {
                     </div>
                   </div>
                 </a>
-                <a href="https://line.me/R/ti/p/@libbybot" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
+                <a href="https://line.me/R/ti/p/@ist4769e" className={styles.bookStoreCard} target="_blank" rel="noopener noreferrer">
                   <div className={styles.bookCardWrapper}>
                     <img src="/LINE_logo.svg.webp" alt="icon" className={styles.bookCardImage} />
                     <div className={styles.bookCardInfo}>
