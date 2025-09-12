@@ -41,7 +41,7 @@ function SearchResults() {
             setIsLoading(true);
             setError(null);
             
-            fetch(`${apiUrl}/api/search?q=${encodeURIComponent(query)}`)
+            fetch(`${apiUrl}/api/books/search?q=${encodeURIComponent(query)}`)
                 .then(res => res.json())
                 .then(data => {
                     // --- THIS IS THE FIX ---
