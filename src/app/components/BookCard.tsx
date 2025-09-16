@@ -8,6 +8,7 @@ export interface Book {
   title: string;
   author: string;
   coverurl: string | null;
+  publication_date: string | null;
 }
 
 interface BookCardProps {
@@ -32,6 +33,12 @@ export default function BookCard({ book, showWishlist = false }: BookCardProps) 
         />
         <p className="book-title">{book.title || "No Title"}</p>
         <p className="book-author">{book.author || "Unknown Author"}</p>
+        <p className="book-year">
+          {book.publication_date
+            ? new Date(book.publication_date).getFullYear()
+            : "Unknown Year"}
+        </p>
+
       </Link>
 
       {showWishlist && (
