@@ -8,7 +8,7 @@ export interface Book {
   title: string;
   author: string;
   coverurl: string | null;
-  publication_date: string | null;
+  publication_date: Date | null;
 }
 
 interface BookCardProps {
