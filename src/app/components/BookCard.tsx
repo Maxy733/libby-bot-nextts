@@ -21,8 +21,8 @@ const getYearFromDate = (date: string | Date | null): string => {
   if (!date) return "Unknown Year";
   
   try {
-    // Handle both Date objects and date strings
-    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    // Handle both Date objects and date strings (same logic as your working code)
+    const dateObj = new Date(date);
     const year = dateObj.getFullYear();
     
     // Check if year is valid
