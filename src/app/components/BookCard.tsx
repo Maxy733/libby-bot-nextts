@@ -8,7 +8,7 @@ export interface Book {
   title: string;
   author: string;
   coverurl: string | null;
-  publication_date: Date | null;
+  publication_date: string | Date | null;
 }
 
 interface BookCardProps {
@@ -16,29 +16,38 @@ interface BookCardProps {
   showWishlist?: boolean;
 }
 
-// Component
+// Utility function to extract year from various date formats
+const getYearFromDate = (date: string | Date | null): string => {
+  if (!date) return "Unknown Year";
+  
+  try {
+    // Handle both Date objects and date strings
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    const year = dateObj.getFullYear();
+    
+    // Check if year is valid
+    if (isNaN(year)) return "Unknown Year";
+    
+    return year.toString();
+  } catch (error) {
+    return "Unknown Year";
+  }
+};
+
 export default function BookCard({ book, showWishlist = false }: BookCardProps) {
+  const placeholderUrl = `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title || "No Title")}`;
+  
   return (
     <div className="book-card-wrapper">
       <Link href={`/book/${book.id}`} className="book-card">
         <img
-          src={
-            book.coverurl ||
-            `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(
-              book.title
-            )}`
-          }
-          alt={book.title}
+          src={book.coverurl || placeholderUrl}
+          alt={book.title || "Book cover"}
           className="book-cover"
         />
         <p className="book-title">{book.title || "No Title"}</p>
         <p className="book-author">{book.author || "Unknown Author"}</p>
-        <p className="book-year">
-          {book.publication_date
-            ? new Date(book.publication_date).getFullYear()
-            : "Unknown Year"}
-        </p>
-
+        <p className="book-year">{getYearFromDate(book.publication_date)}</p>
       </Link>
 
       {showWishlist && (
