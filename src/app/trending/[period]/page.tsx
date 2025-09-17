@@ -2,29 +2,8 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
-import Link from 'next/link';
 import { useParams } from 'next/navigation';
-
-// --- Type Definitions ---
-interface Book {
-  id: number;
-  title: string;
-  author: string;
-  coverurl: string | null;
-}
-
-// --- Reusable Components ---
-const BookCard = ({ book }: { book: Book }) => (
-    <Link href={`/book/${book.id}`} className="book-card">
-        <img
-            src={book.coverurl || `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`}
-            alt={book.title}
-            className="book-cover"
-        />
-        <p className="book-title">{book.title || 'No Title'}</p>
-        <p className="book-author">{book.author || 'Unknown Author'}</p>
-    </Link>
-);
+import BookCard, { Book } from '../../components/BookCard'; // ✅ Import reusable BookCard
 
 // --- This component contains the main logic ---
 function TrendingPeriodContent() {
@@ -96,19 +75,32 @@ function TrendingPeriodContent() {
                 <div className="results-grid">
                     {isLoading && <p className="loading-text col-span-full">Loading books...</p>}
                     {error && <p className="error-text col-span-full">{error}</p>}
-                    {!isLoading && !error && books.map((book) => <BookCard key={book.id} book={book} />)}
+                    {!isLoading && !error && books.length > 0 && (
+                        books.map((book) => <BookCard key={book.id} book={book} />) // ✅ Use BookCard
+                    )}
+                    {!isLoading && !error && books.length === 0 && (
+                        <p className="loading-text col-span-full">No trending books found.</p>
+                    )}
                 </div>
 
                 {/* Pagination Controls */}
                 {!isLoading && !error && totalPages > 1 && (
                     <div className="pagination mt-12 flex justify-center items-center gap-4">
-                        <button onClick={handlePrevPage} disabled={currentPage === 1} className="pagination-arrow disabled:opacity-50">
+                        <button 
+                            onClick={handlePrevPage} 
+                            disabled={currentPage === 1} 
+                            className="pagination-arrow disabled:opacity-50"
+                        >
                             &larr; Previous
                         </button>
                         <span className="pagination-number font-semibold">
                             Page {currentPage} of {totalPages}
                         </span>
-                        <button onClick={handleNextPage} disabled={currentPage === totalPages} className="pagination-arrow disabled:opacity-50">
+                        <button 
+                            onClick={handleNextPage} 
+                            disabled={currentPage === totalPages} 
+                            className="pagination-arrow disabled:opacity-50"
+                        >
                             Next &rarr;
                         </button>
                     </div>
@@ -118,12 +110,10 @@ function TrendingPeriodContent() {
     );
 }
 
-
 // --- Main page component ---
 export default function TrendingPeriodPage() {
     return (
         <div>
-            {/* You would have a shared Header here */}
             <Suspense fallback={<div className="container page-content loading-text">Loading page...</div>}>
                 <TrendingPeriodContent />
             </Suspense>

@@ -4,28 +4,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-
-// --- Type Definitions ---
-interface Book {
-  id: number;
-  title: string;
-  author: string;
-  coverurl: string | null;
-}
-
-// --- Reusable Components ---
-const BookCard = ({ book }: { book: Book }) => (
-    <Link href={`/book/${book.id}`} className="book-card">
-        <img 
-            src={book.coverurl || `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
-            alt={book.title} 
-            className="book-cover"
-        />
-        <p className="book-title">{book.title || 'No Title'}</p>
-        <p className="book-author">{book.author || 'Unknown Author'}</p>
-    </Link>
-);
-// src/app/genre/[genreName]/page.tsx
+import BookCard, { Book } from '../../components/BookCard';
 
 // --- This component contains the main logic ---
 function GenrePageContent() {
@@ -105,7 +84,7 @@ function GenrePageContent() {
                     {isLoading && <p className="loading-text col-span-full">Loading books...</p>}
                     {error && <p className="error-text col-span-full">{error}</p>}
                     {!isLoading && !error && books.length > 0 && (
-                        books.map((book) => <BookCard key={book.id} book={book} />)
+                        books.map((book) => <BookCard key={book.id} book={book} />) // ✅ Use BookCard
                     )}
                     {!isLoading && !error && books.length === 0 && (
                         <p className="loading-text col-span-full">No books found in this genre.</p>
@@ -139,12 +118,10 @@ function GenrePageContent() {
     );
 }
 
-// ... The rest of your GenrePage component remains the same ...
 // --- This is the main page component that will be rendered ---
 export default function GenrePage() {
     return (
         <div>
-            
             <Suspense fallback={<div className="container page-content loading-text">Loading page...</div>}>
                 <GenrePageContent />
             </Suspense>
