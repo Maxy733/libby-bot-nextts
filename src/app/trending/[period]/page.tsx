@@ -4,7 +4,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useParams } from 'next/navigation';
 import BookCard from '../../components/BookCard'; // ✅ Import reusable BookCard
-import { Book } from "../../types/book";
+import { Book } from "../../../types/book";
 
 // --- This component contains the main logic ---
 function TrendingPeriodContent() {

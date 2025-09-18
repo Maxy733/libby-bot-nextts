@@ -4,7 +4,8 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import BookCard, { Book } from '../../components/BookCard';
+import BookCard from '../../components/BookCard';
+import { Book } from "../../../types/book";
 
 // --- This component contains the main logic ---
 function GenrePageContent() {
