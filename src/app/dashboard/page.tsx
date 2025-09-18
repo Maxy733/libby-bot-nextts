@@ -1,7 +1,12 @@
 // src/app/dashboard/page.tsx (personalized for logged-in users)
-"use client";
+import {auth} from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import HomeContent from "../components/HomeContent";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const { userId } = await auth();
+  if (!userId) { 
+    redirect("/sign-in");
+  }
   return <HomeContent showJoinUs={false} personalized={true} />;
 }
