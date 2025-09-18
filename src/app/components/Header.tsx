@@ -23,11 +23,21 @@ function RecommendationsLink() {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isSignedIn) {
       e.preventDefault();
+
       if (pathname === "/") {
+        // Scroll to the personalized section on the homepage
         const section = document.getElementById("personalized");
-        if (section) section.scrollIntoView({ behavior: "smooth" });
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth" });
+        }
       } else {
-        router.push("/#personalized");
+        // Navigate to homepage and scroll after a small delay
+        router.push("/").then(() => {
+          setTimeout(() => {
+            const section = document.getElementById("personalized");
+            if (section) section.scrollIntoView({ behavior: "smooth" });
+          }, 50); // wait for DOM to render
+        });
       }
     }
   };
