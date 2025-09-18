@@ -218,7 +218,7 @@ export default function HomeContent({ showJoinUs = true,
 
       {/* Join Us Section */}
       {showJoinUs && (
-      <section className="join-us-section">
+      <section id="join-us" className="join-us-section">
         <div className="container">
           <div className="join-us-card animated-element">
             <h2>Unlock Personalized Recommendations</h2>
