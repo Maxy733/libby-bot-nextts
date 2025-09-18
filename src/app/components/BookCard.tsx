@@ -2,14 +2,9 @@
 
 import Link from "next/link";
 import WishlistButton from "./WishlistButton";
+import { Book } from "../../types/book";
 
-export interface Book {
-  id: number;
-  title: string;
-  author: string;
-  coverurl: string | null;
-  publication_date: string | Date | null;
-}
+
 
 interface BookCardProps {
   book: Book;
