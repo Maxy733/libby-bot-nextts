@@ -18,26 +18,73 @@ function RecommendationsLink() {
   const pathname = usePathname();
   const router = useRouter();
 
-  if (!isLoaded) return <span className="text-gray-500">Recommendations</span>;
+  // Handle hash navigation when component mounts or pathname changes
+  useEffect(() => {
+    const handleHashScroll = () => {
+      if (typeof window !== 'undefined' && window.location.hash === '#personalized') {
+        console.log('Hash detected: #personalized');
+        
+        // Try multiple times with increasing delays
+        const attemptScroll = (attempt = 1, maxAttempts = 5) => {
+          const section = document.getElementById("personalized");
+          console.log(`Attempt ${attempt}: Found section:`, section);
+          
+          if (section) {
+            section.scrollIntoView({ behavior: "smooth" });
+            console.log('Scrolling to personalized section');
+          } else if (attempt < maxAttempts) {
+            setTimeout(() => attemptScroll(attempt + 1, maxAttempts), attempt * 500);
+          } else {
+            console.log('Could not find personalized section after', maxAttempts, 'attempts');
+          }
+        };
+        
+        attemptScroll();
+      }
+    };
+
+    // Handle on mount
+    handleHashScroll();
+    
+    // Handle hash changes
+    window.addEventListener('hashchange', handleHashScroll);
+    
+    return () => {
+      window.removeEventListener('hashchange', handleHashScroll);
+    };
+  }, [pathname]);
+
+  if (!isLoaded) {
+    return <span className="text-gray-500">Recommendations</span>;
+  }
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isSignedIn) {
       e.preventDefault();
-
+      console.log('Recommendations link clicked, not signed in');
+      console.log('Current pathname:', pathname);
+      
       if (pathname === "/") {
-        // Scroll to the personalized section on the homepage
+        console.log('Already on home page, attempting immediate scroll');
+        // Already on home page, scroll immediately
         const section = document.getElementById("personalized");
+        console.log('Found section on same page:', section);
+        
         if (section) {
           section.scrollIntoView({ behavior: "smooth" });
+        } else {
+          console.log('Section not found, will try after small delay');
+          setTimeout(() => {
+            const delayedSection = document.getElementById("personalized");
+            console.log('Delayed attempt found section:', delayedSection);
+            if (delayedSection) {
+              delayedSection.scrollIntoView({ behavior: "smooth" });
+            }
+          }, 100);
         }
       } else {
-        // Navigate to homepage and scroll after a small delay
-        router.push("/").then(() => {
-          setTimeout(() => {
-            const section = document.getElementById("personalized");
-            if (section) section.scrollIntoView({ behavior: "smooth" });
-          }, 50); // wait for DOM to render
-        });
+        console.log('Navigating to home page with hash');
+        router.push("/#personalized");
       }
     }
   };
@@ -46,7 +93,14 @@ function RecommendationsLink() {
     <a
       href={isSignedIn ? "/recommendations" : "/#personalized"}
       onClick={handleClick}
-      className={`hover:opacity-80 transition-opacity ${!isSignedIn ? "text-gray-600" : ""}`}
+      className={`hover:opacity-80 transition-opacity cursor-pointer ${
+        !isSignedIn ? "text-gray-600" : ""
+      }`}
+      title={
+        isSignedIn 
+          ? "View your personalized recommendations" 
+          : "Sign in to get personalized recommendations"
+      }
     >
       {isSignedIn ? "My Recommendations" : "Recommendations"}
     </a>
