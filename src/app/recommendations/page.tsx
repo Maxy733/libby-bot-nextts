@@ -6,7 +6,7 @@ import Link from 'next/link';
 import BookCard from '../components/BookCard';
 import { Book } from '../../types/book';
 import { useUser } from '@clerk/nextjs';
-import styles from './RecommendationsPage.module.css';
+import styles from './Recommendations.module.css';
 
 // --- Genres / Categories Data ---
 const genres = [
