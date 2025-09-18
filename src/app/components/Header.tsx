@@ -9,18 +9,53 @@ import {
   UserButton,
   useUser,
 } from "@clerk/nextjs";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
+
 
 function RecommendationsLink() {
   const { isSignedIn, isLoaded } = useUser();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // Handle hash navigation when component mounts
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash === '#personalized') {
+      setTimeout(() => {
+        const section = document.getElementById("personalized");
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 500); // Longer delay for page load
+    }
+  }, [pathname]);
 
   if (!isLoaded) {
     return <span className="text-gray-500">Recommendations</span>;
   }
 
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!isSignedIn) {
+      e.preventDefault();
+      
+      if (pathname === "/") {
+        // Already on home page, scroll immediately
+        const section = document.getElementById("personalized");
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth" });
+        }
+      } else {
+        // Navigate to home with hash - useEffect will handle scrolling
+        router.push("/#personalized");
+      }
+    }
+  };
+
   return (
-    <Link 
+    <a
       href={isSignedIn ? "/recommendations" : "/#personalized"}
-      className={`hover:opacity-80 transition-opacity ${
+      onClick={handleClick}
+      className={`hover:opacity-80 transition-opacity cursor-pointer ${
         !isSignedIn ? "text-gray-600" : ""
       }`}
       title={
@@ -30,7 +65,7 @@ function RecommendationsLink() {
       }
     >
       {isSignedIn ? "My Recommendations" : "Recommendations"}
-    </Link>
+    </a>
   );
 }
 
