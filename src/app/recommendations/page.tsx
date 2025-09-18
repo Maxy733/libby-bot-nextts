@@ -50,7 +50,7 @@ const BookCarousel = ({
     };
 
     return (
-        <section style={{ opacity: 1 /* set opacity 100% */ }}>
+        <section>
             <div className="section-header">
                 <h2 className="section-title">{title}</h2>
                 <Link href={seeMoreLink} className="see-more-link">See More &rarr;</Link>
@@ -59,9 +59,12 @@ const BookCarousel = ({
                 <div ref={carouselRef} className="carousel-container">
                     {isLoading && <p className="loading-text">Loading...</p>}
                     {error && <p className="error-text">{error}</p>}
-                    {!isLoading && !error && books.length > 0 &&
-                        books.map((book) => <BookCard key={book.id} book={book} showWishlist={true} />)}
-                    {!isLoading && !error && books.length === 0 && <p className="loading-text">No books found.</p>}
+                    {!isLoading && !error && books.length > 0 && (
+                        books.map((book) => <BookCard key={book.id} book={book} />) // ✅ Reused
+                    )}
+                    {!isLoading && !error && books.length === 0 && (
+                        <p className="loading-text">No books found for this period.</p>
+                    )}
                 </div>
                 <button onClick={() => handleCarouselScroll('left')} className="carousel-button prev" aria-label="Scroll left">‹</button>
                 <button onClick={() => handleCarouselScroll('right')} className="carousel-button next" aria-label="Scroll right">›</button>
