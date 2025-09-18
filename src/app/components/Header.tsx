@@ -18,34 +18,15 @@ function RecommendationsLink() {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Handle hash navigation when component mounts
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.location.hash === '#personalized') {
-      setTimeout(() => {
-        const section = document.getElementById("personalized");
-        if (section) {
-          section.scrollIntoView({ behavior: "smooth" });
-        }
-      }, 500); // Longer delay for page load
-    }
-  }, [pathname]);
-
-  if (!isLoaded) {
-    return <span className="text-gray-500">Recommendations</span>;
-  }
+  if (!isLoaded) return <span className="text-gray-500">Recommendations</span>;
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isSignedIn) {
       e.preventDefault();
-      
       if (pathname === "/") {
-        // Already on home page, scroll immediately
         const section = document.getElementById("personalized");
-        if (section) {
-          section.scrollIntoView({ behavior: "smooth" });
-        }
+        if (section) section.scrollIntoView({ behavior: "smooth" });
       } else {
-        // Navigate to home with hash - useEffect will handle scrolling
         router.push("/#personalized");
       }
     }
@@ -55,14 +36,7 @@ function RecommendationsLink() {
     <a
       href={isSignedIn ? "/recommendations" : "/#personalized"}
       onClick={handleClick}
-      className={`hover:opacity-80 transition-opacity cursor-pointer ${
-        !isSignedIn ? "text-gray-600" : ""
-      }`}
-      title={
-        isSignedIn 
-          ? "View your personalized recommendations" 
-          : "Sign in to get personalized recommendations"
-      }
+      className={`hover:opacity-80 transition-opacity ${!isSignedIn ? "text-gray-600" : ""}`}
     >
       {isSignedIn ? "My Recommendations" : "Recommendations"}
     </a>
