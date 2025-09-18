@@ -7,8 +7,8 @@ import BookCard from '../components/BookCard';
 import { Book } from '../../types/book';
 import { useUser } from '@clerk/nextjs';
 
-// --- Genres / Categories Data ---
-const genres = [
+// --- All possible genres ---
+const allGenres = [
     { name: 'Science', imageUrl: 'https://placehold.co/400x300/2F2F2F/FFFFFF?text=Science' },
     { name: 'Technology', imageUrl: 'https://placehold.co/400x300/858585/FFFFFF?text=Technology' },
     { name: 'Politics', imageUrl: 'https://placehold.co/400x300/A18A68/FFFFFF?text=Politics' },
@@ -23,7 +23,7 @@ const genres = [
 
 type SectionType = 'personalized' | 'trending' | 'staff';
 
-// --- Reusable BookCarousel ---
+// --- BookCarousel ---
 const BookCarousel = ({ 
     title, 
     books, 
@@ -51,7 +51,7 @@ const BookCarousel = ({
     };
 
     return (
-        <section>
+        <section style={{ opacity: 1 /* always 100% */ }}>
             <div className="section-header">
                 <h2 className="section-title">{title}</h2>
                 <Link href={seeMoreLink} className="see-more-link">See More &rarr;</Link>
@@ -61,7 +61,7 @@ const BookCarousel = ({
                     {isLoading && <p className="loading-text">Loading...</p>}
                     {error && <p className="error-text">{error}</p>}
                     {!isLoading && !error && books.length > 0 && (
-                        books.map((book) => <BookCard key={book.id} book={book} showWishlist={true} />)
+                        books.map((book) => <BookCard key={book.id} book={book} showWishlist />)
                     )}
                     {!isLoading && !error && books.length === 0 && (
                         <p className="loading-text">No books found.</p>
@@ -76,7 +76,7 @@ const BookCarousel = ({
 
 // --- Main Recommendations Page ---
 export default function RecommendationsPage() {
-    const { isSignedIn, isLoaded } = useUser();
+    const { isSignedIn, isLoaded, user } = useUser();
 
     if (!isLoaded || !isSignedIn) {
         return <p className="text-center mt-16">Please sign in to view your recommendations.</p>;
@@ -88,40 +88,45 @@ export default function RecommendationsPage() {
     const [staffBooks, setStaffBooks] = useState<Book[]>([]);
     const [loading, setLoading] = useState<{ personalized: boolean; trending: boolean; staff: boolean }>({ personalized: true, trending: true, staff: true });
     const [error, setError] = useState<{ personalized: string | null; trending: string | null; staff: string | null }>({ personalized: null, trending: null, staff: null });
+    const [userGenres, setUserGenres] = useState<typeof allGenres>([]);
 
     useEffect(() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
 
-        // Personalized
+        // Fetch personalized books
         fetch(`${apiUrl}/api/books/recommendations/personalized?per_page=10`)
             .then(res => res.json())
             .then(data => {
                 if (data && Array.isArray(data.books)) setPersonalizedBooks(data.books);
-                else throw new Error('Invalid data format');
             })
             .catch(err => setError(prev => ({ ...prev, personalized: err.message })))
             .finally(() => setLoading(prev => ({ ...prev, personalized: false })));
 
-        // Trending
+        // Fetch trending books
         fetch(`${apiUrl}/api/books/recommendations/globally-trending?period=weekly&per_page=10`)
             .then(res => res.json())
             .then(data => {
                 if (data && Array.isArray(data.books)) setTrendingBooks(data.books);
-                else throw new Error('Invalid data format');
             })
             .catch(err => setError(prev => ({ ...prev, trending: err.message })))
             .finally(() => setLoading(prev => ({ ...prev, trending: false })));
 
-        // Recently Added / Staff Picks
+        // Fetch staff picks
         fetch(`${apiUrl}/api/books/recommendations/staff-picks?per_page=10`)
             .then(res => res.json())
             .then(data => {
                 if (data && Array.isArray(data.books)) setStaffBooks(data.books);
-                else throw new Error('Invalid data format');
             })
             .catch(err => setError(prev => ({ ...prev, staff: err.message })))
             .finally(() => setLoading(prev => ({ ...prev, staff: false })));
-    }, []);
+
+        // Get user selected genres (example: user metadata 'interests')
+        if (user?.publicMetadata?.interests && Array.isArray(user.publicMetadata.interests)) {
+            setUserGenres(allGenres.filter(g => user.publicMetadata.interests.includes(g.name)));
+        } else {
+            setUserGenres([]); // fallback
+        }
+    }, [user]);
 
     return (
         <main className="container page-content">
@@ -150,20 +155,22 @@ export default function RecommendationsPage() {
                 />
 
                 {/* Genres / Categories Grid */}
-                <section className="genre-grid-section">
-                    <h2 className="section-title">Browse by Genre</h2>
-                    <div className="genre-grid">
-                        {genres.map((genre) => (
-                            <Link key={genre.name} href={`/genre/${encodeURIComponent(genre.name)}`} className="genre-card">
-                                <div 
-                                    className="genre-card-bg" 
-                                    style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.6)), url(${genre.imageUrl})` }}
-                                ></div>
-                                <h3 className="genre-card-title">{genre.name}</h3>
-                            </Link>
-                        ))}
-                    </div>
-                </section>
+                {userGenres.length > 0 && (
+                    <section className="genre-grid-section">
+                        <h2 className="section-title">Browse by Your Interests</h2>
+                        <div className="genre-grid">
+                            {userGenres.map((genre) => (
+                                <Link key={genre.name} href={`/genre/${encodeURIComponent(genre.name)}`} className="genre-card">
+                                    <div 
+                                        className="genre-card-bg" 
+                                        style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.6)), url(${genre.imageUrl})` }}
+                                    ></div>
+                                    <h3 className="genre-card-title">{genre.name}</h3>
+                                </Link>
+                            ))}
+                        </div>
+                    </section>
+                )}
 
                 {/* Recently Added / Staff Picks */}
                 <BookCarousel 
