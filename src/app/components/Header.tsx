@@ -13,7 +13,7 @@ import {
 function RecommendationsLink() {
   const { isSignedIn } = useUser();
   return (
-    <Link href={isSignedIn ? "/recommendations" : "/#personalized"}>
+    <Link href={isSignedIn ? "/recommendations" : "/#join-us"}>
       Recommendations
     </Link>
   );
