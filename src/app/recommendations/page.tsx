@@ -118,6 +118,30 @@ export default function RecommendationsPage() {
             .catch(err => setError(prev => ({ ...prev, staff: err.message })))
             .finally(() => setLoading(prev => ({ ...prev, staff: false })));
     }, []);
+    // Add this useEffect to your recommendations/page.tsx
+    // Place it after your existing useEffects
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        // Optional: Add staggered animation delay
+                        (entry.target as HTMLElement).style.transitionDelay = `${index * 100}ms`;
+                    }
+                });
+            },
+            { threshold: 0.1 }
+        );
+
+        // Observe all book cards and other animated elements
+        const elementsToAnimate = document.querySelectorAll('.book-card, .animated-element');
+        elementsToAnimate.forEach((el) => observer.observe(el));
+
+        // Cleanup
+        return () => elementsToAnimate.forEach((el) => observer.unobserve(el));
+    }, [personalizedBooks, trendingBooks, staffBooks]); // Dependencies: re-run when books change
 
     if (!isLoaded || !isSignedIn) return <p className="text-center mt-16">Please sign in to view your recommendations.</p>;
 
