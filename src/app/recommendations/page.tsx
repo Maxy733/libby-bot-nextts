@@ -160,7 +160,7 @@ export default function RecommendationsPage() {
         // Fetch trending books
         const fetchTrending = async () => {
             try {
-                const response = await fetch(`${apiUrl}/api/books/recommendations/globally-trending?period=weekly&per_page=10`);
+                const response = await fetch(`${apiUrl}/api/books/recommendations/globally-trending?period=weekly&page=1&per_page=10`);
                 const data = await response.json();
                 if (data && Array.isArray(data.books)) {
                     setTrendingBooks(data.books);
