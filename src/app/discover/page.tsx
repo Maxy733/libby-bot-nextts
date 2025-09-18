@@ -3,7 +3,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import BookCard, { Book } from '../components/BookCard';
+import BookCard from '../components/BookCard';
+import { Book } from "../../types/book";
 
 // --- Data for Genres ---
 const genres = [
