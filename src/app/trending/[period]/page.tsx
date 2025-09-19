@@ -92,17 +92,17 @@ function TrendingPeriodContent() {
                             disabled={currentPage === 1} 
                             className="pagination-arrow disabled:opacity-50"
                         >
-                            &larr; Previous
+                            &larr;
                         </button>
                         <span className="pagination-number font-semibold">
-                            Page {currentPage} of {totalPages}
+                            Page {currentPage}
                         </span>
                         <button 
                             onClick={handleNextPage} 
                             disabled={currentPage === totalPages} 
                             className="pagination-arrow disabled:opacity-50"
                         >
-                            Next &rarr;
+                            &rarr;
                         </button>
                     </div>
                 )}
