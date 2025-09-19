@@ -48,7 +48,7 @@ const BookCarousel = ({
                     {isLoading && <p className="loading-text">Loading...</p>}
                     {error && <p className="error-text">{error}</p>}
                     {!isLoading && !error && books.length > 0 && (
-                        books.map((book) => <BookCard key={book.id} book={book} />) // ✅ Reused
+                        books.map((book) => <BookCard key={book.id} book={book} showWishlist={true}/>) // ✅ Reused
                     )}
                     {!isLoading && !error && books.length === 0 && (
                         <p className="loading-text">No books found for this period.</p>

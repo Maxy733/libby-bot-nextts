@@ -77,7 +77,7 @@ function TrendingPeriodContent() {
                     {isLoading && <p className="loading-text col-span-full">Loading books...</p>}
                     {error && <p className="error-text col-span-full">{error}</p>}
                     {!isLoading && !error && books.length > 0 && (
-                        books.map((book) => <BookCard key={book.id} book={book} />) // ✅ Use BookCard
+                        books.map((book) => <BookCard key={book.id} book={book} showWishlist={true}/>) // ✅ Use BookCard
                     )}
                     {!isLoading && !error && books.length === 0 && (
                         <p className="loading-text col-span-full">No trending books found.</p>

@@ -105,7 +105,7 @@ export default function DiscoverPage() {
                         <div className="carousel-wrapper">
                             <div ref={trendingCarouselRef} className="carousel-container">
                                 {trendingBooks.map((book) => (
-                                    <BookCard key={book.id} book={book} />
+                                    <BookCard key={book.id} book={book} showWishlist={true}/>
                                 ))}
                             </div>
                             <button
