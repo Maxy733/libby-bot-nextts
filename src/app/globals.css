@@ -366,7 +366,6 @@ body {
 .book-card {
   flex-shrink: 0;
   width: 12rem;
-  height : 100%;
   /* -- Use the dark surface color for cards -- */
   background-color: var(--brand-surface);
   padding: 1rem;
@@ -392,7 +391,7 @@ body {
 
 .book-cover {
   width: 100%;
-  height: 10rem;
+  height: 8rem;
   object-fit: cover;
   border-radius: 0.25rem;
   background-color: var(--brand-light-grey);
