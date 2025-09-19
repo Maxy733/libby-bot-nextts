@@ -98,7 +98,8 @@ export default function RecommendationsPage() {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
 
         // Personalized
-        fetch(`${apiUrl}/api/recommendations/${user?.id}/sync-interests`)
+        fetch(`${apiUrl}/api/recommendations/${user?.id}/sync-interests`, {
+  method: "POST"})
             .then(res => res.json())
             .then(data => { if (data?.books) setPersonalizedBooks(data.books); })
             .catch(err => setError(prev => ({ ...prev, personalized: err.message })))
