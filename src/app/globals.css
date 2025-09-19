@@ -2,27 +2,26 @@
 
 :root {
   /* Background: old leather or deep parchment */
-  --brand-bg: #1c1b18;            /* deep brown-olive parchment */
+  --brand-bg: #1c1b18; /* deep brown-olive parchment */
 
   /* Surface: aged dark wood or worn cover */
-  --brand-surface: #2f261e;       /* dark saddle brown */
+  --brand-surface: #2f261e; /* dark saddle brown */
 
   /* Primary text: warm ivory or antique paper ink */
-  --brand-charcoal: #e8dcc6;      /* soft parchment white */
+  --brand-charcoal: #e8dcc6; /* soft parchment white */
 
   /* Secondary text: muted brass or bronze */
-  --brand-muted-grey: #a3937b;    /* faded gold-grey */
+  --brand-muted-grey: #a3937b; /* faded gold-grey */
 
   /* Borders / lines: sepia ink */
-  --brand-light-grey: #4b3f35;    /* dark walnut */
+  --brand-light-grey: #4b3f35; /* dark walnut */
 
   /* Accent: earthy terracotta (muted orange-brown) */
-  --brand-accent: #9c6237;        /* warm clay / aged copper */
+  --brand-accent: #9c6237; /* warm clay / aged copper */
 
   /* Accent hover: softer burnt sienna */
-  --brand-accent-hover: #b2744b;  /* muted sienna-bronze */
+  --brand-accent-hover: #b2744b; /* muted sienna-bronze */
 }
-
 
 body {
   margin: 0;
@@ -411,6 +410,13 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.book-rating {
+  font-size: 0.875rem;
+  color: var(--brand-accent);
+  font-weight: 500;
+  margin-top: 0.25rem;
 }
 
 /* --- About & Join Us Sections --- */

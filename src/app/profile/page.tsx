@@ -8,6 +8,8 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "./Profile.module.css";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000";
+
 interface Book {
   id: number;
   title: string;
@@ -71,9 +73,9 @@ export default function ProfilePage() {
   const router = useRouter();
   const [wishlistBooks, setWishlistBooks] = useState<Book[]>([]);
   const [userStats, setUserStats] = useState<UserStats | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "wishlist" | "preferences" | "notifications">(
-    "overview"
-  );
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "wishlist" | "preferences" | "notifications"
+  >("overview");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [preferencesGenres, setPreferencesGenres] = useState<string[]>([]);
@@ -89,9 +91,12 @@ export default function ProfilePage() {
       if (activeTab === "preferences" && user) {
         try {
           const token = await getToken();
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/interests?user_id=${user.id}`, {
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
-          });
+          const res = await fetch(
+            `${API_BASE}/api/profile/interests?user_id=${user.id}`,
+            {
+              headers: token ? { Authorization: `Bearer ${token}` } : {},
+            }
+          );
           const data = await res.json();
           console.log("Fetched genres:", data.genres);
 
@@ -125,9 +130,12 @@ export default function ProfilePage() {
       });
 
       const token = await getToken();
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile/interests?user_id=${user.id}`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      });
+      const res = await fetch(
+        `${API_BASE}/api/profile/interests?user_id=${user.id}`,
+        {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        }
+      );
 
       if (!res.ok) {
         const errorText = await res.text();
@@ -196,11 +204,46 @@ export default function ProfilePage() {
         <div className={styles.settingsMenu}>
           <h3>Settings</h3>
           <ul>
-            <li><button className={styles.tabBtn} onClick={() => setActiveTab("overview")}>Overview</button></li>
-            <li><button className={styles.tabBtn} onClick={() => setActiveTab("wishlist")}>Wishlist</button></li>
-            <li><button className={styles.tabBtn} onClick={() => setActiveTab("preferences")}>Preferences</button></li>
-            <li><button className={styles.tabBtn} onClick={() => setActiveTab("notifications")}>Notifications</button></li>
-            <li><button onClick={clearWishlist} className={`${styles.actionBtn} ${styles.danger}`}>Clear Wishlist</button></li>
+            <li>
+              <button
+                className={styles.tabBtn}
+                onClick={() => setActiveTab("overview")}
+              >
+                Overview
+              </button>
+            </li>
+            <li>
+              <button
+                className={styles.tabBtn}
+                onClick={() => setActiveTab("wishlist")}
+              >
+                Wishlist
+              </button>
+            </li>
+            <li>
+              <button
+                className={styles.tabBtn}
+                onClick={() => setActiveTab("preferences")}
+              >
+                Preferences
+              </button>
+            </li>
+            <li>
+              <button
+                className={styles.tabBtn}
+                onClick={() => setActiveTab("notifications")}
+              >
+                Notifications
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={clearWishlist}
+                className={`${styles.actionBtn} ${styles.danger}`}
+              >
+                Clear Wishlist
+              </button>
+            </li>
           </ul>
         </div>
       </div>
@@ -266,18 +309,26 @@ export default function ProfilePage() {
                 <div className={styles.wishlistHeader}>
                   <h2>My Book Wishlist</h2>
                   {wishlistBooks.length > 0 && (
-                    <button onClick={clearWishlist} className={styles.clearWishlistBtn}>
+                    <button
+                      onClick={clearWishlist}
+                      className={styles.clearWishlistBtn}
+                    >
                       Clear All
                     </button>
                   )}
                 </div>
 
                 {isLoading ? (
-                  <div className={styles.loadingWishlist}>Loading your wishlist...</div>
+                  <div className={styles.loadingWishlist}>
+                    Loading your wishlist...
+                  </div>
                 ) : wishlistBooks.length === 0 ? (
                   <div className={styles.emptyWishlist}>
                     <h3>Your wishlist is empty</h3>
-                    <p>Start exploring books and add them to your wishlist to keep track of what you want to read!</p>
+                    <p>
+                      Start exploring books and add them to your wishlist to
+                      keep track of what you want to read!
+                    </p>
                     <Link href="/discover" className={styles.discoverBtn}>
                       Discover Books
                     </Link>
