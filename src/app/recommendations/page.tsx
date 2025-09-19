@@ -6,6 +6,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { useUser, useAuth } from "@clerk/nextjs";
 import styles from "./Recommendations.module.css";
+import BookCard from "../components/BookCard";
+import { Book } from "../../types/book";
+
+type RecommendedBook = Book & {
+  recommendation_type?: string;
+};
+
 
 // Import the interaction tracking utilities
 import {
@@ -15,16 +22,6 @@ import {
   getUserGenrePreferences,
 } from "../utils/interactionTracker";
 
-type Book = {
-  id: number;
-  title: string;
-  author: string;
-  coverurl?: string | null;
-  cover_image_url?: string | null;
-  rating?: number | null;
-  genre?: string | null;
-  recommendation_type?: string; // Track how this book was recommended
-};
 
 type ApiTrendingResp = {
   books: Book[];
@@ -754,30 +751,15 @@ export default function RecommendationsPage() {
           ) : (
             <>
               <div className="results-grid">
-                {books.map((b: Book) => (
-                  <Link
-                    key={b.id}
-                    href={`/book/${b.id}`}
-                    className="book-card is-visible"
-                    onClick={() => handleBookClick(b)}
-                  >
-                    <img
-                      src={toHttps(b.coverurl) || placeholder(b.title)}
-                      alt={b.title}
-                      className="book-cover"
-                      onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src = placeholder(
-                          b.title
-                        );
-                      }}
+                {books.map((b: RecommendedBook) => (
+                  <div key={b.id} className="book-card is-visible">
+                    <BookCard
+                        book={{
+                            ...b,
+                            coverurl: toHttps(b.coverurl)??null, // normalize
+                        }}
+                        showWishlist={true}
                     />
-                    <p className="book-title">{b.title}</p>
-                    <p className="book-author">{b.author}</p>
-                    {b.rating && !isNaN(Number(b.rating)) && (
-                      <p className="book-rating">
-                        ⭐ {Number(b.rating).toFixed(1)}
-                      </p>
-                    )}
                     {b.recommendation_type && (
                       <p
                         className="recommendation-type"
@@ -801,7 +783,7 @@ export default function RecommendationsPage() {
                           `📚 ${b.recommendation_type}`}
                       </p>
                     )}
-                  </Link>
+                  </div>
                 ))}
               </div>
 
