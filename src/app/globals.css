@@ -331,26 +331,8 @@ body {
   font-weight: 700;
 }
 
-.carousel-wrapper {
-  position: relative;
-}
 
-.carousel-container {
-  display: flex;
-  overflow-x: auto;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-  padding-bottom: 1rem;
-  scroll-behavior: smooth;
-}
 
-.carousel-container::-webkit-scrollbar {
-  display: none;
-}
-.carousel-container {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
 
 .loading-text {
   color: var(--brand-muted-grey);
@@ -361,56 +343,7 @@ body {
   font-weight: 500;
 }
 
-/* --- Book Card Component (UPDATED FOR DARK THEME) --- */
-.book-card {
-  flex-shrink: 0;
-  width: 12rem;
-  /* -- Use the dark surface color for cards -- */
-  background-color: var(--brand-surface);
-  padding: 1rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--brand-light-grey);
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease-out, transform 0.4s ease-out,
-    box-shadow 0.4s ease-out;
-  text-decoration: none;
-  color: inherit;
-}
-.book-card.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.book-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.25);
-  z-index: 10;
-}
 
-.book-cover {
-  width: 100%;
-  height: 10rem;
-  object-fit: cover;
-  border-radius: 0.25rem;
-  background-color: var(--brand-light-grey);
-}
-
-.book-title {
-  margin-top: 0.75rem;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.book-author {
-  font-size: 0.875rem;
-  color: var(--brand-muted-grey);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
 .book-rating {
   font-size: 0.875rem;
@@ -673,14 +606,14 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: var(--brand-accent);
   border: 1px solid var(--brand-light-grey);
   border-radius: 9999px;
   width: 40px;
   height: 40px;
   font-size: 24px;
   font-weight: bold;
-  color: var(--brand-charcoal);
+  color: var(rgba(255, 255, 255, 0.9));
   cursor: pointer;
   z-index: 10;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -1008,7 +941,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
+  width: 3.5rem;
   height: 2.5rem;
   border: 1px solid var(--brand-light-grey);
   border-radius: 0.375rem;
@@ -1025,7 +958,7 @@ body {
 
 .pagination-number.active {
   background-color: var(--brand-accent);
-  color: white;
+  color: var(--brand-accent);
   border-color: var(--brand-accent);
   font-weight: 600;
 }
@@ -1277,60 +1210,7 @@ body {
   font-size: 0.875rem;
 }
 
-/* --- Book Card Wrapper --- */
 
-/* --- Book Card Wrapper (Refined) --- */
-.book-card-wrapper {
-  position: relative;
-  margin: 0 1rem;
-  flex: 0 0 auto;
-  width: 180px;
-  transition: transform 0.3s ease;
-}
-
-.book-card {
-  display: block;
-  background-color: var(--brand-surface);
-  padding: 0.5rem;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  text-align: center;
-  color: var(--brand-charcoal);
-  text-decoration: none;
-  height: 100%;
-}
-
-.book-cover {
-  width: 100%;
-  height: 260px;
-  object-fit: cover;
-  border-radius: 0.5rem;
-  background-color: #2f2f2f;
-}
-
-.book-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  margin-top: 0.5rem;
-  color: var(--brand-charcoal);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.book-author {
-  font-size: 0.85rem;
-  color: var(--brand-muted-grey);
-  margin-top: 0.25rem;
-}
-
-/* Remove any brackets or decoration from pseudo-elements */
-.book-title::before,
-.book-title::after,
-.book-author::before,
-.book-author::after {
-  content: none !important;
-}
 
 /* --- Header Updates for Profile --- */
 .signed-in-actions {

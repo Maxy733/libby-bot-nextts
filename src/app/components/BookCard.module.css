@@ -1,0 +1,103 @@
+/* --- Book Card Wrapper --- */
+.book-card-wrapper {
+  position: relative;
+  margin: 0 1rem;
+  flex: 0 0 auto;
+  width: 180px;
+  transition: transform 0.3s ease;
+}
+
+/* --- Book Card --- */
+.book-card {
+  display: block;
+  flex-shrink: 0;
+  width: 100%;
+  background-color: var(--brand-surface);
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--brand-light-grey);
+  overflow: hidden;
+  text-align: center;
+  color: var(--brand-charcoal);
+  text-decoration: none;
+
+  /* animation defaults */
+  opacity: 1;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.4s ease-out,
+    box-shadow 0.4s ease-out;
+}
+
+.book-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.book-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.25);
+  z-index: 10;
+}
+
+/* --- Book Cover --- */
+.book-cover {
+  width: 100%;
+  height: 240px; /* unified height (adjust as needed) */
+  object-fit: cover;
+  border-radius: 0.5rem;
+  background-color: #2f2f2f;
+}
+
+/* --- Book Title --- */
+.book-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  color: var(--brand-charcoal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Book Author --- */
+.book-author {
+  font-size: 0.85rem;
+  color: var(--brand-muted-grey);
+  margin-top: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Book Year --- */
+.book-year {
+  font-size: 0.75rem;
+  color: var(--brand-muted-grey);
+  margin-top: 0.25rem;
+}
+
+/* --- Wishlist Actions --- */
+.book-card-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.card-wishlist-btn {
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  padding: 0.25rem;
+  transition: background 0.3s ease;
+}
+.card-wishlist-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Remove pseudo-element brackets (if injected) */
+.book-title::before,
+.book-title::after,
+.book-author::before,
+.book-author::after {
+  content: none !important;
+}

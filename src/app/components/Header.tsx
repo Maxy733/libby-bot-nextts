@@ -7,8 +7,17 @@ import {
   SignInButton,
   SignUpButton,
   UserButton,
+  useUser,
 } from "@clerk/nextjs";
 
+function RecommendationsLink() {
+  const { isSignedIn } = useUser();
+  return (
+    <Link href={isSignedIn ? "/recommendations" : "/#join-us"}>
+      Recommendations
+    </Link>
+  );
+}
 export default function Header() {
   return (
     <header className="header">
@@ -73,7 +82,7 @@ export default function Header() {
         <nav className="main-nav">
           <Link href="/discover">Discover</Link>
           <Link href="/trending">Trending</Link>
-          <Link href="/recommendations">Recommendations</Link>
+          <RecommendationsLink />
           <Link href="/about">About Us</Link>
         </nav>
 

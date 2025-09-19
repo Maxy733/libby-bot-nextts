@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import BookCard, {Book} from "./BookCard";
+import BookCard from "./BookCard";
+import { Book } from "../../types/book";
 
 
 interface HomeContentProps {
@@ -217,7 +218,7 @@ export default function HomeContent({ showJoinUs = true,
 
       {/* Join Us Section */}
       {showJoinUs && (
-      <section className="join-us-section">
+      <section id="join-us" className="join-us-section">
         <div className="container">
           <div className="join-us-card animated-element">
             <h2>Unlock Personalized Recommendations</h2>
@@ -226,7 +227,7 @@ export default function HomeContent({ showJoinUs = true,
               courses, interests, and reading history. Find your next favorite
               book today.
             </p>
-            <Link href="/signup" className="join-us-btn">
+            <Link href="/sign-up" className="join-us-btn">
               Join Us
             </Link>
           </div>

@@ -3,32 +3,27 @@
 
 import React, { useState, useEffect, useRef, Dispatch, SetStateAction } from 'react';
 import Link from 'next/link';
+import BookCard from '../components/BookCard'; // ✅ Import your reusable BookCard
+import { Book } from "../../types/book";
 
-// --- Type Definitions ---
-interface Book {
-  id: number;
-  title: string;
-  author: string;
-  coverurl: string | null;
-}
+
 
 type Period = 'weekly' | 'monthly' | 'yearly';
 
-// --- Reusable Components ---
-const BookCard = ({ book }: { book: Book }) => (
-    <Link href={`/book/${book.id}`} className="book-card">
-        <img
-            src={book.coverurl || `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`}
-            alt={book.title}
-            className="book-cover"
-        />
-        <p className="book-title">{book.title || 'No Title'}</p>
-        <p className="book-author">{book.author || 'Unknown Author'}</p>
-    </Link>
-);
-
-// --- UPDATED: Reusable BookCarousel now includes a "See More" link ---
-const BookCarousel = ({ title, books, isLoading, error, seeMoreLink }: { title: string, books: Book[], isLoading: boolean, error: string | null, seeMoreLink: string }) => {
+// --- Reusable BookCarousel ---
+const BookCarousel = ({ 
+    title, 
+    books, 
+    isLoading, 
+    error, 
+    seeMoreLink 
+}: { 
+    title: string, 
+    books: Book[], 
+    isLoading: boolean, 
+    error: string | null, 
+    seeMoreLink: string 
+}) => {
     const carouselRef = useRef<HTMLDivElement>(null);
 
     const handleCarouselScroll = (direction: 'left' | 'right') => {
@@ -46,7 +41,6 @@ const BookCarousel = ({ title, books, isLoading, error, seeMoreLink }: { title: 
         <section>
             <div className="section-header">
                 <h2 className="section-title">{title}</h2>
-                {/* --- NEW: "See More" button is now a Link --- */}
                 <Link href={seeMoreLink} className="see-more-link">See More &rarr;</Link>
             </div>
             <div className="carousel-wrapper">
@@ -54,7 +48,7 @@ const BookCarousel = ({ title, books, isLoading, error, seeMoreLink }: { title: 
                     {isLoading && <p className="loading-text">Loading...</p>}
                     {error && <p className="error-text">{error}</p>}
                     {!isLoading && !error && books.length > 0 && (
-                        books.map((book) => <BookCard key={book.id} book={book} />)
+                        books.map((book) => <BookCard key={book.id} book={book} showWishlist={true}/>) // ✅ Reused
                     )}
                     {!isLoading && !error && books.length === 0 && (
                         <p className="loading-text">No books found for this period.</p>
@@ -70,7 +64,6 @@ const BookCarousel = ({ title, books, isLoading, error, seeMoreLink }: { title: 
 
 // --- Main Page Component ---
 export default function TrendingPage() {
-    // State definitions remain the same
     const [weeklyBooks, setWeeklyBooks] = useState<Book[]>([]);
     const [monthlyBooks, setMonthlyBooks] = useState<Book[]>([]);
     const [yearlyBooks, setYearlyBooks] = useState<Book[]>([]);
@@ -88,7 +81,6 @@ export default function TrendingPage() {
             setLoadingState: (isLoading: boolean) => void, 
             setErrorState: (error: string | null) => void
         ) => {
-            // Limiting the fetch to 10 books for the preview carousel
             fetch(`${apiUrl}/api/books/recommendations/globally-trending?period=${period}&page=1&per_page=10`)
                 .then(res => res.json())
                 .then(data => {
@@ -107,7 +99,6 @@ export default function TrendingPage() {
         fetchData('yearly', setYearlyBooks, (isLoading) => setLoading(prev => ({...prev, yearly: isLoading})), (err) => setError(prev => ({...prev, yearly: err})));
     }, []);
 
-    // Animation effect remains the same
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -122,7 +113,6 @@ export default function TrendingPage() {
         return () => elements.forEach(el => observer.unobserve(el));
     }, [weeklyBooks, monthlyBooks, yearlyBooks]);
 
-
     return (
         <div>
             <main className="container page-content">
@@ -132,7 +122,6 @@ export default function TrendingPage() {
                 </div>
 
                 <div className="space-y-16 mt-12">
-                    {/* --- UPDATED: Passing the seeMoreLink to each carousel --- */}
                     <BookCarousel 
                         title="Trending This Week" 
                         books={weeklyBooks} 

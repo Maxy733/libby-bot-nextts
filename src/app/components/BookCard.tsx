@@ -2,44 +2,56 @@
 
 import Link from "next/link";
 import WishlistButton from "./WishlistButton";
+import { Book } from "../../types/book";
+import styles from './BookCard.module.css';
 
-export interface Book {
-  id: number;
-  title: string;
-  author: string;
-  coverurl: string | null;
-}
+
 
 interface BookCardProps {
   book: Book;
   showWishlist?: boolean;
 }
 
-// Component
+// Utility function to extract year from various date formats
+const getYearFromDate = (date: string | Date | null): string => {
+  if (!date) return "Unknown Year";
+  
+  try {
+    // Handle both Date objects and date strings (same logic as your working code)
+    const dateObj = new Date(date);
+    const year = dateObj.getFullYear();
+    
+    // Check if year is valid
+    if (isNaN(year)) return "Unknown Year";
+    
+    return year.toString();
+  } catch (error) {
+    return "Unknown Year";
+  }
+};
+
 export default function BookCard({ book, showWishlist = false }: BookCardProps) {
+  const placeholderUrl = `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title || "No Title")}`;
+  
   return (
-    <div className="book-card-wrapper">
-      <Link href={`/book/${book.id}`} className="book-card">
+    <div className={styles["book-card-wrapper"]}>
+      <Link href={`/book/${book.id}`} className={styles["book-card"]}>
         <img
-          src={
-            book.coverurl ||
-            `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(
-              book.title
-            )}`
-          }
-          alt={book.title}
-          className="book-cover"
+          src={book.coverurl || placeholderUrl}
+          alt={book.title || "Book cover"}
+          className={styles["book-cover"]}
         />
-        <p className="book-title">{book.title || "No Title"}</p>
-        <p className="book-author">{book.author || "Unknown Author"}</p>
+        <p className={styles["book-title"]}>{book.title || "No Title"}</p>
+        <p className={styles["book-author"]}>{book.author || "Unknown Author"}</p>
+        <p className={styles["book-year"]}>{getYearFromDate(book.publication_date)}</p>
       </Link>
 
       {showWishlist && (
-        <div className="book-card-actions">
+        <div className={styles["book-card-actions"]}>
           <WishlistButton
             book={book}
             showText={false}
-            className="card-wishlist-btn"
+            className={styles["card-wishlist-btn"]}
           />
         </div>
       )}
