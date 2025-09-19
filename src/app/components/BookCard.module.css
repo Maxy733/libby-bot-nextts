@@ -1,0 +1,50 @@
+/* --- Book Card Component (UPDATED FOR DARK THEME) --- */
+.book-card {
+  flex-shrink: 0;
+  width: 12rem;
+  /* -- Use the dark surface color for cards -- */
+  background-color: var(--brand-surface);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--brand-light-grey);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.4s ease-out,
+    box-shadow 0.4s ease-out;
+  text-decoration: none;
+  color: inherit;
+}
+.book-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.book-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.25);
+  z-index: 10;
+}
+
+.book-cover {
+  width: 100%;
+  height: 7rem;
+  object-fit: cover;
+  border-radius: 0.25rem;
+  background-color: var(--brand-light-grey);
+}
+
+.book-title {
+  margin-top: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.book-author {
+  font-size: 0.875rem;
+  color: var(--brand-muted-grey);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
