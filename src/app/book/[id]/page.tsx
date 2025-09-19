@@ -5,20 +5,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation'; // Hook to get URL parameters
 import { useRouter } from 'next/navigation';
 import styles from "./Book.module.css";
-
-interface Book {
-  book_id: number;
-  title: string;
-  author: string;
-  genre: string | null;
-  description: string | null;
-  cover_image_url: string | null;
-  rating: number | null;
-  publication_date: string | null;
-  pages: number | null;
-  language: string | null;
-  isbn: string | null;
-}
+import WishlistButton from '@/app/components/WishlistButton';
+import {Book} from "../../../types/book";
 
 // --- Main Book Details Page Component ---
 export default function BookDetailsPage() {
@@ -43,8 +31,17 @@ export default function BookDetailsPage() {
         })
         .then((data) => {
           const normalized: Book = {
-            ...data,
+            id: Number(data.book_id),
+            title: data.title,
+            author: data.author,
+            genre: data.genre,
+            description: data.description,
+            coverurl: data.cover_image_url,
             rating: data.rating !== null ? Number(data.rating) : null,
+            publication_date: data.publication_date,
+            pages: data.pages,
+            language: data.language,
+            isbn: data.isbn,
           };
           setBook(normalized);
           setLoading(false);
@@ -73,7 +70,7 @@ export default function BookDetailsPage() {
               <div className={styles.bookLeftColumn}>
                 <div className="book-details-cover">
                   <img
-                    src={book.cover_image_url || `https://placehold.co/600x900/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`}
+                    src={book.coverurl || `https://placehold.co/600x900/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`}
                     alt={book.title}
                   />
                 </div>
@@ -91,7 +88,19 @@ export default function BookDetailsPage() {
               </div>
 
               <div className={styles.bookRightColumn}>
-                <h1 className="book-details-title">{book.title}</h1>
+                <div className={styles.titleRow}>
+                  <h1 className="book-details-title">{book.title}</h1>
+                  <WishlistButton
+                    book={{
+                      id: book.id,
+                      title: book.title,
+                      author: book.author,
+                      coverurl: book.coverurl || null
+                    }}
+                    showText={false}
+                    className={styles.cardWishlistBtn}
+                  />
+                </div>
                 <p className="book-details-author">by {book.author || 'Unknown Author'}</p>
                 {book.genre && <span className="book-details-genre">{book.genre}</span>}
 
