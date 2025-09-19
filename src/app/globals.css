@@ -332,26 +332,8 @@ body {
   font-weight: 700;
 }
 
-.carousel-wrapper {
-  position: relative;
-}
 
-.carousel-container {
-  display: flex;
-  overflow-x: auto;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-  padding-bottom: 1rem;
-  scroll-behavior: smooth;
-}
 
-.carousel-container::-webkit-scrollbar {
-  display: none;
-}
-.carousel-container {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
 
 .loading-text {
   color: var(--brand-muted-grey);
@@ -618,14 +600,14 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: var(--brand-accent);
   border: 1px solid var(--brand-light-grey);
   border-radius: 9999px;
   width: 40px;
   height: 40px;
   font-size: 24px;
   font-weight: bold;
-  color: var(--brand-charcoal);
+  color: var(rgba(255, 255, 255, 0.9));
   cursor: pointer;
   z-index: 10;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
