@@ -935,7 +935,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
+  width: 3.5rem;
   height: 2.5rem;
   border: 1px solid var(--brand-light-grey);
   border-radius: 0.375rem;
@@ -952,7 +952,7 @@ body {
 
 .pagination-number.active {
   background-color: var(--brand-accent);
-  color: white;
+  color: var(--brand-accent);
   border-color: var(--brand-accent);
   font-weight: 600;
 }
