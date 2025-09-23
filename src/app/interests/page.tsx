@@ -91,7 +91,7 @@ export default function InterestsPage() {
       }
 
       // Redirect to dashboard
-      router.push("/profile?tab=preferences");
+      router.push("/profile#preferences");
     } catch (err) {
       console.error("Error saving interests:", err);
       alert("❌ Failed to update interests");
