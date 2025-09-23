@@ -1,20 +1,18 @@
 "use client";
-import { SignIn, useSignIn } from "@clerk/nextjs";
+import { SignIn, useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function SignInPage() {
   const router = useRouter();
-  const { signIn, setActive } = useSignIn();
+  const { isSignedIn } = useAuth();
   
   // Redirect when signin is complete
   React.useEffect(() => {
-    if (signIn && signIn.status === "complete" && signIn.createdSessionId) {
-      setActive({ session: signIn.createdSessionId }).then(() => {
-        router.push("/dashboard");
-      });
+    if (isSignedIn) {
+      router.push('/dashboard'); // redirect after signin
     }
-  }, [signIn, signIn?.createdSessionId, setActive, router]);
+  }, [isSignedIn, router]);
 
   return (
     <div className="auth-page">
