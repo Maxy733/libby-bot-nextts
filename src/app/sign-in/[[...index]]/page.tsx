@@ -5,21 +5,24 @@ import React from "react";
 
 export default function SignInPage() {
   const router = useRouter();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
   
-  // Redirect when signin is complete
   React.useEffect(() => {
-    if (isSignedIn) {
-      router.push('/dashboard'); // redirect after signin
+    if (isLoaded && isSignedIn) {
+      router.replace('/dashboard');
     }
-  }, [isSignedIn, router]);
+  }, [isSignedIn, isLoaded, router]);
+
+  // Don't render anything while checking auth or if already signed in
+  if (!isLoaded) return <div>Loading...</div>;
+  if (isSignedIn) return <div>Redirecting...</div>;
 
   return (
     <div className="auth-page">
       <div className="auth-image-panel" style={{ backgroundImage: "url('/stack-of-library-books.webp')" }} />
       <div className="auth-form-panel">
         <div className="auth-form-container">
-          <SignIn />
+          <SignIn afterSignInUrl="/dashboard" />
         </div>
       </div>
     </div>
