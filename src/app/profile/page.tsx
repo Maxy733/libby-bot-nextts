@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./Profile.module.css";
+
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000";
 
@@ -71,16 +72,22 @@ export default function ProfilePage() {
   const { user, isLoaded } = useUser();
   const { getToken, isSignedIn } = useAuth();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const tabParam = searchParams.get("tab") as "overview" | "wishlist" | "preferences" | "notifications" | null;
   const [activeTab, setActiveTab] = useState<
     "overview" | "wishlist" | "preferences" | "notifications"
-  >(tabParam ?? "overview");
+  >("overview");
   const [wishlistBooks, setWishlistBooks] = useState<Book[]>([]);
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [preferencesGenres, setPreferencesGenres] = useState<string[]>([]);
+
+  useEffect(() => {
+    const validTabs = ["overview", "wishlist", "preferences", "notifications"];
+    const hash = window.location.hash.replace("#", "");
+    if (validTabs.includes(hash)) {
+      setActiveTab(hash as "overview" | "wishlist" | "preferences" | "notifications");
+    }
+  }, []);
 
   useEffect(() => {
     if (isLoaded && user) {
@@ -209,7 +216,10 @@ export default function ProfilePage() {
             <li>
               <button
                 className={styles.tabBtn}
-                onClick={() => setActiveTab("overview")}
+                onClick={() => {
+                  setActiveTab("overview");
+                  window.location.hash = "overview";
+                }}
               >
                 Overview
               </button>
@@ -217,7 +227,10 @@ export default function ProfilePage() {
             <li>
               <button
                 className={styles.tabBtn}
-                onClick={() => setActiveTab("wishlist")}
+                onClick={() => {
+                  setActiveTab("wishlist");
+                  window.location.hash = "wishlist";
+                }}
               >
                 Wishlist
               </button>
@@ -225,7 +238,10 @@ export default function ProfilePage() {
             <li>
               <button
                 className={styles.tabBtn}
-                onClick={() => setActiveTab("preferences")}
+                onClick={() => {
+                  setActiveTab("preferences");
+                  window.location.hash = "preferences";
+                }}
               >
                 Preferences
               </button>
@@ -233,7 +249,10 @@ export default function ProfilePage() {
             <li>
               <button
                 className={styles.tabBtn}
-                onClick={() => setActiveTab("notifications")}
+                onClick={() => {
+                  setActiveTab("notifications");
+                  window.location.hash = "notifications";
+                }}
               >
                 Notifications
               </button>
