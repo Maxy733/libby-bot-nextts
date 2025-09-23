@@ -1,7 +1,21 @@
 "use client";
-import { SignIn } from "@clerk/nextjs";
+import { SignIn, useSignIn } from "@clerk/nextjs";
+import { useRouter } from "next/router";
+import React from "react";
 
 export default function SignInPage() {
+  const router = useRouter();
+  const { signIn, setActive } = useSignIn();
+  
+  // Redirect when signin is complete
+  React.useEffect(() => {
+    if (signIn && signIn.status === "complete" && signIn.createdSessionId) {
+      setActive({ session: signIn.createdSessionId }).then(() => {
+        router.push("/dashboard");
+      });
+    }
+  }, [signIn, signIn?.createdSessionId, setActive, router]);
+
   return (
     <div className="auth-page">
       <div className="auth-image-panel" style={{ backgroundImage: "url('/stack-of-library-books.webp')" }} />
