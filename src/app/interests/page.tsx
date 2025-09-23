@@ -71,7 +71,7 @@ export default function InterestsPage() {
       // Optional: persist to Flask DB keyed by Clerk id
       try {
         const tok = await getToken();
-        await fetch(`${API_BASE}/api/profile/interests`, {
+        const response = await fetch(`${API_BASE}/api/profile/interests`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -79,14 +79,22 @@ export default function InterestsPage() {
           },
           body: JSON.stringify({ interests: selected, clerk_user_id: user.id }),
         });
+        const data = await response.json();
+        if (response.ok && data && data.success === true) {
+          alert("✅ Your interests have been updated!");
+        } else {
+          alert("❌ Failed to update interests");
+        }
       } catch (err) {
         console.log("API call failed:", err);
+        alert("❌ Failed to update interests");
       }
 
       // Redirect to dashboard
-      router.push("/dashboard");
+      router.push("/profile?tab=preferences");
     } catch (err) {
       console.error("Error saving interests:", err);
+      alert("❌ Failed to update interests");
     } finally {
       setSaving(false);
     }

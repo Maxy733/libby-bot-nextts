@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
@@ -71,11 +71,13 @@ export default function ProfilePage() {
   const { user, isLoaded } = useUser();
   const { getToken, isSignedIn } = useAuth();
   const router = useRouter();
-  const [wishlistBooks, setWishlistBooks] = useState<Book[]>([]);
-  const [userStats, setUserStats] = useState<UserStats | null>(null);
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab") as "overview" | "wishlist" | "preferences" | "notifications" | null;
   const [activeTab, setActiveTab] = useState<
     "overview" | "wishlist" | "preferences" | "notifications"
-  >("overview");
+  >(tabParam ?? "overview");
+  const [wishlistBooks, setWishlistBooks] = useState<Book[]>([]);
+  const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [preferencesGenres, setPreferencesGenres] = useState<string[]>([]);
