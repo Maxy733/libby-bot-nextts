@@ -100,26 +100,6 @@ export default function Header() {
           <Link href="/about">About Us</Link>
         </nav>
 
-        {/* Mobile dropdown menu */}
-        <div
-          className={`mobile-nav-dropdown absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-start px-6 py-4 gap-4 md:hidden z-50 transition-all duration-300 ease-in-out ${
-            isMenuOpen ? "opacity-100 max-h-96" : "opacity-0 max-h-0 overflow-hidden"
-          }`}
-        >
-          <Link href="/discover" onClick={() => setIsMenuOpen(false)}>
-            Discover
-          </Link>
-          <Link href="/trending" onClick={() => setIsMenuOpen(false)}>
-            Trending
-          </Link>
-          <span onClick={() => setIsMenuOpen(false)}>
-            <RecommendationsLink />
-          </span>
-          <Link href="/about" onClick={() => setIsMenuOpen(false)}>
-            About Us
-          </Link>
-        </div>
-
         {/* Auth Buttons */}
         <div className="header-actions flex gap-4 items-center">
           <SignedOut>
@@ -141,6 +121,26 @@ export default function Header() {
               <UserButton afterSignOutUrl="/" />
             </div>
           </SignedIn>
+
+          {/* Mobile dropdown menu */}
+          <div
+            className={`mobile-nav-dropdown absolute top-full left-0 w-full border rounded-lg bg-white shadow-lg mt-2 flex flex-col items-start px-6 py-4 gap-4 md:hidden z-50 transition-all duration-300 ease-in-out ${
+              isMenuOpen ? "opacity-100 max-h-96" : "opacity-0 max-h-0 overflow-hidden"
+            }`}
+          >
+            <Link href="/discover" onClick={() => setIsMenuOpen(false)}>
+              Discover
+            </Link>
+            <Link href="/trending" onClick={() => setIsMenuOpen(false)}>
+              Trending
+            </Link>
+            <span onClick={() => setIsMenuOpen(false)}>
+              <RecommendationsLink />
+            </span>
+            <Link href="/about" onClick={() => setIsMenuOpen(false)}>
+              About Us
+            </Link>
+          </div>
         </div>
       </div>
     </header>
