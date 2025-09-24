@@ -13,12 +13,41 @@ interface HomeContentProps {
 export default function HomeContent({ showJoinUs = true,
   personalized = false, }: HomeContentProps) {
   const [trendingBooks, setTrendingBooks] = useState<Book[]>([]);
+  const [personalizedBooks, setPersonalizedBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const trendingCarouselRef = useRef<HTMLDivElement>(null);
+  const trendingCarouselRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
+  const personalizedCarouselRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
   const [userId] = useState<string | null>(null);
 
   // Fetch trending books
+  useEffect(() => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000";
+    setIsLoading(true);
+    setError(null);
+
+    fetch(`${apiUrl}/api/books/recommendations/globally-trending?limit=10`)
+    
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setTrendingBooks(data);
+        } else if (data && Array.isArray(data.books)) {
+          setTrendingBooks(data.books);
+        } else {
+          throw new Error("Invalid data format received from API.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching trending books:", error);
+        setError(error.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
+
+  // Fetch personalized books
   useEffect(() => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000";
     setIsLoading(true);
@@ -29,9 +58,9 @@ export default function HomeContent({ showJoinUs = true,
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          setTrendingBooks(data);
+          setPersonalizedBooks(data);
         } else if (data && Array.isArray(data.books)) {
-          setTrendingBooks(data.books);
+          setPersonalizedBooks(data.books);
         } else {
           throw new Error("Invalid data format received from API.");
         }
@@ -81,16 +110,18 @@ export default function HomeContent({ showJoinUs = true,
   };
 
   // Carousel scroll handler
-  const handleCarouselScroll = (direction: "left" | "right") => {
-    if (trendingCarouselRef.current) {
+  const handleCarouselScroll = (
+    ref: React.RefObject<HTMLDivElement>,
+    direction: "left" | "right"
+  ) => {
+    if (ref.current) {
       const scrollAmount = 300;
-      const currentScroll = trendingCarouselRef.current.scrollLeft;
+      const currentScroll = ref.current.scrollLeft;
 
-      trendingCarouselRef.current.scrollTo({
-        left:
-          direction === "left"
-            ? currentScroll - scrollAmount
-            : currentScroll + scrollAmount,
+      ref.current.scrollTo({
+        left: direction === "left"
+          ? currentScroll - scrollAmount
+          : currentScroll + scrollAmount,
         behavior: "smooth",
       });
     }
@@ -141,14 +172,14 @@ export default function HomeContent({ showJoinUs = true,
               </div>
               {/* Scroll Buttons */}
               <button
-                onClick={() => handleCarouselScroll("left")}
+                onClick={() => handleCarouselScroll(trendingCarouselRef, "left")}
                 className="carousel-button prev"
                 aria-label="Scroll left"
               >
                 ‹
               </button>
               <button
-                onClick={() => handleCarouselScroll("right")}
+                onClick={() => handleCarouselScroll(trendingCarouselRef, "right")}
                 className="carousel-button next"
                 aria-label="Scroll right"
               >
@@ -171,25 +202,25 @@ export default function HomeContent({ showJoinUs = true,
                 </Link>
                 </div>
                 <div className="carousel-wrapper">
-                <div ref={trendingCarouselRef} className="carousel-container">
+                <div ref={personalizedCarouselRef} className="carousel-container">
                     {isLoading && <p className="loading-text">Loading your recommendations...</p>}
                     {error && <p className="error-text">{error}</p>}
                     {!isLoading &&
                     !error &&
-                    trendingBooks.map((book, index) => (
+                    personalizedBooks.map((book, index) => (
                         <BookCard key={book.id || index} book={book} showWishlist={true} />
                     ))}
                 </div>
                 {/* Scroll Buttons */}
                 <button
-                    onClick={() => handleCarouselScroll("left")}
+                    onClick={() => handleCarouselScroll(personalizedCarouselRef,"left")}
                     className="carousel-button prev"
                     aria-label="Scroll left"
                 >
                     ‹
                 </button>
                 <button
-                    onClick={() => handleCarouselScroll("right")}
+                    onClick={() => handleCarouselScroll(personalizedCarouselRef, "right")}
                     className="carousel-button next"
                     aria-label="Scroll right"
                 >
