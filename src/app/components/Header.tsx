@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import {
   SignedIn,
   SignedOut,
@@ -19,6 +20,7 @@ function RecommendationsLink() {
   );
 }
 export default function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
     <header className="header">
       <div className="container header-content">
@@ -78,13 +80,43 @@ export default function Header() {
           </Link>
         </SignedIn>
 
-        {/* Navigation */}
-        <nav className="main-nav">
+        {/* Hamburger button for mobile */}
+        <button
+          className="mobile-menu-btn md:hidden flex flex-col justify-center items-center w-10 h-10"
+          aria-label="Toggle navigation menu"
+          type="button"
+          onClick={() => setIsMenuOpen((open) => !open)}
+        >
+          <span className="block w-6 h-0.5 bg-black mb-1"></span>
+          <span className="block w-6 h-0.5 bg-black mb-1"></span>
+          <span className="block w-6 h-0.5 bg-black"></span>
+        </button>
+
+        {/* Navigation - hidden on mobile, shown on md+ */}
+        <nav className="main-nav hidden md:flex">
           <Link href="/discover">Discover</Link>
           <Link href="/trending">Trending</Link>
           <RecommendationsLink />
           <Link href="/about">About Us</Link>
         </nav>
+
+        {/* Mobile dropdown menu */}
+        {isMenuOpen && (
+          <div className="mobile-nav-dropdown absolute top-full left-0 w-full bg-white shadow-md flex flex-col items-start px-6 py-4 gap-4 md:hidden z-50">
+            <Link href="/discover" onClick={() => setIsMenuOpen(false)}>
+              Discover
+            </Link>
+            <Link href="/trending" onClick={() => setIsMenuOpen(false)}>
+              Trending
+            </Link>
+            <span onClick={() => setIsMenuOpen(false)}>
+              <RecommendationsLink />
+            </span>
+            <Link href="/about" onClick={() => setIsMenuOpen(false)}>
+              About Us
+            </Link>
+          </div>
+        )}
 
         {/* Auth Buttons */}
         <div className="header-actions flex gap-4 items-center">
