@@ -307,11 +307,15 @@ export default function ProfilePage() {
                 ) : (
                   <div className={styles.wishlistGrid}>
                     {wishlistBooks.map((book) => (
-                      <BookCard
-                        key={book.id}
-                        book={book}
-                        onRemove={removeFromWishlist}
-                      />
+                      <div key={book.id}>
+                        <BookCard book={book} />
+                        <button
+                          onClick={() => removeFromWishlist(book.id)}
+                          className={styles.removeBookBtn}
+                        >
+                          Remove
+                        </button>
+                      </div>
                     ))}
                   </div>
                 )}
