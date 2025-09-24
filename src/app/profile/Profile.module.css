@@ -146,9 +146,8 @@
   background-color: #9c6237;
   color: #fff;
   border: none;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  border-radius: 6px;
+  padding: 4px 10px;
   cursor: pointer;
   font-size: 14px;
   line-height: 28px;
