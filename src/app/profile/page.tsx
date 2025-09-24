@@ -305,7 +305,7 @@ export default function ProfilePage() {
                     </Link>
                   </div>
                 ) : (
-                  <div className={styles.wishlistGrid}>
+                  <div className={styles.wishlistRow}>
                     {wishlistBooks.map((book) => (
                       <div key={book.id}>
                         <BookCard book={book} />
