@@ -207,14 +207,7 @@ export default function ProfilePage() {
                 Notifications
               </button>
             </li>
-            <li>
-              <button
-                onClick={clearWishlist}
-                className={`${styles.actionBtn} ${styles.danger}`}
-              >
-                Clear Wishlist
-              </button>
-            </li>
+
           </ul>
         </div>
       </div>
