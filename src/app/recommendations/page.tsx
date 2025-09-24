@@ -752,11 +752,15 @@ export default function RecommendationsPage() {
             <>
               <div className="results-grid">
                 {books.map((b: RecommendedBook) => (
-                  <div key={b.id} className="book-card is-visible">
+                  <div
+                    key={b.id}
+                    className="book-card is-visible"
+                    onClick={() => handleBookClick(b)}
+                  >
                     <BookCard
                         book={{
                             ...b,
-                            coverurl: toHttps(b.coverurl)??null, // normalize
+                            coverurl: toHttps(b.coverurl) ?? null, // normalize
                         }}
                         showWishlist={true}
                     />
