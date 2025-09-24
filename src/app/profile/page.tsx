@@ -7,66 +7,16 @@ import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./Profile.module.css";
-
+import BookCard from "../components/BookCard";
+import { Book } from "../../types/book";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000";
-
-interface Book {
-  id: number;
-  title: string;
-  author: string;
-  coverurl: string | null;
-  dateAdded?: string;
-}
 
 interface UserStats {
   booksWishlisted: number;
   accountCreated: string;
   lastActive: string;
 }
-
-const BookCard = ({
-  book,
-  onRemove,
-}: {
-  book: Book;
-  onRemove?: (bookId: number) => void;
-}) => (
-  <div className={styles.wishlistBookCard}>
-    <Link href={`/book/${book.id}`} className={styles.bookLink}>
-      <Image
-        src={
-          book.coverurl ||
-          `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(
-            book.title
-          )}`
-        }
-        alt={book.title || "Book cover"}
-        width={60} // match your CSS small cover size
-        height={80}
-        className={styles.bookCoverSmall}
-      />
-      <div className={styles.bookInfo}>
-        <h4 className={styles.bookTitle}>{book.title || "No Title"}</h4>
-        <p className={styles.bookAuthor}>{book.author || "Unknown Author"}</p>
-        {book.dateAdded && (
-          <p className={styles.dateAdded}>
-            Added: {new Date(book.dateAdded).toLocaleDateString()}
-          </p>
-        )}
-      </div>
-    </Link>
-    {onRemove && (
-      <button
-        onClick={() => onRemove(book.id)}
-        className={styles.removeBtn}
-        aria-label={`Remove ${book.title} from wishlist`}
-      >
-        ✕
-      </button>
-    )}
-  </div>
-);
 
 export default function ProfilePage() {
   const { user, isLoaded } = useUser();
@@ -395,11 +345,6 @@ export default function ProfilePage() {
             </div>
           )}
         </div>
-      </div>
-
-      {/* Right Column (Blank for now) */}
-      <div className={styles.rightColumn}>
-        <p>More features coming soon...</p>
       </div>
     </div>
   );
