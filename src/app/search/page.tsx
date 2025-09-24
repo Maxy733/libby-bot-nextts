@@ -4,27 +4,8 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-
-// --- Type Definitions ---
-interface Book {
-  id: number;
-  title: string;
-  author: string;
-  coverurl: string | null;
-}
-
-// --- Reusable Components ---
-const BookCard = ({ book }: { book: Book }) => (
-    <Link href={`/book/${book.id}`} className="book-card">
-        <img 
-            src={book.coverurl || `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title)}`} 
-            alt={book.title} 
-            className="book-cover"
-        />
-        <p className="book-title">{book.title || 'No Title'}</p>
-        <p className="book-author">{book.author || 'Unknown Author'}</p>
-    </Link>
-);
+import BookCard from '../components/BookCard';
+import { Book } from '../../types/book';
 
 // --- This component contains the main search logic ---
 function SearchResults() {
@@ -93,7 +74,7 @@ function SearchResults() {
                     {isLoading && <p className="loading-text col-span-full">Loading results...</p>}
                     {error && <p className="error-text col-span-full">{error}</p>}
                     {!isLoading && !error && results.length > 0 && (
-                        results.map((book) => <BookCard key={book.id} book={book} />)
+                        results.map((book) => <BookCard key={book.id} book={book} showWishlist={true} />)
                     )}
                     {!isLoading && !error && results.length === 0 && (
                         <p className="loading-text col-span-full">No books found matching your search.</p>
