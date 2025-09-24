@@ -16,6 +16,7 @@ export default function HomeContent({ showJoinUs = true,
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const trendingCarouselRef = useRef<HTMLDivElement>(null);
+  const [userId] = useState<string | null>(null);
 
   // Fetch trending books
   useEffect(() => {
@@ -23,7 +24,8 @@ export default function HomeContent({ showJoinUs = true,
     setIsLoading(true);
     setError(null);
 
-    fetch(`${apiUrl}/api/books/recommendations/globally-trending`)
+    fetch(`${apiUrl}/api/recommendations/${userId}/enhanced?limit=10`)
+    
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
