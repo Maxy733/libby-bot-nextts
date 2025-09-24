@@ -4,6 +4,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000";
 
 export interface InteractionData {
   user_id: string;
+  clerk_user_id?: string;
   book_id: number;
   type: "click" | "view" | "wishlist_add" | "like" | "rate";
   rating?: number;
@@ -13,15 +14,23 @@ export const trackUserInteraction = async (interaction: InteractionData) => {
   try {
     const token = localStorage.getItem("token");
 
+    const bodyPayload = {
+      book_id: interaction.book_id,
+      type: interaction.type,
+      rating: interaction.rating,
+      user_id: interaction.user_id,
+      ...(interaction.clerk_user_id && { clerk_user_id: interaction.clerk_user_id }),
+    };
+
     const response = await fetch(
-      `${API_BASE}/api/recommendations/interactions/click`,
+      `${API_BASE}/api/recommendations/interactions`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           ...(token && { Authorization: `Bearer ${token}` }),
         },
-        body: JSON.stringify(interaction),
+        body: JSON.stringify(bodyPayload),
       }
     );
 
