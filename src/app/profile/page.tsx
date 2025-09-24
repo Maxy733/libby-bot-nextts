@@ -307,7 +307,7 @@ export default function ProfilePage() {
                 ) : (
                   <div className={styles.wishlistRow}>
                     {wishlistBooks.map((book) => (
-                      <div key={book.id}>
+                      <div key={book.id} className={styles.wishlistCardWrapper}>
                         <BookCard book={book} />
                         <button
                           onClick={() => removeFromWishlist(book.id)}

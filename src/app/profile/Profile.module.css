@@ -1,3 +1,7 @@
+.wishlistCardWrapper {
+  position: relative;
+  display: inline-block;
+}
 /* Profile.module.css */
 
 .threeColumnLayout {
@@ -134,15 +138,25 @@
   margin-top: 4px;
 }
 
-.removeBtn {
+
+.removeBookBtn {
   position: absolute;
   top: 8px;
   right: 8px;
-  background: transparent;
+  background-color: #9c6237;
+  color: #fff;
   border: none;
-  color: #a3937b;
-  font-size: 16px;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
+  font-size: 14px;
+  line-height: 28px;
+  text-align: center;
+}
+
+.removeBookBtn:hover {
+  background-color: #b2744b;
 }
 
 .rightColumn {
