@@ -2,8 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
+
 import { useUser, useAuth } from "@clerk/nextjs";
 import styles from "./Recommendations.module.css";
 import BookCard from "../components/BookCard";
