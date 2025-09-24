@@ -10,6 +10,7 @@ import styles from './BookCard.module.css';
 interface BookCardProps {
   book: Book;
   showWishlist?: boolean;
+  onClick?: (book: Book) => void;
 }
 
 // Utility function to extract year from various date formats
@@ -30,25 +31,21 @@ const getYearFromDate = (date: string | Date | null): string => {
   }
 };
 
-export default function BookCard({ book, showWishlist = false }: BookCardProps) {
+export default function BookCard({ book, showWishlist = false, onClick }: BookCardProps) {
   const placeholderUrl = `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title || "No Title")}`;
-    // Add a click handler
-  const handleClick = () => {
-    // Call your interaction tracker here
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/interactions/click`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        book_id: book.id,
-        type: "click",
-        // optionally include user_id or clerk_user_id if available
-      }),
-    }).catch(err => console.error("Error tracking click:", err));
-  };
-
+  
   return (
-    <div className={styles["book-card-wrapper"]} onClick={handleClick}>
-      <Link href={`/book/${book.id}`} className={styles["book-card"]}>
+    <div className={styles["book-card-wrapper"]}>
+      <Link 
+        href={`/book/${book.id}`} 
+        className={styles["book-card"]}
+        onClick={(e) => {
+          if (onClick) {
+            e.preventDefault();
+            onClick(book);
+          }
+        }}
+      >
         <img
           src={book.coverurl || placeholderUrl}
           alt={book.title || "Book cover"}

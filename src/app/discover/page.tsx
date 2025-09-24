@@ -82,6 +82,12 @@ export default function DiscoverPage() {
         }
     };
 
+    function handleBookClick(b: Book): void {
+        // Optionally, navigate to the book detail page
+        // For now, just log the book or implement navigation as needed
+        // Example: router.push(`/book/${b.id}`);
+        console.log('Book clicked:', b);
+    }
     return (
         <div>
             <main className="container page-content">
@@ -105,8 +111,15 @@ export default function DiscoverPage() {
                         <div className="carousel-wrapper">
                             <div ref={trendingCarouselRef} className="carousel-container">
                                 {trendingBooks.map((book) => (
-                                    <BookCard key={book.id} book={book} showWishlist={true}/>
+                                <div
+                                    key={book.id}
+                                    className="book-card is-visible"
+                                    onClick={() => handleBookClick(book)}
+                                >                                    
+                                    <BookCard key={book.id} book={book} showWishlist={true} />
+                                    </div>
                                 ))}
+                                
                             </div>
                             <button
                                 onClick={() => handleCarouselScroll('left', trendingCarouselRef)}
