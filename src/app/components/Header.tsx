@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import {
   SignedIn,
   SignedOut,
@@ -10,8 +9,6 @@ import {
   UserButton,
   useUser,
 } from "@clerk/nextjs";
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
 function RecommendationsLink() {
   const { isSignedIn } = useUser();
@@ -22,7 +19,6 @@ function RecommendationsLink() {
   );
 }
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
     <header className="header">
       <div className="container header-content">
@@ -82,20 +78,8 @@ export default function Header() {
           </Link>
         </SignedIn>
 
-        {/* Hamburger button for mobile */}
-        <button
-          className="mobile-menu-btn md:hidden flex flex-col justify-center items-center w-10 h-10"
-          aria-label="Toggle navigation menu"
-          type="button"
-          onClick={() => setIsMenuOpen((open) => !open)}
-        >
-          <span className="block w-6 h-0.5 bg-black mb-1"></span>
-          <span className="block w-6 h-0.5 bg-black mb-1"></span>
-          <span className="block w-6 h-0.5 bg-black"></span>
-        </button>
-
-        {/* Navigation - hidden on mobile, shown on md+ */}
-        <nav className="main-nav hidden md:flex">
+        {/* Navigation */}
+        <nav className="main-nav">
           <Link href="/discover">Discover</Link>
           <Link href="/trending">Trending</Link>
           <RecommendationsLink />
@@ -123,67 +107,6 @@ export default function Header() {
               <UserButton afterSignOutUrl="/" />
             </div>
           </SignedIn>
-
-          {/* Mobile dropdown menu */}
-          <div className="md:hidden">
-            <Menu as="div" className="relative inline-block text-left">
-              <MenuButton className="inline-flex justify-center items-center w-full rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-black shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100">
-                Menu
-                <ChevronDownIcon className="ml-2 -mr-1 h-5 w-5 text-black" aria-hidden="true" />
-              </MenuButton>
-              <MenuItems className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-                <div className="px-1 py-1 ">
-                  <MenuItem>
-                    {({ active }) => (
-                      <Link
-                        href="/discover"
-                        className={`${
-                          active ? 'bg-gray-100 text-black' : 'text-black'
-                        } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                      >
-                        Discover
-                      </Link>
-                    )}
-                  </MenuItem>
-                  <MenuItem>
-                    {({ active }) => (
-                      <Link
-                        href="/trending"
-                        className={`${
-                          active ? 'bg-gray-100 text-black' : 'text-black'
-                        } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                      >
-                        Trending
-                      </Link>
-                    )}
-                  </MenuItem>
-                  <MenuItem>
-                    {({ active }) => (
-                      <span
-                        className={`${
-                          active ? 'bg-gray-100 text-black cursor-pointer' : 'text-black cursor-pointer'
-                        } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                      >
-                        <RecommendationsLink />
-                      </span>
-                    )}
-                  </MenuItem>
-                  <MenuItem>
-                    {({ active }) => (
-                      <Link
-                        href="/about"
-                        className={`${
-                          active ? 'bg-gray-100 text-black' : 'text-black'
-                        } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                      >
-                        About Us
-                      </Link>
-                    )}
-                  </MenuItem>
-                </div>
-              </MenuItems>
-            </Menu>
-          </div>
         </div>
       </div>
     </header>
