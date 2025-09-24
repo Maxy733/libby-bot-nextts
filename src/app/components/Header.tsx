@@ -10,7 +10,8 @@ import {
   useUser,
 } from "@clerk/nextjs";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
+
+
 
 function RecommendationsLink() {
   const { isSignedIn } = useUser();
@@ -88,58 +89,65 @@ export default function Header() {
           <Link href="/about">About Us</Link>
         </nav>
 
+
+        {/* Auth Buttons */}
+        <div className="header-actions flex gap-4 items-center">
+        
         {/* Dropdown Menu Example */}
-        <Menu as="div" className="relative inline-block md:hidden">
-          <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white inset-ring-1 inset-ring-white/5 hover:bg-white/20">
-            Options
-            <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-gray-400" />
-          </MenuButton>
+        <Menu as="div" className="relative inline-block md-hidden ">
+        <MenuButton className="menu-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            className="menu-icon"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </MenuButton>
 
           <MenuItems
-            transition
-            className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-gray-800 outline-1 -outline-offset-1 outline-white/10 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
+            className="dropdown-menu transition transform origin-top-right duration-200 ease-out data-[closed]:scale-95 data-[closed]:opacity-0"
           >
             <div className="py-1">
               <MenuItem>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-300 data-focus:bg-white/5 data-focus:text-white data-focus:outline-hidden"
-                >
-                  Account settings
-                </a>
+                {({ active }) => (
+                  <Link href="/discover" className="dropdown-item">Discover</Link>
+                )}
               </MenuItem>
               <MenuItem>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-300 data-focus:bg-white/5 data-focus:text-white data-focus:outline-hidden"
-                >
-                  Support
-                </a>
+                {({ active }) => (
+                  <Link href="/trending" className="dropdown-item">Trending</Link>
+                )}
               </MenuItem>
               <MenuItem>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-300 data-focus:bg-white/5 data-focus:text-white data-focus:outline-hidden"
-                >
-                  License
-                </a>
+                {({ active }) => {
+                  const { isSignedIn } = useUser();
+                  return (
+                    <Link
+                      href={isSignedIn ? "/recommendations" : "/#join-us"}
+                      className="dropdown-item"
+                    >
+                      Recommendation
+                    </Link>
+                  );
+                }}
               </MenuItem>
-              <form action="#" method="POST">
-                <MenuItem>
-                  <button
-                    type="submit"
-                    className="block w-full px-4 py-2 text-left text-sm text-gray-300 data-focus:bg-white/5 data-focus:text-white data-focus:outline-hidden"
-                  >
-                    Sign out
-                  </button>
-                </MenuItem>
-              </form>
+              <MenuItem>
+                {({ active }) => (
+                  <Link href="/about" className="dropdown-item">About Us</Link>
+                )}
+              </MenuItem>
             </div>
           </MenuItems>
         </Menu>
 
-        {/* Auth Buttons */}
-        <div className="header-actions flex gap-4 items-center">
           <SignedOut>
             <div className="flex gap-4">
               <SignInButton>
