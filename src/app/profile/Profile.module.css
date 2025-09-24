@@ -246,3 +246,12 @@
     display: none; /* optional: hide right column */
   }
 }
+.wishlistRow {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.wishlistRow > * {
+  flex: 0 0 auto;
+}
