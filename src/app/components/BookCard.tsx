@@ -30,11 +30,33 @@ const getYearFromDate = (date: string | Date | null): string => {
   }
 };
 
-export default function BookCard({ book, showWishlist = false }: BookCardProps) {
+export default function BookCard({ book, showWishlist = false, onPrevious, onNext, showControls = false }: BookCardProps & {
+  onPrevious?: () => void;
+  onNext?: () => void;
+  showControls?: boolean;
+}) {
   const placeholderUrl = `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(book.title || "No Title")}`;
   
   return (
     <div className={styles["book-card-wrapper"]}>
+      {showControls && (
+        <>
+          <button
+            onClick={onPrevious}
+            className={`${styles['carousel-arrow']} ${styles['carousel-arrow-left']}`}
+            aria-label="Previous book"
+          >
+            ←
+          </button>
+          <button
+            onClick={onNext}
+            className={`${styles['carousel-arrow']} ${styles['carousel-arrow-right']}`}
+            aria-label="Next book"
+          >
+            →
+          </button>
+        </>
+      )}
       <Link href={`/book/${book.id}`} className={styles["book-card"]}>
         <img
           src={book.coverurl || placeholderUrl}

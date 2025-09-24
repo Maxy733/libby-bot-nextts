@@ -94,6 +94,44 @@
   background: rgba(0, 0, 0, 0.8);
 }
 
+/* --- Carousel Arrows --- */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--brand-light-grey);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-arrow:hover {
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.carousel-arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.carousel-arrow-left {
+  left: 0.5rem;
+}
+
+.carousel-arrow-right {
+  right: 0.5rem;
+}
+
 /* Remove pseudo-element brackets (if injected) */
 .book-title::before,
 .book-title::after,
