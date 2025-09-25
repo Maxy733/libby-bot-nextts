@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { useWishlist } from "../hooks/useWishlist";
+import { useUser } from "@clerk/nextjs";
+import { addToWishlistWithTracking } from "../utils/interactionTracker";
 
 interface Book {
   id: number;
@@ -22,6 +24,7 @@ export default function WishlistButton({
   showText = true,
 }: WishlistButtonProps) {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { user } = useUser();
   const [isAnimating, setIsAnimating] = useState(false);
 
   const inWishlist = isInWishlist(book.id);
@@ -35,7 +38,16 @@ export default function WishlistButton({
     if (inWishlist) {
       removeFromWishlist(book.id);
     } else {
-      addToWishlist(book);
+      const ok = addToWishlist(book);
+
+      // best-effort tracking
+      try {
+        if (ok && user?.id) {
+          addToWishlistWithTracking(user.id, book.id);
+        }
+      } catch (err) {
+        console.warn("addToWishlistWithTracking failed:", err);
+      }
     }
 
     setTimeout(() => setIsAnimating(false), 300);

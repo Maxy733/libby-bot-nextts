@@ -1,10 +1,11 @@
-import { get } from "http";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000";
+// prefer NEXT_PUBLIC_API_BASE for clarity, fall back to older NEXT_PUBLIC_API_URL
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://127.0.0.1:5000";
 
 export interface InteractionData {
   user_id: string;
-  clerk_user_id?: string;
   book_id: number;
   type: "click" | "view" | "wishlist_add" | "like" | "rate";
   rating?: number;
@@ -14,35 +15,44 @@ export const trackUserInteraction = async (interaction: InteractionData) => {
   try {
     const token = localStorage.getItem("token");
 
-    const bodyPayload = {
-      book_id: interaction.book_id,
-      type: interaction.type,
-      rating: interaction.rating,
-      user_id: interaction.user_id,
-      ...(interaction.clerk_user_id && { clerk_user_id: interaction.clerk_user_id }),
-    };
+    // normalize fields and send to the unified interactions endpoint
+    const { user_id, book_id, type, rating } = interaction;
 
     const response = await fetch(
-      `${API_BASE}/api/recommendations/interactions`,
+      `${API_BASE}/api/recommendations/interactions/click`,
       {
         method: "POST",
+        // avoid sending cookies (simplest for CORS) while still allowing
+        // Authorization via token if present in localStorage
+        credentials: "omit",
         headers: {
           "Content-Type": "application/json",
           ...(token && { Authorization: `Bearer ${token}` }),
         },
-        body: JSON.stringify(bodyPayload),
+        body: JSON.stringify({
+          clerk_user_id: user_id, // renamed per API contract
+          book_id,
+          interaction_type: type, // renamed per API contract
+          ...(rating !== undefined && { rating }),
+        }),
       }
     );
 
-    const result = await response.json();
-
-    if (result.success) {
-      console.log("Interaction tracked:", result.message);
+    // return parsed response when available
+    if (
+      response &&
+      response.headers.get("content-type")?.includes("application/json")
+    ) {
+      const result = await response.json();
+      if (result && result.success) {
+        console.log("Interaction tracked:", result.message ?? result);
+        return result;
+      }
+      // if API returns non-success, still return the parsed body for callers to inspect
       return result;
-    } else {
-      console.warn("Failed to track interaction:", result.error);
-      return null;
     }
+
+    return null;
   } catch (error) {
     console.error("Error tracking interaction:", error);
     return null;
@@ -57,60 +67,102 @@ export const getPersonalizedRecommendations = async (
   try {
     const token = localStorage.getItem("token");
 
-    // Try the improved recommendations endpoint first
-    const response = await fetch(
+    // Primary: enhanced recommendations (DB-driven, labeled for UI)
+    const primaryUrl = `${API_BASE}/api/recommendations/${userId}/enhanced?limit=${limit}`;
+    try {
+      const response = await fetch(primaryUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      });
+
+      if (response.ok) {
+        const json = await response.json();
+        const rawBooks = Array.isArray(json?.books) ? json.books : [];
+
+        return {
+          success: true,
+          books: rawBooks.map((b: any) => ({
+            id: Number(b.id ?? b.book_id),
+            title: b.title ?? "",
+            author: b.author ?? b.authors ?? "",
+            rating: b.rating ?? null,
+            genre: b.genre ?? null,
+            coverurl:
+              b.coverurl ||
+              b.cover_image_url ||
+              b.image_url ||
+              b.thumbnail ||
+              null,
+          })),
+          algorithm_used:
+            json.algorithm_used ||
+            json.algorithm ||
+            json.algorithmUsed ||
+            "Enhanced",
+          algorithm_breakdown: json.algorithm_breakdown,
+          confidence_score: json.confidence_score ?? json.confidence ?? 0,
+          reasons: json.reasons || [],
+          total_count: json.total_count ?? rawBooks.length,
+          user_interactions_count:
+            json.interaction_count ?? json.interactionCount ?? undefined,
+        };
+      }
+    } catch (err) {
+      console.warn(
+        "Enhanced recommendations endpoint failed, falling back:",
+        err
+      );
+    }
+
+    // Fallbacks: improved, hybrid, then generic enhanced URL
+    const fallbacks = [
       `${API_BASE}/api/recommendations/${userId}/improved?limit=${limit}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-      }
-    );
-
-    if (response.ok) {
-      const result = await response.json();
-      if (result.success && result.books && result.books.length > 0) {
-        return result;
-      }
-    }
-
-    // Fallback to hybrid approach
-    const hybridResponse = await fetch(
       `${API_BASE}/api/recommendations/${userId}/hybrid?limit=${limit}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-      }
-    );
-
-    if (hybridResponse.ok) {
-      const hybridResult = await hybridResponse.json();
-      if (
-        hybridResult.success &&
-        hybridResult.books &&
-        hybridResult.books.length > 0
-      ) {
-        return hybridResult;
-      }
-    }
-
-    // Final fallback to enhanced recommendations
-    const enhancedResponse = await fetch(
       `${API_BASE}/api/recommendations/${userId}/enhanced?limit=${limit}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-      }
-    );
+    ];
 
-    if (enhancedResponse.ok) {
-      const enhancedResult = await enhancedResponse.json();
-      return enhancedResult;
+    for (const url of fallbacks) {
+      try {
+        const res = await fetch(url, {
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+          } as HeadersInit,
+        });
+        if (!res.ok) continue;
+        const json = await res.json();
+        const rawBooks = Array.isArray(json?.books) ? json.books : [];
+        return {
+          success: true,
+          books: rawBooks.map((b: any) => ({
+            id: Number(b.id ?? b.book_id),
+            title: b.title ?? "",
+            author: b.author ?? b.authors ?? "",
+            rating: b.rating ?? null,
+            genre: b.genre ?? null,
+            coverurl:
+              b.coverurl ||
+              b.cover_image_url ||
+              b.image_url ||
+              b.thumbnail ||
+              null,
+          })),
+          algorithm_used:
+            json.algorithm_used ||
+            json.algorithm ||
+            json.algorithmUsed ||
+            "Fallback",
+          algorithm_breakdown: json.algorithm_breakdown,
+          confidence_score: json.confidence_score ?? json.confidence ?? 0,
+          reasons: json.reasons || [],
+          total_count: json.total_count ?? rawBooks.length,
+        };
+      } catch (err) {
+        console.warn(`Fallback ${url} failed:`, err);
+        continue;
+      }
     }
 
     throw new Error("All recommendation endpoints failed");

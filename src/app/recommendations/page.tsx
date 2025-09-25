@@ -12,7 +12,6 @@ type RecommendedBook = Book & {
   recommendation_type?: string;
 };
 
-
 // Import the interaction tracking utilities
 import {
   trackUserInteraction,
@@ -20,7 +19,6 @@ import {
   getUserInteractionHistory,
   getUserGenrePreferences,
 } from "../utils/interactionTracker";
-
 
 type ApiTrendingResp = {
   books: Book[];
@@ -105,6 +103,20 @@ function CardCover({ title, src }: { title: string; src?: string | null }) {
     />
   );
 }
+
+const normalizeBooks = (raw: any[]) =>
+  raw
+    .map((b: any) => ({
+      id: Number(b.id ?? b.book_id),
+      title: b.title ?? "",
+      author: b.author ?? b.authors ?? "",
+      rating: b.rating ?? null,
+      genre: b.genre ?? null,
+      coverurl: toHttps(
+        b.coverurl || b.cover_image_url || b.image_url || b.thumbnail || null
+      ),
+    }))
+    .filter((b: any) => Number.isFinite(b.id) && b.title.trim());
 
 export default function RecommendationsPage() {
   const router = useRouter();
@@ -244,139 +256,98 @@ export default function RecommendationsPage() {
 
       try {
         console.log(
-          `Fetching personalized recommendations for user: ${userId}`
+          `Fetching personalized recommendations (improve) for user: ${userId}`
         );
-        const result = await getPersonalizedRecommendations(userId, 20);
+        const url = `${API_BASE}/api/recommendations/${encodeURIComponent(
+          userId!
+        )}/improve?limit=20`;
 
-        if (!cancelled) {
-          if (result.success && result.books && result.books.length > 0) {
+        const res = await fetch(url, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
+          cache: "no-store",
+        });
+
+        if (res.ok) {
+          const json = await res.json();
+          const items = Array.isArray(json?.books)
+            ? json.books
+            : Array.isArray(json?.recommendations)
+            ? json.recommendations
+            : [];
+
+          const books = normalizeBooks(items);
+
+          if (books.length > 0) {
+            // Prefer counts from the API response
+            const ic = Number(
+              json?.interaction_count ??
+                json?.interactionCount ??
+                userInteractionCount
+            );
+
+            setUserInteractionCount(ic);
             setDataP({
               success: true,
-              books: result.books,
+              books: books as Book[],
               algorithm_used:
-                result.algorithm_used || result.algorithm || "Personalized",
-              algorithm_breakdown: result.algorithm_breakdown,
-              confidence_score:
-                result.confidence_score || result.confidence || 0.8,
-              reasons: result.reasons || [
+                json?.algorithm_used ?? json?.algorithmUsed ?? "Personalized",
+              algorithm_breakdown: undefined, // /improve doesn’t return contributions by default
+              confidence_score: json?.confidence_score ?? 0.8,
+              reasons: json?.reasons ?? [
                 "Based on your interactions and preferences",
               ],
-              total_count: result.books.length,
-              user_interactions_count:
-                result.user_interactions_count || userInteractionCount,
+              total_count: books.length,
+              user_interactions_count: ic,
             });
+
             console.log(
-              `Loaded ${result.books.length} personalized books using: ${
-                result.algorithm_used || result.algorithm
+              `Loaded ${books.length} personalized books using: ${
+                json?.algorithm_used ?? json?.algorithmUsed
               }`
             );
-            if (result.algorithm_breakdown) {
-              console.log("Algorithm breakdown:", result.algorithm_breakdown);
-            }
-          } else {
-            setErrorP(
-              result.error || "No personalized recommendations available"
-            );
-            setDataP({
-              success: false,
-              books: [],
-              algorithm_used: "Error",
-              confidence_score: 0,
-              reasons: [result.error || "No recommendations found"],
-              total_count: 0,
-            });
+            return;
           }
         }
+
+        // If /improve returned non-200 or no books, fall back to your existing util
+        throw new Error(
+          `Improve endpoint returned ${res.status} with ${await res
+            .text()
+            .catch(() => "<no body>")}`
+        );
       } catch (error) {
-        // Fallback to original API if interaction tracker fails
         console.warn(
-          "Enhanced recommendations failed, falling back to original API:",
+          "Improve endpoint failed; falling back to getPersonalizedRecommendations:",
           error
         );
-
-        const endpoints = [
-          {
-            url: `${API_BASE}/api/recommendations/${userId}/enhanced?limit=20`,
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-            type: "personalized",
-          },
-        ];
-
-        for (const endpoint of endpoints) {
-          if (cancelled) break;
-
-          try {
-            console.log(`Trying fallback endpoint: ${endpoint.url}`);
-            const res = await fetch(endpoint.url, {
-              headers: {
-                "Content-Type": "application/json",
-                ...endpoint.headers,
-              } as HeadersInit,
+        try {
+          const result = await getPersonalizedRecommendations(userId!, 20);
+          if (result?.success && result?.books?.length) {
+            const legacyBooks = normalizeBooks(result.books) as Book[];
+            setDataP({
+              success: true,
+              books: legacyBooks,
+              algorithm_used:
+                result.algorithm_used ??
+                (result as any).algorithm ??
+                (result as any).algorithmUsed ??
+                "Personalized (Legacy)",
+              algorithm_breakdown: result.algorithm_breakdown,
+              confidence_score:
+                result.confidence_score ?? (result as any).confidence ?? 0.7,
+              reasons: result.reasons || ["Legacy personalized endpoint"],
+              total_count: legacyBooks.length,
+              user_interactions_count:
+                result.user_interactions_count ?? userInteractionCount,
             });
-
-            if (!res.ok) {
-              console.warn(`Endpoint ${endpoint.url} returned ${res.status}`);
-              continue;
-            }
-
-            const json = await res.json();
-            const rawBooks = Array.isArray(json?.books) ? json.books : [];
-
-            if (rawBooks.length === 0) {
-              console.warn(`Endpoint ${endpoint.url} returned no books`);
-              continue;
-            }
-
-            const books = rawBooks
-              .map((b: any) => ({
-                id: Number(b.id ?? b.book_id),
-                title: b.title ?? "",
-                author: b.author ?? b.authors ?? "",
-                rating: b.rating ?? null,
-                genre: b.genre ?? null,
-                coverurl: toHttps(
-                  b.coverurl ||
-                    b.cover_image_url ||
-                    b.image_url ||
-                    b.thumbnail ||
-                    null
-                ),
-              }))
-              .filter((b: any) => Number.isFinite(b.id) && b.title.trim());
-
-            if (books.length === 0) {
-              console.warn(
-                `Endpoint ${endpoint.url} had no valid books after normalization`
-              );
-              continue;
-            }
-
-            console.log(
-              `Successfully loaded ${books.length} books from fallback ${endpoint.url}`
-            );
-            if (!cancelled) {
-              setDataP({
-                success: true,
-                books: books,
-                algorithm_used: "Fallback API",
-                confidence_score: 0.7,
-                reasons: [`Loaded from ${endpoint.type} endpoint`],
-                total_count: books.length,
-              });
-              setLoadingP(false);
-              return;
-            }
-          } catch (err) {
-            console.warn(`Fallback endpoint ${endpoint.url} failed:`, err);
-            continue;
+            return;
           }
-        }
-
-        // If both enhanced and fallback fail
-        if (!cancelled) {
-          console.error("All recommendation endpoints failed");
+          throw new Error("Legacy util returned no books");
+        } catch (err2) {
+          console.error("All personalized endpoints failed:", err2);
           setErrorP("Unable to load recommendations. Please try again later.");
           setDataP({
             success: false,
@@ -388,9 +359,7 @@ export default function RecommendationsPage() {
           });
         }
       } finally {
-        if (!cancelled) {
-          setLoadingP(false);
-        }
+        setLoadingP(false);
       }
     };
 
@@ -757,11 +726,19 @@ export default function RecommendationsPage() {
                     onClick={() => handleBookClick(b)}
                   >
                     <BookCard
+<<<<<<< HEAD
                         book={{
                             ...b,
                             coverurl: toHttps(b.coverurl) ?? null, // normalize
                         }}
                         showWishlist={true}
+=======
+                      book={{
+                        ...b,
+                        coverurl: toHttps(b.coverurl) ?? null, // normalize
+                      }}
+                      showWishlist={true}
+>>>>>>> dfe1a52 (Front end)
                     />
                     {b.recommendation_type && (
                       <p
