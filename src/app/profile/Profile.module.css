@@ -287,7 +287,7 @@
 .overviewItem {
   flex: 1;
   min-width: 150px;
-  background: var(--brand-accent);
+  background: #e8dcc6;
   border-radius: 12px;
   padding: 1rem;
   text-align: center;
@@ -315,7 +315,7 @@
 .recentActivityCard {
   flex: 2; /* make it wider than other stats */
   text-align: left;
-  background: var(--brand-surface);
+  background: #e8dcc6;
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);

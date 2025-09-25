@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useUser, useAuth } from "@clerk/nextjs";
@@ -121,6 +121,7 @@ const normalizeBooks = (raw: any[]) =>
 
 export default function RecommendationsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // Clerk hooks
   const { user } = useUser();
@@ -207,28 +208,62 @@ export default function RecommendationsPage() {
     }
   };
 
-  const [activeTab, setActiveTab] = useState<Tab>("personalized");
+  // Initialize state from query params (with fallback defaults)
+  function getTabFromQuery() {
+    const tab = searchParams?.get("tab");
+    if (tab === "trending" || tab === "major" || tab === "personalized") return tab as Tab;
+    return "personalized";
+  }
+  function getPeriodFromQuery() {
+    const p = searchParams?.get("period");
+    return TRENDING_PERIODS.some((tp) => tp.value === p) ? p! : "5years";
+  }
+  function getMajorFromQuery() {
+    const m = searchParams?.get("major");
+    return MAJORS.includes(m || "") ? m! : DEFAULT_MAJOR;
+  }
+  function getPageFromQuery(param: string, fallback: number) {
+    const v = Number(searchParams?.get(param));
+    return Number.isFinite(v) && v > 0 ? v : fallback;
+  }
 
+  const [activeTab, setActiveTab] = useState<Tab>(getTabFromQuery());
   // Personalized state
   const [loadingP, setLoadingP] = useState(false);
   const [errorP, setErrorP] = useState<string | null>(null);
-  const [dataP, setDataP] = useState<PersonalizedRecommendationResp | null>(
-    null
-  );
+  const [dataP, setDataP] = useState<PersonalizedRecommendationResp | null>(null);
 
   // Trending state
-  const [period, setPeriod] = useState("5years");
-  const [pageT, setPageT] = useState(1);
+  const [period, setPeriod] = useState(getPeriodFromQuery());
+  const [pageT, setPageT] = useState(getPageFromQuery("pageT", 1));
   const [loadingT, setLoadingT] = useState(false);
   const [errorT, setErrorT] = useState<string | null>(null);
   const [dataT, setDataT] = useState<ApiTrendingResp | null>(null);
 
   // Major state
-  const [major, setMajor] = useState(DEFAULT_MAJOR);
-  const [pageM, setPageM] = useState(1);
+  const [major, setMajor] = useState(getMajorFromQuery());
+  const [pageM, setPageM] = useState(getPageFromQuery("pageM", 1));
   const [loadingM, setLoadingM] = useState(false);
   const [errorM, setErrorM] = useState<string | null>(null);
   const [dataM, setDataM] = useState<ApiTrendingResp | null>(null);
+
+  // Sync state with query params on navigation (popstate, etc.)
+  useEffect(() => {
+    // Only update state if query params changed (avoiding loops)
+    const tabQ = getTabFromQuery();
+    if (tabQ !== activeTab) setActiveTab(tabQ);
+    const periodQ = getPeriodFromQuery();
+    if (periodQ !== period) setPeriod(periodQ);
+    const majorQ = getMajorFromQuery();
+    if (majorQ !== major) setMajor(majorQ);
+    const pageTQ = getPageFromQuery("pageT", 1);
+    if (pageTQ !== pageT) setPageT(pageTQ);
+    const pageMQ = getPageFromQuery("pageM", 1);
+    if (pageMQ !== pageM) setPageM(pageMQ);
+    // eslint-disable-next-line
+    // We intentionally want to run on searchParams change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   // Fetch personalized recommendations
   useEffect(() => {
@@ -375,7 +410,7 @@ export default function RecommendationsPage() {
       cancelled = true;
       ac.abort();
     };
-  }, [userId]);
+  }, [userId, activeTab]);
 
   // Fetch trending books
   useEffect(() => {
@@ -571,6 +606,23 @@ export default function RecommendationsPage() {
 
   const { books, loading, error } = getActiveData();
 
+  // Helper: update the URL query string with relevant params
+  function updateQueryString(params: Record<string, any>) {
+    const url = new URL(window.location.href);
+    // Remove all params, then add only relevant ones
+    url.search = "";
+    if (params.tab) url.searchParams.set("tab", params.tab);
+    if (params.tab === "trending") {
+      url.searchParams.set("period", params.period || period);
+      url.searchParams.set("pageT", String(params.pageT || 1));
+    }
+    if (params.tab === "major") {
+      url.searchParams.set("major", params.major || major);
+      url.searchParams.set("pageM", String(params.pageM || 1));
+    }
+    router.push(url.pathname + url.search);
+  }
+
   return (
     <main className="page-content">
       <div className="container">
@@ -613,7 +665,10 @@ export default function RecommendationsPage() {
             className={`${styles.tab} ${
               activeTab === "personalized" ? styles.active : ""
             }`}
-            onClick={() => setActiveTab("personalized")}
+            onClick={() => {
+              setActiveTab("personalized");
+              updateQueryString({ tab: "personalized" });
+            }}
           >
             {isLoggedIn ? "For You" : "Recommended"}
           </button>
@@ -621,7 +676,11 @@ export default function RecommendationsPage() {
             className={`${styles.tab} ${
               activeTab === "trending" ? styles.active : ""
             }`}
-            onClick={() => setActiveTab("trending")}
+            onClick={() => {
+              setActiveTab("trending");
+              // When switching to trending, preserve period, reset pageT
+              updateQueryString({ tab: "trending", period, pageT: 1 });
+            }}
           >
             Trending
           </button>
@@ -629,7 +688,10 @@ export default function RecommendationsPage() {
             className={`${styles.tab} ${
               activeTab === "major" ? styles.active : ""
             }`}
-            onClick={() => setActiveTab("major")}
+            onClick={() => {
+              setActiveTab("major");
+              updateQueryString({ tab: "major", major, pageM: 1 });
+            }}
           >
             By Major
           </button>
@@ -645,6 +707,7 @@ export default function RecommendationsPage() {
               onChange={(e) => {
                 setPeriod(e.target.value);
                 setPageT(1);
+                updateQueryString({ tab: "trending", period: e.target.value, pageT: 1 });
               }}
             >
               {TRENDING_PERIODS.map((p) => (
@@ -665,6 +728,7 @@ export default function RecommendationsPage() {
               onChange={(e) => {
                 setMajor(e.target.value);
                 setPageM(1);
+                updateQueryString({ tab: "major", major: e.target.value, pageM: 1 });
               }}
             >
               {MAJORS.map((m) => (
@@ -797,9 +861,13 @@ export default function RecommendationsPage() {
                     }
                     onClick={() => {
                       if (activeTab === "trending") {
-                        setPageT(Math.max(1, pageT - 1));
+                        const newPage = Math.max(1, pageT - 1);
+                        setPageT(newPage);
+                        updateQueryString({ tab: "trending", period, pageT: newPage });
                       } else {
-                        setPageM(Math.max(1, pageM - 1));
+                        const newPage = Math.max(1, pageM - 1);
+                        setPageM(newPage);
+                        updateQueryString({ tab: "major", major, pageM: newPage });
                       }
                     }}
                   >
@@ -819,9 +887,13 @@ export default function RecommendationsPage() {
                     }
                     onClick={() => {
                       if (activeTab === "trending") {
-                        setPageT(Math.min(totalPagesT, pageT + 1));
+                        const newPage = Math.min(totalPagesT, pageT + 1);
+                        setPageT(newPage);
+                        updateQueryString({ tab: "trending", period, pageT: newPage });
                       } else {
-                        setPageM(Math.min(totalPagesM, pageM + 1));
+                        const newPage = Math.min(totalPagesM, pageM + 1);
+                        setPageM(newPage);
+                        updateQueryString({ tab: "major", major, pageM: newPage });
                       }
                     }}
                   >
