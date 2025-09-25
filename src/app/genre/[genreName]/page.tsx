@@ -2,10 +2,11 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
-import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import BookCard from '../../components/BookCard';
 import { Book } from "../../../types/book";
+import styles from "../[genre]/Genre.module.css";
+import { useRouter } from 'next/navigation';
 
 // --- This component contains the main logic ---
 function GenrePageContent() {
@@ -73,10 +74,14 @@ function GenrePageContent() {
             setCurrentPage(prevPage => prevPage - 1);
         }
     };
+    const router = useRouter();
 
     return (
         <main className="container page-content">
             <div>
+                <button onClick={() => router.back()} className={styles.backButton}>
+                ← Back
+                </button>
                 <p className="page-subtitle">Showing books in</p>
                 <h1 className="page-title">{genreName}</h1>
             </div>

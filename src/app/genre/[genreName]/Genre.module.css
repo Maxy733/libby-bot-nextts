@@ -1,0 +1,17 @@
+.backButton {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: var(--brand-light-grey);
+  color: var(--brand-charcoal);
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.backButton:hover {
+  background-color: var(--brand-accent-hover);
+  color: #fff;
+}
