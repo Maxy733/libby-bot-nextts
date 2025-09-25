@@ -679,8 +679,33 @@ export default function RecommendationsPage() {
         {/* Content */}
         <section className={styles.section}>
           {loading ? (
-            <div className={styles.loading}>
-              <p>Loading recommendations...</p>
+            <div
+              className={styles.loading}
+              style={{
+                minHeight: 200,
+                background: "transparent",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <img
+                src="https://i.pinimg.com/originals/73/69/6e/73696e022df7cd5cb3d999c6875361dd.gif"
+                alt="Loading recommendations"
+                style={{
+                  position: "fixed",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  zIndex: 9999,
+                  width: 200,
+                  height: 200,
+                  objectFit: "contain",
+                  background: "transparent",
+                  boxShadow: "none",
+                  border: "none",
+                }}
+              />
             </div>
           ) : error ? (
             <div className={styles.error}>
