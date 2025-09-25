@@ -2,8 +2,6 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
 import { useUser, useAuth } from "@clerk/nextjs";
 import styles from "./Recommendations.module.css";
 import BookCard from "../components/BookCard";
@@ -119,7 +117,7 @@ const normalizeBooks = (raw: any[]) =>
     }))
     .filter((b: any) => Number.isFinite(b.id) && b.title.trim());
 
-export default function RecommendationsPage() {
+function RecommendationsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -906,5 +904,15 @@ export default function RecommendationsPage() {
         </section>
       </div>
     </main>
+    
   );
 }
+
+export default function RecommendationsPage() {
+  return (
+    <Suspense fallback={<div>Loading recommendations...</div>}>
+      <RecommendationsContent />
+    </Suspense>
+  );
+}
+import { Suspense } from "react";
