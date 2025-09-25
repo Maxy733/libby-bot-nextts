@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import BookCard from "./BookCard";
 import { Book } from "../../types/book";
@@ -23,7 +24,10 @@ export default function HomeContent({
   const personalizedCarouselRef = useRef<HTMLDivElement>(
     null
   ) as React.RefObject<HTMLDivElement>;
-  const [userId] = useState<string | null>(null);
+
+  // Get Clerk user and id for personalized recommendations
+  const { user } = useUser();
+  const userId = user?.id ?? null;
 
   // Fetch trending books
   useEffect(() => {
@@ -53,7 +57,19 @@ export default function HomeContent({
 
   // Fetch personalized books
   useEffect(() => {
+    // Only fetch personalized recommendations when the component
+    // is configured for personalized content and we have a Clerk user ID.
+    if (!personalized) return;
+
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000";
+
+    if (!userId) {
+      // No signed-in user: clear recommendations and stop loading.
+      setPersonalizedBooks([]);
+      setIsLoading(false);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -69,13 +85,13 @@ export default function HomeContent({
         }
       })
       .catch((error) => {
-        console.error("Error fetching trending books:", error);
+        console.error("Error fetching personalized books:", error);
         setError(error.message);
       })
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [personalized, userId]);
 
   // Animate cards when visible
   useEffect(() => {

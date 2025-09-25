@@ -35,7 +35,9 @@ export default function ProfilePage() {
     const validTabs = ["overview", "wishlist", "preferences", "notifications"];
     const hash = window.location.hash.replace("#", "");
     if (validTabs.includes(hash)) {
-      setActiveTab(hash as "overview" | "wishlist" | "preferences" | "notifications");
+      setActiveTab(
+        hash as "overview" | "wishlist" | "preferences" | "notifications"
+      );
     }
   }, []);
 
@@ -207,7 +209,6 @@ export default function ProfilePage() {
                 Notifications
               </button>
             </li>
-
           </ul>
         </div>
       </div>
