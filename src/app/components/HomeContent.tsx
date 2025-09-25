@@ -4,20 +4,25 @@ import Link from "next/link";
 import BookCard from "./BookCard";
 import { Book } from "../../types/book";
 
-
 interface HomeContentProps {
   showJoinUs?: boolean;
   personalized?: boolean;
 }
 
-export default function HomeContent({ showJoinUs = true,
-  personalized = false, }: HomeContentProps) {
+export default function HomeContent({
+  showJoinUs = true,
+  personalized = false,
+}: HomeContentProps) {
   const [trendingBooks, setTrendingBooks] = useState<Book[]>([]);
   const [personalizedBooks, setPersonalizedBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const trendingCarouselRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
-  const personalizedCarouselRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
+  const trendingCarouselRef = useRef<HTMLDivElement>(
+    null
+  ) as React.RefObject<HTMLDivElement>;
+  const personalizedCarouselRef = useRef<HTMLDivElement>(
+    null
+  ) as React.RefObject<HTMLDivElement>;
   const [userId] = useState<string | null>(null);
 
   // Fetch trending books
@@ -27,7 +32,6 @@ export default function HomeContent({ showJoinUs = true,
     setError(null);
 
     fetch(`${apiUrl}/api/books/recommendations/globally-trending?limit=10`)
-    
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -53,8 +57,7 @@ export default function HomeContent({ showJoinUs = true,
     setIsLoading(true);
     setError(null);
 
-    fetch(`${apiUrl}/api/recommendations/${userId}/enhanced?limit=10`)
-    
+    fetch(`${apiUrl}/api/recommendations/${userId}/improve?limit=10`)
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -119,9 +122,10 @@ export default function HomeContent({ showJoinUs = true,
       const currentScroll = ref.current.scrollLeft;
 
       ref.current.scrollTo({
-        left: direction === "left"
-          ? currentScroll - scrollAmount
-          : currentScroll + scrollAmount,
+        left:
+          direction === "left"
+            ? currentScroll - scrollAmount
+            : currentScroll + scrollAmount,
         behavior: "smooth",
       });
     }
@@ -133,7 +137,9 @@ export default function HomeContent({ showJoinUs = true,
       <div className="hero-wrapper">
         <section className="hero-bg">
           <div className="container hero-content">
-            <h1 className="animated-element">Find Your Next Great Read Today</h1>
+            <h1 className="animated-element">
+              Find Your Next Great Read Today
+            </h1>
             <p className="animated-element">
               Explore our vast collection, discover hidden gems, and find
               exactly what you need for your next academic breakthrough.
@@ -155,10 +161,14 @@ export default function HomeContent({ showJoinUs = true,
       <section id="discover" className="discover-section">
         <div className="container">
           <div id="trending">
-            <h2 className="section-title animated-element">Trending This Week</h2>
+            <h2 className="section-title animated-element">
+              Trending This Week
+            </h2>
             <div className="carousel-wrapper">
               <div ref={trendingCarouselRef} className="carousel-container">
-                {isLoading && <p className="loading-text">Loading trending books...</p>}
+                {isLoading && (
+                  <p className="loading-text">Loading trending books...</p>
+                )}
                 {error && <p className="error-text">{error}</p>}
                 {!isLoading &&
                   !error &&
@@ -172,14 +182,18 @@ export default function HomeContent({ showJoinUs = true,
               </div>
               {/* Scroll Buttons */}
               <button
-                onClick={() => handleCarouselScroll(trendingCarouselRef, "left")}
+                onClick={() =>
+                  handleCarouselScroll(trendingCarouselRef, "left")
+                }
                 className="carousel-button prev"
                 aria-label="Scroll left"
               >
                 ‹
               </button>
               <button
-                onClick={() => handleCarouselScroll(trendingCarouselRef, "right")}
+                onClick={() =>
+                  handleCarouselScroll(trendingCarouselRef, "right")
+                }
                 className="carousel-button next"
                 aria-label="Scroll right"
               >
@@ -190,47 +204,62 @@ export default function HomeContent({ showJoinUs = true,
         </div>
       </section>
 
-        {/* Personalized Recommendations Section */}
-        {personalized && (
+      {/* Personalized Recommendations Section */}
+      {personalized && (
         <section id="personalized" className="discover-section">
-            <div className="container">
+          <div className="container">
             <div id="personalized-carousel">
-                <div className="section-header animated-element">
+              <div className="section-header animated-element">
                 <h2 className="section-title">Personalized Recommendations</h2>
                 <Link href="/recommendations" className="see-more-link">
-                    See More
+                  See More
                 </Link>
-                </div>
-                <div className="carousel-wrapper">
-                <div ref={personalizedCarouselRef} className="carousel-container">
-                    {isLoading && <p className="loading-text">Loading your recommendations...</p>}
-                    {error && <p className="error-text">{error}</p>}
-                    {!isLoading &&
+              </div>
+              <div className="carousel-wrapper">
+                <div
+                  ref={personalizedCarouselRef}
+                  className="carousel-container"
+                >
+                  {isLoading && (
+                    <p className="loading-text">
+                      Loading your recommendations...
+                    </p>
+                  )}
+                  {error && <p className="error-text">{error}</p>}
+                  {!isLoading &&
                     !error &&
                     personalizedBooks.map((book, index) => (
-                        <BookCard key={book.id || index} book={book} showWishlist={true} />
+                      <BookCard
+                        key={book.id || index}
+                        book={book}
+                        showWishlist={true}
+                      />
                     ))}
                 </div>
                 {/* Scroll Buttons */}
                 <button
-                    onClick={() => handleCarouselScroll(personalizedCarouselRef,"left")}
-                    className="carousel-button prev"
-                    aria-label="Scroll left"
+                  onClick={() =>
+                    handleCarouselScroll(personalizedCarouselRef, "left")
+                  }
+                  className="carousel-button prev"
+                  aria-label="Scroll left"
                 >
-                    ‹
+                  ‹
                 </button>
                 <button
-                    onClick={() => handleCarouselScroll(personalizedCarouselRef, "right")}
-                    className="carousel-button next"
-                    aria-label="Scroll right"
+                  onClick={() =>
+                    handleCarouselScroll(personalizedCarouselRef, "right")
+                  }
+                  className="carousel-button next"
+                  aria-label="Scroll right"
                 >
-                    ›
+                  ›
                 </button>
-                </div>
+              </div>
             </div>
-            </div>
+          </div>
         </section>
-        )}
+      )}
 
       {/* About Us Section */}
       <section id="about" className="about-section">
@@ -242,8 +271,8 @@ export default function HomeContent({ showJoinUs = true,
             <p>
               LIBBY BOT is a project designed to modernize how our community
               interacts with the university library. By leveraging smart
-              recommendations and real-time data, we help you find the
-              resources you need faster than ever before.
+              recommendations and real-time data, we help you find the resources
+              you need faster than ever before.
             </p>
           </div>
         </div>
@@ -251,22 +280,22 @@ export default function HomeContent({ showJoinUs = true,
 
       {/* Join Us Section */}
       {showJoinUs && (
-      <section id="join-us" className="join-us-section">
-        <div className="container">
-          <div className="join-us-card animated-element">
-            <h2>Unlock Personalized Recommendations</h2>
-            <p>
-              Create a free account to get recommendations based on your
-              courses, interests, and reading history. Find your next favorite
-              book today.
-            </p>
-            <Link href="/sign-up" className="join-us-btn">
-              Join Us
-            </Link>
+        <section id="join-us" className="join-us-section">
+          <div className="container">
+            <div className="join-us-card animated-element">
+              <h2>Unlock Personalized Recommendations</h2>
+              <p>
+                Create a free account to get recommendations based on your
+                courses, interests, and reading history. Find your next favorite
+                book today.
+              </p>
+              <Link href="/sign-up" className="join-us-btn">
+                Join Us
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       )}
-    </main> 
+    </main>
   );
 }
