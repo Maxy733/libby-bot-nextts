@@ -213,46 +213,48 @@ export default function ProfilePage() {
               <h2 className={styles.sectionTitle}>Profile Overview</h2>
 
               {userStats ? (
-                <div className={styles.overviewRow}>
-                  <div className={styles.overviewItem}>
-                    <div className={styles.overviewLabel}>Books Wishlisted</div>
-                    <div className={styles.overviewValue}>
-                      {userStats.booksWishlisted}
+                <>
+                  <div className={styles.overviewRow}>
+                    <div className={styles.overviewItem}>
+                      <div className={styles.overviewLabel}>Books Wishlisted</div>
+                      <div className={styles.overviewValue}>
+                        {userStats.booksWishlisted}
+                      </div>
                     </div>
-                  </div>
-                  <div className={styles.overviewItem}>
-                    <div className={styles.overviewLabel}>Account Created</div>
-                    <div className={styles.overviewValue}>
-                      {userStats.accountCreated}
+                    <div className={styles.overviewItem}>
+                      <div className={styles.overviewLabel}>Account Created</div>
+                      <div className={styles.overviewValue}>
+                        {userStats.accountCreated}
+                      </div>
                     </div>
-                  </div>
-                  <div className={styles.overviewItem}>
-                    <div className={styles.overviewLabel}>Last Active</div>
-                    <div className={styles.overviewValue}>
-                      {userStats.lastActive}
+                    <div className={styles.overviewItem}>
+                      <div className={styles.overviewLabel}>Last Active</div>
+                      <div className={styles.overviewValue}>
+                        {userStats.lastActive}
+                      </div>
                     </div>
-                  </div>
-                  <div className={styles.overviewItem}>
-                    <div className={styles.overviewLabel}>Recommendations Generated</div>
-                    <div className={styles.overviewValue}>
-                      {userStats.recommendationsCount}
+                    <div className={styles.overviewItem}>
+                      <div className={styles.overviewLabel}>Recommendations Generated</div>
+                      <div className={styles.overviewValue}>
+                        {userStats.recommendationsCount}
+                      </div>
                     </div>
-                  </div>
-                  <div className={`${styles.overviewItem} ${styles.recentActivityCard}`}>
-                    <div className={styles.overviewLabel}>Recent Activity</div>
-                    <ul className={styles.recentActivityList}>
-                      {userStats.recentActivity.length > 0 ? (
-                        userStats.recentActivity.slice(0, 3).map((act, idx) => (
-                          <li key={idx} className={styles.recentActivityItem}>
-                            • {act.title} ({act.type})
+                    <div className={`${styles.overviewItem} ${styles.recentActivityCard}`}>
+                      <div className={styles.overviewLabel}>Recent Activity</div>
+                      <ul className={styles.recentActivityList}>
+                        {userStats.recentActivity.length > 0 ? (
+                          userStats.recentActivity.slice(0, 3).map((act, idx) => (
+                            <li key={idx} className={styles.recentActivityItem}>
+                              • {act.title} ({act.type})
+                            </li>
+                          ))
+                        ) : (
+                          <li className={styles.recentActivityItem}>
+                            No recent activity
                           </li>
-                        ))
-                      ) : (
-                        <li className={styles.recentActivityItem}>
-                          No recent activity
-                        </li>
-                      )}
-                    </ul>
+                        )}
+                      </ul>
+                    </div>
                   </div>
                   <div className={styles.overviewItem}>
                     <h3 className={styles.sectionSubtitle}>Wishlist Progress</h3>
@@ -269,7 +271,7 @@ export default function ProfilePage() {
                       />
                     </div>
                   </div>
-                </div>
+                </>
               ) : (
                 <p>Loading overview...</p>
               )}

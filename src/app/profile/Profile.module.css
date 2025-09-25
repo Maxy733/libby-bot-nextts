@@ -106,7 +106,7 @@
   color: #e8dcc6;
 }
 .wishlistBookCard:hover {
-  background-color: #5a4a3e;
+  background-color: #e8dcc6;
 }
 
 .bookTitle {
@@ -287,7 +287,7 @@
 .overviewItem {
   flex: 1;
   min-width: 150px;
-  background: var(--brand-surface);
+  background: var(--brand-accent);
   border-radius: 12px;
   padding: 1rem;
   text-align: center;
