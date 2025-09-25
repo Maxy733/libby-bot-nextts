@@ -250,8 +250,11 @@ export default function RecommendationsPage() {
     }
 
     let cancelled = false;
+    const ac = new AbortController();
 
     const fetchPersonalized = async () => {
+      // avoid calling the endpoint with a null/undefined userId
+      if (!userId) return;
       setLoadingP(true);
       setErrorP(null);
 
@@ -269,6 +272,7 @@ export default function RecommendationsPage() {
             Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
           },
           cache: "no-store",
+          signal: ac.signal,
         });
 
         if (res.ok) {
@@ -320,6 +324,8 @@ export default function RecommendationsPage() {
             .catch(() => "<no body>")}`
         );
       } catch (error) {
+        // If the request was aborted, silently stop
+        if ((error as any)?.name === "AbortError") return;
         console.warn(
           "Improve endpoint failed; falling back to getPersonalizedRecommendations:",
           error
@@ -367,8 +373,9 @@ export default function RecommendationsPage() {
     fetchPersonalized();
     return () => {
       cancelled = true;
+      ac.abort();
     };
-  }, [isLoggedIn, userId, activeTab, userInteractionCount]);
+  }, [userId]);
 
   // Fetch trending books
   useEffect(() => {
