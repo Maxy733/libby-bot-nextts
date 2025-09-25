@@ -41,6 +41,14 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [preferencesGenres, setPreferencesGenres] = useState<string[]>([]);
 
+  // Notification preference state
+  const [emailFreq, setEmailFreq] = useState<"weekly" | "monthly" | "none">(
+    "none"
+  );
+  const [savingPref, setSavingPref] = useState(false);
+  const [prefLoaded, setPrefLoaded] = useState(false);
+  const [prefMsg, setPrefMsg] = useState<string | null>(null);
+
   useEffect(() => {
     const validTabs = ["overview", "wishlist", "preferences", "notifications"];
     const hash = window.location.hash.replace("#", "");
@@ -78,6 +86,30 @@ export default function ProfilePage() {
     fetchPreferences();
   }, [activeTab, user, getToken, router]);
 
+  // Load current notification preferences when Notifications tab is opened
+  useEffect(() => {
+    const loadPref = async () => {
+      if (activeTab !== "notifications" || !user) return;
+      try {
+        const token = await getToken();
+        const res = await fetch(
+          `${API_BASE}/api/notify/email?clerk_user_id=${user.id}`,
+          { headers: token ? { Authorization: `Bearer ${token}` } : {} }
+        );
+        if (!res.ok) throw new Error("Failed to load preference");
+        const data = await res.json();
+        if (data.ok) {
+          setEmailFreq((data.email_frequency || "none") as typeof emailFreq);
+          setPrefLoaded(true);
+        }
+      } catch (e) {
+        console.error(e);
+        setPrefLoaded(true);
+      }
+    };
+    loadPref();
+  }, [activeTab, user, getToken]);
+
   const loadUserData = async () => {
     if (!user) return;
     try {
@@ -106,7 +138,6 @@ export default function ProfilePage() {
         recommendationsCount: countData.count ?? 0,
         recentActivity: [], // you’ll add later
       });
-
 
       // Optionally load backend data (interests, activity, etc.)
       const res = await fetch(
@@ -153,6 +184,49 @@ export default function ProfilePage() {
     setUserStats((prev) => (prev ? { ...prev, booksWishlisted: 0 } : null));
   };
 
+  // Save email notification preference and optionally trigger a sample send
+  const saveEmailPref = async () => {
+    if (!user) return;
+    setSavingPref(true);
+    setPrefMsg(null);
+    try {
+      const token = await getToken();
+
+      const res = await fetch(`${API_BASE}/api/notify/email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          clerk_user_id: user.id,
+          frequency: emailFreq,
+        }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok || !json.ok) {
+        throw new Error(json?.error || "Save failed");
+      }
+
+      if (json.send_now) {
+        setPrefMsg(
+          json.send_now.ok
+            ? "Email sent! Check your inbox."
+            : `Could not send now: ${json.send_now.reason}`
+        );
+      } else {
+        setPrefMsg("Email notifications turned off.");
+      }
+    } catch (e: any) {
+      console.error(e);
+      setPrefMsg(e?.message || "Something went wrong");
+    } finally {
+      setSavingPref(false);
+    }
+  };
+
   if (!isLoaded) return <div className="loading-container">Loading...</div>;
 
   if (!user) {
@@ -176,19 +250,21 @@ export default function ProfilePage() {
         <div className={styles.settingsMenu}>
           <h3>Settings</h3>
           <ul>
-            {["overview", "wishlist", "preferences", "notifications"].map((tab) => (
-              <li key={tab}>
-                <button
-                  className={styles.tabBtn}
-                  onClick={() => {
-                    setActiveTab(tab as typeof activeTab);
-                    window.location.hash = tab;
-                  }}
-                >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </button>
-              </li>
-            ))}
+            {["overview", "wishlist", "preferences", "notifications"].map(
+              (tab) => (
+                <li key={tab}>
+                  <button
+                    className={styles.tabBtn}
+                    onClick={() => {
+                      setActiveTab(tab as typeof activeTab);
+                      window.location.hash = tab;
+                    }}
+                  >
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </button>
+                </li>
+              )
+            )}
           </ul>
         </div>
       </div>
@@ -223,52 +299,63 @@ export default function ProfilePage() {
               <h2 className={styles.sectionTitle}>Profile Overview</h2>
 
               {userStats ? (
-                <>
-                  <div className={styles.overviewRow}>
-                    <div className={styles.overviewItem}>
-                      <div className={styles.overviewLabel}>Books Wishlisted</div>
-                      <div className={styles.overviewValue}>
-                        {userStats.booksWishlisted}
-                      </div>
-                    </div>
-                    <div className={styles.overviewItem}>
-                      <div className={styles.overviewLabel}>Account Created</div>
-                      <div className={styles.overviewValue}>
-                        {userStats.accountCreated}
-                      </div>
-                    </div>
-                    <div className={styles.overviewItem}>
-                      <div className={styles.overviewLabel}>Last Active</div>
-                      <div className={styles.overviewValue}>
-                        {userStats.lastActive}
-                      </div>
-                    </div>
-                    <div className={styles.overviewItem}>
-                      <div className={styles.overviewLabel}>Recommendations Generated</div>
-                      <div className={styles.overviewValue}>
-                        {userStats.recommendationsCount}
-                      </div>
-                    </div>
-                    <div className={`${styles.overviewItem} ${styles.recentActivityCard}`}>
-                      <div className={styles.overviewLabel}>Recent Activity</div>
-                      <ul className={styles.recentActivityList}>
-                        {userStats.recentActivity.length > 0 ? (
-                          userStats.recentActivity.slice(0, 3).map((act, idx) => (
-                            <li key={idx} className={styles.recentActivityItem}>
-                              • {act.title} ({act.type})
-                            </li>
-                          ))
-                        ) : (
-                          <li className={styles.recentActivityItem}>
-                            No recent activity
-                          </li>
-                        )}
-                      </ul>
+                <div className={styles.overviewRow}>
+                  <div className={styles.overviewItem}>
+                    <div className={styles.overviewLabel}>Books Wishlisted</div>
+                    <div className={styles.overviewValue}>
+                      {userStats.booksWishlisted}
                     </div>
                   </div>
+
                   <div className={styles.overviewItem}>
-                    <h3 className={styles.sectionSubtitle}>Wishlist Progress</h3>
-                    <p>You’ve wishlisted {userStats.booksWishlisted} books 🎉</p>
+                    <div className={styles.overviewLabel}>Account Created</div>
+                    <div className={styles.overviewValue}>
+                      {userStats.accountCreated}
+                    </div>
+                  </div>
+
+                  <div className={styles.overviewItem}>
+                    <div className={styles.overviewLabel}>Last Active</div>
+                    <div className={styles.overviewValue}>
+                      {userStats.lastActive}
+                    </div>
+                  </div>
+
+                  <div className={styles.overviewItem}>
+                    <div className={styles.overviewLabel}>
+                      Recommendations Generated
+                    </div>
+                    <div className={styles.overviewValue}>
+                      {userStats.recommendationsCount}
+                    </div>
+                  </div>
+
+                  <div
+                    className={`${styles.overviewItem} ${styles.recentActivityCard}`}
+                  >
+                    <div className={styles.overviewLabel}>Recent Activity</div>
+                    <ul className={styles.recentActivityList}>
+                      {userStats.recentActivity.length > 0 ? (
+                        userStats.recentActivity.slice(0, 3).map((act, idx) => (
+                          <li key={idx} className={styles.recentActivityItem}>
+                            • {act.title} ({act.type})
+                          </li>
+                        ))
+                      ) : (
+                        <li className={styles.recentActivityItem}>
+                          No recent activity
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+
+                  <div className={styles.overviewItem}>
+                    <h3 className={styles.sectionSubtitle}>
+                      Wishlist Progress
+                    </h3>
+                    <p>
+                      You’ve wishlisted {userStats.booksWishlisted} books 🎉
+                    </p>
                     <div className={styles.progressWrapper}>
                       <div
                         className={styles.progressFill}
@@ -281,7 +368,7 @@ export default function ProfilePage() {
                       />
                     </div>
                   </div>
-                </>
+                </div>
               ) : (
                 <p>Loading overview...</p>
               )}
@@ -359,8 +446,47 @@ export default function ProfilePage() {
 
           {activeTab === "notifications" && (
             <div className={styles.tabContent}>
-              <h2>Notifications</h2>
-              <p>[TODO: Add notification settings here]</p>
+              <h2 className={styles.sectionTitle}>Notifications</h2>
+
+              <div className={styles.prefCard}>
+                <div className={styles.prefRow}>
+                  <label htmlFor="emailFreq" className={styles.prefLabel}>
+                    Recommendation emails
+                  </label>
+
+                  <div className={styles.selectWrap}>
+                    <select
+                      id="emailFreq"
+                      className={styles.select}
+                      value={emailFreq}
+                      onChange={(e) =>
+                        setEmailFreq(e.target.value as typeof emailFreq)
+                      }
+                      disabled={!prefLoaded || savingPref}
+                    >
+                      <option value="weekly">Weekly</option>
+                      <option value="monthly">Monthly</option>
+                      <option value="none">None</option>
+                    </select>
+                    <span className={styles.selectChevron}>▾</span>
+                  </div>
+
+                  <button
+                    onClick={saveEmailPref}
+                    className={styles.saveBtn}
+                    disabled={savingPref}
+                  >
+                    {savingPref ? "Saving..." : "Save"}
+                  </button>
+                </div>
+
+                <p className={styles.prefHint}>
+                  We’ll send you a curated set of recommendations based on your
+                  activity and interests.
+                </p>
+
+                {prefMsg && <div className={styles.toast}>{prefMsg}</div>}
+              </div>
             </div>
           )}
         </div>

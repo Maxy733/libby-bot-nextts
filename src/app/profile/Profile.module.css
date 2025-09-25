@@ -14,7 +14,9 @@
   min-height: 100vh;
 }
 
-.leftColumn, .middleColumn, .rightColumn {
+.leftColumn,
+.middleColumn,
+.rightColumn {
   background-color: #2f261e;
   border-radius: 16px;
   padding: 24px;
@@ -126,7 +128,6 @@
   margin-top: 4px;
 }
 
-
 .removeBookBtn {
   position: absolute;
   top: 8px;
@@ -164,7 +165,6 @@
 .settingsMenu li {
   margin-bottom: 12px;
 }
-
 
 .settingsMenu li button {
   display: block;
@@ -382,4 +382,87 @@
   background: var(--brand-accent);
   height: 100%;
   transition: width 0.3s ease-in-out;
+}
+
+/* Notification preference UI */
+.prefCard {
+  background-color: #4b3f35;
+  border-radius: 12px;
+  padding: 16px;
+  color: #e8dcc6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.prefRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.prefLabel {
+  font-weight: 600;
+  min-width: 200px;
+}
+
+.selectWrap {
+  position: relative;
+  display: inline-block;
+}
+
+.select {
+  appearance: none;
+  background: #2f261e;
+  color: #e8dcc6;
+  border: 1px solid #5a4a3e;
+  border-radius: 10px;
+  padding: 10px 36px 10px 12px;
+  font-weight: 500;
+  min-width: 180px;
+  cursor: pointer;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #9c6237;
+  box-shadow: 0 0 0 2px rgba(156, 98, 55, 0.3);
+}
+
+.selectChevron {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #a3937b;
+}
+
+.saveBtn {
+  background-color: #9c6237;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.saveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.prefHint {
+  margin-top: 10px;
+  color: #a3937b;
+  font-size: 0.9rem;
+}
+
+.toast {
+  margin-top: 12px;
+  background: #2f261e;
+  border: 1px solid #5a4a3e;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #e8dcc6;
 }
