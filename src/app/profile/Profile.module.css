@@ -60,22 +60,6 @@
   color: #e8dcc6;
 }
 
-.statCard {
-  background: #4b3f35;
-  padding: 16px;
-  border-radius: 12px;
-  text-align: center;
-  color: #e8dcc6;
-  margin-bottom: 16px;
-}
-
-.statNumber {
-  font-size: 28px;
-  font-weight: bold;
-  color: #9c6237;
-  margin-top: 8px;
-}
-
 .statText {
   font-size: 16px;
   margin-top: 4px;
@@ -267,4 +251,93 @@
 
 .wishlistRow > * {
   flex: 0 0 auto;
+}
+
+/* Overview container cards */
+.overviewCard {
+  background: var(--brand-surface);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  color: var(--brand-text);
+}
+
+/* Section titles */
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--brand-accent);
+  margin-bottom: 1rem;
+}
+
+/* Stats grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.statItem {
+  background: var(--brand-light-surface);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.statNumber {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--brand-accent);
+}
+
+/* Recent activity list */
+.activityList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.activityItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.activityCover {
+  width: 40px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.activityInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.activityTitle {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.activityType {
+  font-size: 0.75rem;
+  color: var(--brand-muted);
+}
+
+/* Progress bar */
+.progressWrapper {
+  background: var(--brand-light-grey);
+  border-radius: 6px;
+  overflow: hidden;
+  height: 10px;
+  margin-top: 0.5rem;
+}
+
+.progressFill {
+  background: var(--brand-accent);
+  height: 100%;
+  transition: width 0.3s ease-in-out;
 }

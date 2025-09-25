@@ -16,6 +16,8 @@ interface UserStats {
   booksWishlisted: number;
   accountCreated: string;
   lastActive: string;
+  recommendationsCount: number;
+  loginCount?: number; // optional if you want to track
 }
 
 export default function ProfilePage() {
@@ -88,6 +90,7 @@ export default function ProfilePage() {
           ? new Date(user.createdAt).toLocaleDateString()
           : "Unknown",
         lastActive: new Date().toLocaleDateString(),
+        recommendationsCount: 0, // You can update this value as needed
       });
 
       const token = await getToken();
@@ -240,31 +243,63 @@ export default function ProfilePage() {
           {/* Tab Content */}
           {activeTab === "overview" && (
             <div className={styles.tabContent}>
-              <h2>Profile Overview</h2>
+              <h2 className={styles.sectionTitle}>Profile Overview</h2>
+
+              {/* Stats Grid */}
               {userStats ? (
-                <div className={styles.wishlistGrid}>
-                  <div className={styles.wishlistBookCard}>
-                    <div className={styles.bookInfo}>
-                      <h4 className={styles.bookTitle}>Books Wishlisted</h4>
-                      <p>{userStats.booksWishlisted}</p>
-                    </div>
+                <div className={styles.statsGrid}>
+                  <div className={styles.statCard}>
+                    <h4>Books Wishlisted</h4>
+                    <p className={styles.statNumber}>{userStats.booksWishlisted}</p>
                   </div>
-                  <div className={styles.wishlistBookCard}>
-                    <div className={styles.bookInfo}>
-                      <h4 className={styles.bookTitle}>Account Created</h4>
-                      <p>{userStats.accountCreated}</p>
-                    </div>
+                  <div className={styles.statCard}>
+                    <h4>Account Created</h4>
+                    <p>{userStats.accountCreated}</p>
                   </div>
-                  <div className={styles.wishlistBookCard}>
-                    <div className={styles.bookInfo}>
-                      <h4 className={styles.bookTitle}>Last Active</h4>
-                      <p>{userStats.lastActive}</p>
-                    </div>
+                  <div className={styles.statCard}>
+                    <h4>Last Active</h4>
+                    <p>{userStats.lastActive}</p>
+                  </div>
+                  <div className={styles.statCard}>
+                    <h4>Recommendations</h4>
+                    <p className={styles.statNumber}>{userStats.recommendationsCount ?? 0}</p>
                   </div>
                 </div>
               ) : (
                 <p>Loading overview...</p>
               )}
+
+              {/* Recent Activity */}
+              <div className={styles.overviewSection}>
+                <h3 className={styles.sectionSubtitle}>Recent Activity</h3>
+                {isLoading ? (
+                  <p>Loading activity...</p>
+                ) : (
+                  <ul className={styles.activityList}>
+                    {/* Later: map over your recentActivity state */}
+                    <li className={styles.activityItem}>📖 Viewed: Example Book Title</li>
+                    <li className={styles.activityItem}>⭐ Wishlisted: Another Book</li>
+                    <li className={styles.activityItem}>👀 Clicked: Interesting Book</li>
+                  </ul>
+                )}
+              </div>
+
+              {/* Wishlist Progress */}
+              <div className={styles.overviewSection}>
+                <h3 className={styles.sectionSubtitle}>Wishlist Progress</h3>
+                <p>You’ve wishlisted {userStats?.booksWishlisted ?? 0} books 🎉</p>
+                <div className={styles.progressWrapper}>
+                  <div
+                    className={styles.progressFill}
+                    style={{
+                      width: `${Math.min(
+                        ((userStats?.booksWishlisted ?? 0) / 50) * 100,
+                        100
+                      )}%`,
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           )}
 
