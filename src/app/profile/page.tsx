@@ -87,18 +87,28 @@ export default function ProfilePage() {
       const wishlist = savedWishlist ? JSON.parse(savedWishlist) : [];
       setWishlistBooks(wishlist);
 
+      // fetch recommendation count
+      const token = await getToken();
+      const resCount = await fetch(
+        `${API_BASE}/api/profile/recommendations/count?user_id=${user.id}`,
+        {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        }
+      );
+      const countData = await resCount.json();
+
       setUserStats({
         booksWishlisted: wishlist.length,
         accountCreated: user?.createdAt
           ? new Date(user.createdAt).toLocaleDateString()
           : "Unknown",
         lastActive: new Date().toLocaleDateString(),
-        recommendationsCount: 0, // update when backend supports
-        recentActivity: [], // placeholder until DB fetch
+        recommendationsCount: countData.count ?? 0,
+        recentActivity: [], // you’ll add later
       });
 
+
       // Optionally load backend data (interests, activity, etc.)
-      const token = await getToken();
       const res = await fetch(
         `${API_BASE}/api/profile/interests?user_id=${user.id}`,
         {
