@@ -68,36 +68,32 @@ export default function InterestsPage() {
     setSaving(true);
 
     try {
-      const tok = await getToken();
-      const response = await fetch(`${API_BASE}/api/profile/interests`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(tok ? { Authorization: `Bearer ${tok}` } : {}),
-        },
-        body: JSON.stringify({
-          interests: selected,
-          clerk_user_id: user.id, // always include Clerk ID
-          // user_id: user.publicMetadata?.db_id || null, // optional if backend supports numeric user_id
-        }),
-      });
-
-      let data: any = null;
+      // Optional: persist to Flask DB keyed by Clerk id
       try {
-        data = await response.json();
-      } catch {
-        console.warn("Response is not JSON");
+        const tok = await getToken();
+        const response = await fetch(`${API_BASE}/api/profile/interests`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(tok ? { Authorization: `Bearer ${tok}` } : {}),
+          },
+          body: JSON.stringify({ interests: selected, clerk_user_id: user.id }),
+        });
+        const data = await response.json();
+        if (response.ok && data && data.success === true) {
+          alert("✅ Your interests have been updated!");
+        } else {
+          alert("❌ Failed to update interests");
+        }
+      } catch (err) {
+        console.log("API call failed:", err);
+        alert("❌ Failed to update interests");
       }
 
-      if (response.ok && data?.success) {
-        alert("✅ Your interests have been updated!");
-        router.push("/profile#preferences");
-      } else {
-        alert("❌ Failed to update interests");
-        console.error("Save interests failed:", data);
-      }
+      // Redirect to dashboard
+      router.push("/profile#preferences");
     } catch (err) {
-      console.error("API call failed:", err);
+      console.error("Error saving interests:", err);
       alert("❌ Failed to update interests");
     } finally {
       setSaving(false);
