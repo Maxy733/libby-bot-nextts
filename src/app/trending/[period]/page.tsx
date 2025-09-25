@@ -2,9 +2,10 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import BookCard from '../../components/BookCard'; // ✅ Import reusable BookCard
 import { Book } from "../../../types/book";
+import styles from "../book/Book.module.css"; // Reuse styles from Book module
 
 // --- This component contains the main logic ---
 function TrendingPeriodContent() {
@@ -15,6 +16,7 @@ function TrendingPeriodContent() {
     const [totalPages, setTotalPages] = useState(0);
 
     const params = useParams();
+    const router = useRouter();
     const period = params.period as string; // 'weekly', 'monthly', or 'yearly'
 
     useEffect(() => {
@@ -70,6 +72,9 @@ function TrendingPeriodContent() {
         <main className="container page-content">
             <div>
                 <p className="page-subtitle">Showing all</p>
+                <button onClick={() => router.back()} className={styles.backButton}>
+                ← Back
+                </button>
                 <h1 className="page-title">Trending {pageTitle}</h1>
             </div>
             <section className="mt-12">
