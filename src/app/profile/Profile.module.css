@@ -105,6 +105,9 @@
   gap: 12px;
   color: #e8dcc6;
 }
+.wishlistBookCard:hover {
+  background-color: #5a4a3e;
+}
 
 .bookTitle {
   font-size: 16px;

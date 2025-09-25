@@ -233,7 +233,7 @@ export default function ProfilePage() {
                     </div>
                   </div>
                   <div className={styles.overviewItem}>
-                    <div className={styles.overviewLabel}>Recommendations</div>
+                    <div className={styles.overviewLabel}>Recommendations Generated</div>
                     <div className={styles.overviewValue}>
                       {userStats.recommendationsCount}
                     </div>
@@ -254,31 +254,103 @@ export default function ProfilePage() {
                       )}
                     </ul>
                   </div>
+                  <div className={styles.overviewItem}>
+                    <h3 className={styles.sectionSubtitle}>Wishlist Progress</h3>
+                    <p>You’ve wishlisted {userStats.booksWishlisted} books 🎉</p>
+                    <div className={styles.progressWrapper}>
+                      <div
+                        className={styles.progressFill}
+                        style={{
+                          width: `${Math.min(
+                            (userStats.booksWishlisted / 50) * 100,
+                            100
+                          )}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <p>Loading overview...</p>
               )}
-
-              {/* Wishlist Progress */}
-              <div className={styles.overviewSection}>
-                <h3 className={styles.sectionSubtitle}>Wishlist Progress</h3>
-                <p>You’ve wishlisted {userStats?.booksWishlisted ?? 0} books 🎉</p>
-                <div className={styles.progressWrapper}>
-                  <div
-                    className={styles.progressFill}
-                    style={{
-                      width: `${Math.min(
-                        ((userStats?.booksWishlisted ?? 0) / 50) * 100,
-                        100
-                      )}%`,
-                    }}
-                  />
-                </div>
-              </div>
             </div>
           )}
 
           {/* Wishlist / Preferences / Notifications remain same */}
+          {activeTab === "wishlist" && (
+            <div className={styles.tabContent}>
+              <div className={styles.wishlistSection}>
+                <div className={styles.wishlistHeader}>
+                  <h2>My Book Wishlist</h2>
+                  {wishlistBooks.length > 0 && (
+                    <button
+                      onClick={clearWishlist}
+                      className={styles.clearWishlistBtn}
+                    >
+                      Clear All
+                    </button>
+                  )}
+                </div>
+
+                {isLoading ? (
+                  <div className={styles.loadingWishlist}>
+                    Loading your wishlist...
+                  </div>
+                ) : wishlistBooks.length === 0 ? (
+                  <div className={styles.emptyWishlist}>
+                    <h3>Your wishlist is empty</h3>
+                    <p>
+                      Start exploring books and add them to your wishlist to
+                      keep track of what you want to read!
+                    </p>
+                    <Link href="/discover" className={styles.discoverBtn}>
+                      Discover Books
+                    </Link>
+                  </div>
+                ) : (
+                  <div className={styles.wishlistRow}>
+                    {wishlistBooks.map((book) => (
+                      <div key={book.id} className={styles.wishlistCardWrapper}>
+                        <BookCard book={book} />
+                        <button
+                          onClick={() => removeFromWishlist(book.id)}
+                          className={styles.removeBookBtn}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {activeTab === "preferences" && (
+            <div className={styles.tabContent}>
+              <h2>Preferences</h2>
+              <div className={styles.preferencesGrid}>
+                {preferencesGenres.map((genre: string, index: number) => (
+                  <div key={index} className={styles.genreTab}>
+                    {genre}
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => router.push("/interests")}
+                className={`${styles.actionBtn} ${styles.redoInterestsBtn}`}
+              >
+                Redo Interests
+              </button>
+            </div>
+          )}
+
+          {activeTab === "notifications" && (
+            <div className={styles.tabContent}>
+              <h2>Notifications</h2>
+              <p>[TODO: Add notification settings here]</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
