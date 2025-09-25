@@ -371,7 +371,7 @@
 
 /* Progress bar */
 .progressWrapper {
-  background: var(--brand-light-grey);
+  background: #2f261e;
   border-radius: 6px;
   overflow: hidden;
   height: 10px;
