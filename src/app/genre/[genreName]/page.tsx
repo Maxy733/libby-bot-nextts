@@ -5,7 +5,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useParams } from 'next/navigation';
 import BookCard from '../../components/BookCard';
 import { Book } from "../../../types/book";
-import styles from "../[genre]/Genre.module.css";
+import styles from "../[genreName]/Genre.module.css";
 import { useRouter } from 'next/navigation';
 
 // --- This component contains the main logic ---
