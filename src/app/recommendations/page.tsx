@@ -331,7 +331,7 @@ export default function RecommendationsPage() {
           error
         );
         try {
-          const result = await getPersonalizedRecommendations(userId!, 20);
+          const result = await getPersonalizedRecommendations(userId!, 30);
           if (result?.success && result?.books?.length) {
             const legacyBooks = normalizeBooks(result.books) as Book[];
             setDataP({
@@ -387,7 +387,7 @@ export default function RecommendationsPage() {
 
       try {
         const response = await fetch(
-          `${API_BASE}/api/books/recommendations/globally-trending?period=${period}&page=${pageT}&per_page=20`
+          `${API_BASE}/api/books/recommendations/globally-trending?period=${period}&page=${pageT}&per_page=30`
         );
 
         if (!response.ok) {
