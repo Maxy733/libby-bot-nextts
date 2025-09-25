@@ -67,8 +67,8 @@ export const getPersonalizedRecommendations = async (
   try {
     const token = localStorage.getItem("token");
 
-    // Primary: enhanced recommendations (DB-driven, labeled for UI)
-    const primaryUrl = `${API_BASE}/api/recommendations/${userId}/enhanced?limit=${limit}`;
+    // Primary: improved recommendations (DB-driven, labeled for UI)
+    const primaryUrl = `${API_BASE}/api/recommendations/${userId}/improve?limit=${limit}`;
     try {
       const response = await fetch(primaryUrl, {
         headers: {
@@ -118,7 +118,7 @@ export const getPersonalizedRecommendations = async (
 
     // Fallbacks: improved, hybrid, then generic enhanced URL
     const fallbacks = [
-      `${API_BASE}/api/recommendations/${userId}/improved?limit=${limit}`,
+      `${API_BASE}/api/recommendations/${userId}/improve?limit=${limit}`,
       `${API_BASE}/api/recommendations/${userId}/hybrid?limit=${limit}`,
       `${API_BASE}/api/recommendations/${userId}/enhanced?limit=${limit}`,
     ];

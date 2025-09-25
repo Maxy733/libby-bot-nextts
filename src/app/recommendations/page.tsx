@@ -2,7 +2,8 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-
+import Link from "next/link";
+import Image from "next/image";
 import { useUser, useAuth } from "@clerk/nextjs";
 import styles from "./Recommendations.module.css";
 import BookCard from "../components/BookCard";
@@ -720,25 +721,13 @@ export default function RecommendationsPage() {
             <>
               <div className="results-grid">
                 {books.map((b: RecommendedBook) => (
-                  <div
-                    key={b.id}
-                    className="book-card is-visible"
-                    onClick={() => handleBookClick(b)}
-                  >
+                  <div key={b.id} className="book-card is-visible">
                     <BookCard
-<<<<<<< HEAD
-                        book={{
-                            ...b,
-                            coverurl: toHttps(b.coverurl) ?? null, // normalize
-                        }}
-                        showWishlist={true}
-=======
                       book={{
                         ...b,
                         coverurl: toHttps(b.coverurl) ?? null, // normalize
                       }}
                       showWishlist={true}
->>>>>>> dfe1a52 (Front end)
                     />
                     {b.recommendation_type && (
                       <p
