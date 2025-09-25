@@ -4,6 +4,7 @@
 }
 /* Profile.module.css */
 
+/* Layout for profile page with two columns */
 .threeColumnLayout {
   display: grid;
   grid-template-columns: 250px 1fr;
@@ -253,7 +254,7 @@
   flex: 0 0 auto;
 }
 
-/* Overview container cards */
+/* Overview container cards for stats and info */
 .overviewCard {
   background: var(--brand-surface);
   border-radius: 12px;
@@ -271,33 +272,71 @@
   margin-bottom: 1rem;
 }
 
-/* Stats grid */
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+/* Container for overview stats and info cards */
+.overviewRow {
+  display: flex;
   gap: 1rem;
+  flex-wrap: wrap; /* responsive for smaller screens */
+  margin-bottom: 1.5rem;
 }
 
-.statItem {
-  background: var(--brand-light-surface);
-  border-radius: 8px;
+/* Individual overview item cards */
+.overviewItem {
+  flex: 1;
+  min-width: 150px;
+  background: var(--brand-surface);
+  border-radius: 12px;
   padding: 1rem;
   text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.statNumber {
-  font-size: 1.5rem;
+/* Labels for overview items */
+.overviewLabel {
+  font-size: 0.9rem;
+  color: var(--brand-muted);
+  margin-bottom: 0.5rem;
+}
+
+/* Values for overview items */
+.overviewValue {
+  font-size: 1.4rem;
   font-weight: bold;
   color: var(--brand-accent);
 }
 
+/* Styling for the recent activity card to match overview items */
+.recentActivityCard {
+  flex: 2; /* make it wider than other stats */
+  text-align: left;
+  background: var(--brand-surface);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--brand-text);
+}
+
 /* Recent activity list */
-.activityList {
+.recentActivityList {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
+/* Individual recent activity items */
+.recentActivityItem {
+  font-size: 0.85rem;
+  color: var(--brand-text);
+  margin-bottom: 0.4rem;
+}
+
+/* Activity list item layout */
 .activityItem {
   display: flex;
   align-items: center;
