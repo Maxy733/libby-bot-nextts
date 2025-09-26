@@ -32,6 +32,7 @@ function GenreContent() {
               data.books.map((b: any) => ({
                 ...b,
                 year: b.year ?? b.publication_date?.split("-")[0] ?? "Unknown",
+                coverurl: b.cover_image_url|| b.coverurl,
               }))
             );
             setTotalPages(Math.ceil(data.total_books / data.per_page));
