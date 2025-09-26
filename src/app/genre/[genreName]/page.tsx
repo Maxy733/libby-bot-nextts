@@ -10,6 +10,24 @@ import { useRouter } from 'next/navigation';
 
 // --- This component contains the main logic ---
 function GenrePageContent() {
+    const normalizeBooks = (raw: any[]) =>
+        raw
+            .map((b: any) => ({
+                id: Number(b.id ?? b.book_id),
+                title: b.title ?? "",
+                author: b.author ?? b.authors ?? "Unknown Author",
+                genre: b.genre ?? null,
+                rating: b.rating ?? null,
+                year: b.year ?? b.publication_year ?? b.published_date ?? "Unknown",
+                coverurl: b.coverurl || b.cover_image_url || b.image_url || b.thumbnail || null,
+                description: b.description ?? "",
+                publication_date: b.publication_date ?? b.year ?? null,
+                pages: b.pages ?? 0,
+                language: b.language ?? "Unknown",
+                isbn: b.isbn ?? "",
+            }))
+            .filter((b: any) => Number.isFinite(b.id) && b.title.trim());
+            
     const [books, setBooks] = useState<Book[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -21,18 +39,18 @@ function GenrePageContent() {
     const params = useParams();
     const genreName = decodeURIComponent(params.genreName as string);
 
-    // --- UPDATED: useEffect now depends on currentPage ---
     useEffect(() => {
         if (genreName) {
             setIsLoading(true); // Set loading true on page change
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
             
-            // --- UPDATED: Fetch now includes the page number ---
+            
             fetch(`${apiUrl}/api/books/recommendations/by-major?major=${encodeURIComponent(genreName)}&page=${currentPage}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data && Array.isArray(data.books)) {
-                        setBooks(data.books);
+                        const normalized = normalizeBooks(data.books);
+                        setBooks(normalized);
                         // --- NEW: Calculate total pages from the API response ---
                         setTotalPages(Math.ceil(data.total_books / 15));
                     } else {
