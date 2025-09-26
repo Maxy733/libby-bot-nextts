@@ -103,7 +103,7 @@ function CardCover({ title, src }: { title: string; src?: string | null }) {
   );
 }
 
-const normalizeBooks = (raw: any[]) =>
+const normalizeBooks = (raw: any[]): Book[] =>
   raw
     .map((b: any) => ({
       id: Number(b.id ?? b.book_id),
@@ -111,11 +111,21 @@ const normalizeBooks = (raw: any[]) =>
       author: b.author ?? b.authors ?? "",
       rating: b.rating ?? null,
       genre: b.genre ?? null,
+      year: b.year ?? b.publication_date?.split("-")[0] ?? "Unknown",
       coverurl: toHttps(
-        b.coverurl || b.cover_image_url || b.image_url || b.thumbnail || null
-      ),
+        b.coverurl ||
+          b.cover_image_url ||
+          b.image_url ||
+          b.thumbnail ||
+          null
+      )as string || null,
+      description: b.description ?? "",
+      publication_date: b.publication_date ?? null,
+      pages: b.pages ?? null,
+      language: b.language ?? null,
+      isbn: b.isbn ?? null,
     }))
-    .filter((b: any) => Number.isFinite(b.id) && b.title.trim());
+    .filter((b: Book) => Number.isFinite(b.id) && b.title.trim());
 
 function RecommendationsContent() {
   const router = useRouter();
