@@ -454,7 +454,29 @@ function RecommendationsContent() {
         });
       } catch (error) {
         console.warn("Primary trending endpoint failed:", error);
-        // … fallback stays same …
+                // Try fallback endpoint
+        try {
+          const fallbackResponse = await fetch(
+            `${API_BASE}/api/recommendations/mixed?limit=20`
+          );
+          if (fallbackResponse.ok) {
+            const fallbackData = await fallbackResponse.json();
+            if (fallbackData.success && fallbackData.books?.length > 0) {
+              setDataT({
+                books: fallbackData.books,
+                total_books: fallbackData.books.length,
+                page: 1,
+                per_page: 20,
+              });
+              setErrorT(null);
+              return;
+            }
+          }
+          throw new Error("Fallback also failed");
+        } catch (fallbackError) {
+          console.error("All trending endpoints failed:", fallbackError);
+          setErrorT("Failed to load trending books. Please try again later.");
+        }
       } finally {
         setLoadingT(false);
       }
@@ -495,7 +517,29 @@ function RecommendationsContent() {
       } catch (error) {
         console.error("Error fetching books by major:", error);
         setErrorM("Failed to load books for this major.");
-        // … fallback stays same …
+        // Try fallback with genre-based recommendations
+        try {
+          const fallbackResponse = await fetch(
+            `${API_BASE}/api/recommendations/by-genre?genres=${encodeURIComponent(
+              major
+            )}&limit=20`
+          );
+          if (fallbackResponse.ok) {
+            const fallbackData = await fallbackResponse.json();
+            if (fallbackData.success && fallbackData.books) {
+              const normalizedBooks = normalizeBooks(fallbackData.books); // ✅ normalize here
+              setDataM({
+                books: normalizedBooks,
+                total_books: normalizedBooks.length,
+                page: 1,
+                per_page: 20,
+              });
+              setErrorM(null);
+            }
+          }
+        } catch (fallbackError) {
+          console.error("Major fallback failed:", fallbackError);
+        }
       } finally {
         setLoadingM(false);
       }
