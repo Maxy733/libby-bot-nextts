@@ -81,7 +81,7 @@ export default function BookDetailsPage() {
                     <li><strong>ISBN:</strong> {book.isbn || 'N/A'}</li>
                     <li><strong>Language:</strong> {book.language || 'N/A'}</li>
                     <li><strong>Pages:</strong> {book.pages || 'N/A'}</li>
-                    <li><strong>Publication Date:</strong> {book.publication_date ? new Date(book.publication_date).toLocaleDateString() : 'N/A'}</li>
+                    <li><strong>Publication Year:</strong> {book.publication_date || 'N/A'}</li>
                     <li><strong>Rating:</strong> {book.rating !== null ? book.rating.toFixed(1) : 'N/A'}</li>
                   </ul>
                 </div>
