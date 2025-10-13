@@ -13,19 +13,21 @@ interface BookCardProps {
 }
 
 // Utility function to extract year from various date formats
-const getYearFromDate = (date: string | Date | null): string => {
+const getYearFromDate = (date: string | number | null): string => {
   if (!date) return "Unknown Year";
 
+  // If the date is just a numeric year, return it directly
+  const yearNum = Number(date);
+  if (!isNaN(yearNum) && yearNum > 1000 && yearNum < 3000) {
+    return yearNum.toString();
+  }
+
+  // Otherwise, try to parse as a date
   try {
-    // Handle both Date objects and date strings (same logic as your working code)
-    const dateObj = new Date(date);
-    const year = dateObj.getFullYear();
-
-    // Check if year is valid
-    if (isNaN(year)) return "Unknown Year";
-
-    return year.toString();
-  } catch (error) {
+    const parsed = new Date(date);
+    const parsedYear = parsed.getFullYear();
+    return isNaN(parsedYear) ? "Unknown Year" : parsedYear.toString();
+  } catch {
     return "Unknown Year";
   }
 };
