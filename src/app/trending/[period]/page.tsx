@@ -23,15 +23,16 @@ function TrendingPeriodContent() {
         if (period) {
             setIsLoading(true);
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
-            
+
             fetch(`${apiUrl}/api/books/recommendations/globally-trending?period=${period}&page=${currentPage}`)
                 .then(res => res.json())
                 .then(data => {
-                    if (data && Array.isArray(data.books)) {
+                    if (Array.isArray(data.books) && data.books.length > 0) {
                         setBooks(data.books);
                         setTotalPages(Math.ceil(data.total_books / data.per_page));
                     } else {
-                        throw new Error("Invalid data format from API");
+                        setBooks([]);
+                        setTotalPages(currentPage);
                     }
                 })
                 .catch(err => setError(err.message))
@@ -92,9 +93,9 @@ function TrendingPeriodContent() {
                 {/* Pagination Controls */}
                 {!isLoading && !error && totalPages > 1 && (
                     <div className="pagination mt-12 flex justify-center items-center gap-4">
-                        <button 
-                            onClick={handlePrevPage} 
-                            disabled={currentPage === 1} 
+                        <button
+                            onClick={handlePrevPage}
+                            disabled={currentPage === 1 || books.length === 0}
                             className="pagination-arrow disabled:opacity-50"
                         >
                             &larr;
@@ -102,9 +103,9 @@ function TrendingPeriodContent() {
                         <span className="pagination-number font-semibold">
                             Page {currentPage}
                         </span>
-                        <button 
-                            onClick={handleNextPage} 
-                            disabled={currentPage === totalPages} 
+                        <button
+                            onClick={handleNextPage}
+                            disabled={currentPage >= totalPages || books.length === 0}
                             className="pagination-arrow disabled:opacity-50"
                         >
                             &rarr;
