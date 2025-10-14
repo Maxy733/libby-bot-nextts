@@ -7,9 +7,6 @@ import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./Admin.module.css";
-import BookCard from "../components/BookCard";
-import { Book } from "../../types/book";
-
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000";
 
 interface UserStats {
@@ -232,9 +229,9 @@ export default function ProfilePage() {
       <div>Missing Metadata: 1,203</div>
     </div>
   </div>
-
+<div className={styles.overviewRow}>
   <div className={styles.overviewItem}>
-    <div className={styles.overviewLabel}>Books Table</div>
+    <div className={styles.overviewLabel}>Default Books Table</div>
     <table className={styles.bookTable}>
       <thead>
         <tr>
@@ -272,12 +269,109 @@ export default function ProfilePage() {
             <button className={styles.clearWishlistBtn}>Delete</button>
           </td>
         </tr>
+        <tr>
+          <td><img src="/placeholder-cover.png" width="40" alt="cover" /></td>
+          <td>To Kill a Mockingbird</td>
+          <td>Harper Lee</td>
+          <td>1960</td>
+          <td>Classic</td>
+          <td>4.8</td>
+          <td>
+            <button className={styles.saveBtn}>Edit</button>
+            <button className={styles.clearWishlistBtn}>Delete</button>
+          </td>
+        </tr>
+        <tr>
+          <td><img src="/placeholder-cover.png" width="40" alt="cover" /></td>
+          <td>Pride and Prejudice</td>
+          <td>Jane Austen</td>
+          <td>1813</td>
+          <td>Romance</td>
+          <td>4.7</td>
+          <td>
+            <button className={styles.saveBtn}>Edit</button>
+            <button className={styles.clearWishlistBtn}>Delete</button>
+          </td>
+        </tr>
+        <tr>
+          <td><img src="/placeholder-cover.png" width="40" alt="cover" /></td>
+          <td>The Catcher in the Rye</td>
+          <td>J.D. Salinger</td>
+          <td>1951</td>
+          <td>Fiction</td>
+          <td>4.0</td>
+          <td>
+            <button className={styles.saveBtn}>Edit</button>
+            <button className={styles.clearWishlistBtn}>Delete</button>
+          </td>
+        </tr>
+        <tr>
+          <td><img src="/placeholder-cover.png" width="40" alt="cover" /></td>
+          <td>The Hobbit</td>
+          <td>J.R.R. Tolkien</td>
+          <td>1937</td>
+          <td>Fantasy</td>
+          <td>4.8</td>
+          <td>
+            <button className={styles.saveBtn}>Edit</button>
+            <button className={styles.clearWishlistBtn}>Delete</button>
+          </td>
+        </tr>
+        <tr>
+          <td><img src="/placeholder-cover.png" width="40" alt="cover" /></td>
+          <td>The Lord of the Rings</td>
+          <td>J.R.R. Tolkien</td>
+          <td>1954</td>
+          <td>Fantasy</td>
+          <td>4.9</td>
+          <td>
+            <button className={styles.saveBtn}>Edit</button>
+            <button className={styles.clearWishlistBtn}>Delete</button>
+          </td>
+        </tr>
+        <tr>
+          <td><img src="/placeholder-cover.png" width="40" alt="cover" /></td>
+          <td>Brave New World</td>
+          <td>Aldous Huxley</td>
+          <td>1932</td>
+          <td>Dystopian</td>
+          <td>4.2</td>
+          <td>
+            <button className={styles.saveBtn}>Edit</button>
+            <button className={styles.clearWishlistBtn}>Delete</button>
+          </td>
+        </tr>
+        <tr>
+          <td><img src="/placeholder-cover.png" width="40" alt="cover" /></td>
+          <td>Moby-Dick</td>
+          <td>Herman Melville</td>
+          <td>1851</td>
+          <td>Adventure</td>
+          <td>4.1</td>
+          <td>
+            <button className={styles.saveBtn}>Edit</button>
+            <button className={styles.clearWishlistBtn}>Delete</button>
+          </td>
+        </tr>
+        <tr>
+          <td><img src="/placeholder-cover.png" width="40" alt="cover" /></td>
+          <td>War and Peace</td>
+          <td>Leo Tolstoy</td>
+          <td>1869</td>
+          <td>Historical</td>
+          <td>4.6</td>
+          <td>
+            <button className={styles.saveBtn}>Edit</button>
+            <button className={styles.clearWishlistBtn}>Delete</button>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
-
+  </div>
+<div className={styles.overviewRow}>
   <div className={styles.overviewItem}>
-    <div className={styles.overviewLabel}>Add New Book</div>
+    <div className={styles.overviewLabel}>Add New Default Book</div>
     <form>
       <div className={styles.addBookContainer}>
         <input type="text" placeholder="Title" required style={{ height: "30px", flex: 1 }} />
@@ -286,6 +380,21 @@ export default function ProfilePage() {
         <button type="submit" className={styles.saveBtn}>Add Book</button>
       </div>
     </form>
+  </div>
+</div>
+
+<div className={styles.overviewRow}>
+  <div className={styles.overviewItem}>
+    <div className={styles.overviewLabel}>Add New Book to Database</div>
+    <form>
+      <div className={styles.addBookContainer}>
+        <input type="text" placeholder="Title" required style={{ height: "30px", flex: 1 }} />
+        <input type="text" placeholder="Author" required style={{ height: "30px", flex: 1 }} />
+        <input type="text" placeholder="ISBN" style={{ height: "30px", flex: 1 }} />
+        <button type="submit" className={styles.saveBtn}>Add Book</button>
+      </div>
+    </form>
+  </div>
   </div>
 </div>
           )}
@@ -297,24 +406,24 @@ export default function ProfilePage() {
   <div className={styles.overviewRow}>
     <div className={styles.overviewItem}>
       <div className={styles.overviewLabel}>User Growth (Last 6 Months)</div>
-      <img src="/chart-users.png" alt="User growth chart" width="100%" />
+      <img src="/deepfake-detection-min.webp" alt="User growth chart" width="100%" />
     </div>
 
     <div className={styles.overviewItem}>
       <div className={styles.overviewLabel}>Recommendation Activity</div>
-      <img src="/chart-recommendations.png" alt="Recommendations chart" width="100%" />
+      <img src="/undefined.webp" alt="Recommendations chart" width="100%" />
     </div>
   </div>
 
   <div className={styles.overviewRow}>
     <div className={styles.overviewItem}>
       <div className={styles.overviewLabel}>Most Popular Genres</div>
-      <img src="/chart-genres.png" alt="Genre chart" width="100%" />
+      <img src="/Screenshot 2025-10-15 at 5.03.29 AM.png" alt="Genre chart" width="100%" />
     </div>
 
     <div className={styles.overviewItem}>
       <div className={styles.overviewLabel}>Active Users (30 Days)</div>
-      <img src="/chart-active-users.png" alt="Active users chart" width="100%" />
+      <img src="/Twitter.webp" alt="Active users chart" width="100%" />
     </div>
   </div>
 </div>
