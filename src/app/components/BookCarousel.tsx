@@ -9,6 +9,9 @@ import type { Book } from "../../types/book";
 interface BookCarouselProps {
   title: string;
   books: Book[];
+    isLoading?: boolean;
+  error?: string | null;
+  seeMoreLink?: string;
 }
 
 /**

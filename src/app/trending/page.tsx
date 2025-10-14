@@ -7,7 +7,7 @@ import React, {
   Dispatch,
   SetStateAction,
 } from "react";
-import Link from "next/link";
+
 import BookCarousel from "../components/BookCarousel";
 import { Book } from "../../types/book";
 
