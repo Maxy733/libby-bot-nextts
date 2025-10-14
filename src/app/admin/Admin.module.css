@@ -290,7 +290,7 @@
   background: #4b3f35;
   border-radius: 12px;
   padding: 1rem;
-  text-align: center;
+  text-align: left;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
@@ -334,6 +334,9 @@
 
 /* Individual recent activity items */
 .recentActivityItem {
+  display: flex;               
+  align-items: center;         /* vertically centers text + dot */
+  justify-content: space-between; /* separates label and dot */
   font-size: 0.85rem;
   color: var(--brand-text);
   margin-bottom: 0.4rem;
@@ -465,4 +468,31 @@
   border-radius: 10px;
   padding: 10px 12px;
   color: #e8dcc6;
+}
+
+/* Ensure Edit and Delete buttons have consistent height */
+.saveBtn,
+.clearWishlistBtn {
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  font-size: 0.9rem;
+}
+
+
+.searchContainer,
+.addBookContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* pushes button to end */
+  gap: 10px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: row;
+  gap: 8px; /* adds vertical space between label and input/select */
+  margin-bottom: 12px;
 }

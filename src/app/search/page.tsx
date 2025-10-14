@@ -65,6 +65,64 @@ function SearchResults() {
 
     return (
         <main className="container page-content">
+            <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+              <button
+                onClick={() => window.history.back()}
+                style={{
+                  backgroundColor: "#9c6237",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "8px",
+                  padding: "8px 16px",
+                  cursor: "pointer",
+                  fontWeight: 500
+                }}
+              >
+                ← Back
+              </button>
+              
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <input
+                  type="text"
+                  placeholder="Search books..."
+                  style={{
+                    height: "32px",
+                    borderRadius: "8px",
+                    border: "1px solid #ccc",
+                    padding: "0 10px",
+                    minWidth: "200px"
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const input = e.target as HTMLInputElement;
+                      const newQuery = input.value.trim();
+                      if (newQuery) {
+                        window.location.href = `/search?q=${encodeURIComponent(newQuery)}`;
+                      }
+                    }
+                  }}
+                />
+                <button
+                  onClick={() => {
+                    const input = document.querySelector('input[type="text"]') as HTMLInputElement;
+                    if (input && input.value.trim()) {
+                      window.location.href = `/search?q=${encodeURIComponent(input.value.trim())}`;
+                    }
+                  }}
+                  style={{
+                    backgroundColor: "#9c6237",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "8px",
+                    padding: "8px 16px",
+                    cursor: "pointer",
+                    fontWeight: 500
+                  }}
+                >
+                  Search
+                </button>
+              </div>
+            </header>
             <div>
                 <p className="page-subtitle">Search results for:</p>
                 <h1 className="page-title">&quot;{query}&quot;</h1>

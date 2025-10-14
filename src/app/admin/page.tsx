@@ -37,7 +37,7 @@ export default function ProfilePage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    const validTabs = ["dashboard", "users", "recommendations", "books", "analytics", "settings"];
+    const validTabs = ["dashboard", "books", "analytics", "settings"];
     const hash = window.location.hash.replace("#", "");
     if (validTabs.includes(hash)) {
       setActiveTab(hash as typeof activeTab);
@@ -84,7 +84,7 @@ export default function ProfilePage() {
       <div className={styles.leftColumn}>
         <div className={styles.settingsMenu}>
           <ul>
-            {["dashboard", "users", "recommendations", "books", "analytics", "settings"].map(
+            {["dashboard", "books", "analytics", "settings"].map(
               (tab) => (
                 <li key={tab}>
                   <button
@@ -163,35 +163,39 @@ export default function ProfilePage() {
                       </div>
                     </div>
                   </div>
-                  <div className={styles.overviewRowLarge}>
-                    <div className={styles.overviewItemLarge}>
+                  <div className={styles.overviewRow}>
+                    <div className={styles.overviewItem}>
                       <div className={styles.overviewLabel}>Recent Activity Log</div>
-                      <ul className={styles.activityList}>
-                        <li>User John added a new book to the library.</li>
-                        <li>Recommendation engine refreshed at 12:30 PM.</li>
-                        <li>New user Sarah signed up.</li>
-                        <li>Database backup completed successfully.</li>
+                      <ul className={styles.recentActivityList}>
+                        <li className={styles.recentActivityItem}>User John added a new book to the library.</li>
+                        <li className={styles.recentActivityItem}>Recommendation engine refreshed at 12:30 PM.</li>
+                        <li className={styles.recentActivityItem}>New user Sarah signed up.</li>
+                        <li className={styles.recentActivityItem}>Database backup completed successfully.</li>
                       </ul>
                     </div>
 
-                    <div className={styles.overviewItemLarge}>
+                    <div className={styles.overviewItem}>
                       <div className={styles.overviewLabel}>System Status</div>
-                      <ul className={styles.statusList}>
-                        <li>
-                          <span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>
+                      <ul className={styles.recentActivityList}>
+                        <li className={styles.recentActivityItem}>
+                          
                           Database
-                        </li>
-                        <li>
                           <span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>
+                        </li>
+                        <li className={styles.recentActivityItem}>
+                          
                           API Services
-                        </li>
-                        <li>
                           <span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>
+                        </li>
+                        <li className={styles.recentActivityItem}>
+                          
                           Server Load
-                        </li>
-                        <li>
                           <span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>
+                        </li>
+                        <li className={styles.recentActivityItem}>
+                          
                           Cache
+                          <span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>
                         </li>
                       </ul>
                     </div>
@@ -205,136 +209,160 @@ export default function ProfilePage() {
 
           {activeTab === "books" && (
             <div className={styles.tabContent}>
-              <h2 className={styles.sectionTitle}>Book Management</h2>
-              <div className={styles.searchContainer}>
-                <input
-                  type="text"
-                  placeholder="Search by title, author, or ISBN"
-                  className={styles.searchBar}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <div className={styles.summaryRow}>
-                <div>Total Books: 118,801</div>
-                <div>Missing Metadata: 1,203</div>
-              </div>
-              <table className={styles.bookTable}>
-                <thead>
-                  <tr>
-                    <th>Cover</th>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Year</th>
-                    <th>Genre</th>
-                    <th>Rating</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><img src="/placeholder-cover.png" width="40" alt="cover" /></td>
-                    <td>The Great Gatsby</td>
-                    <td>F. Scott Fitzgerald</td>
-                    <td>1925</td>
-                    <td>Fiction</td>
-                    <td>4.3</td>
-                    <td>
-                      <button className={styles.smallBtn}>Edit</button>
-                      <button className={styles.dangerSmall}>Delete</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><img src="/placeholder-cover.png" width="40" alt="cover" /></td>
-                    <td>1984</td>
-                    <td>George Orwell</td>
-                    <td>1949</td>
-                    <td>Dystopian</td>
-                    <td>4.5</td>
-                    <td>
-                      <button className={styles.smallBtn}>Edit</button>
-                      <button className={styles.dangerSmall}>Delete</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div className={styles.addBookForm}>
-                <h3>Add New Book</h3>
-                <form>
-                  <input type="text" placeholder="Title" required />
-                  <input type="text" placeholder="Author" required />
-                  <input type="text" placeholder="ISBN" />
-                  <button type="submit" className={styles.primary}>Add Book</button>
-                </form>
-              </div>
-            </div>
+  <h2 className={styles.sectionTitle}>Book Management</h2>
+
+  <div className={styles.overviewRow}>
+    <div className={styles.overviewItem}>
+      <div className={styles.overviewLabel}>Search Books</div>
+      <div className={styles.searchContainer}>
+        <input
+          type="text"
+          placeholder="Search by title, author, or ISBN"
+          className={styles.searchBar}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ height: "30px", flex: 1 }}
+        />
+        <button className={styles.saveBtn}>Search</button>
+      </div>
+    </div>
+
+    <div className={styles.overviewItem}>
+      <div className={styles.overviewLabel}>Book Summary</div>
+      <div>Total Books: 118,801</div>
+      <div>Missing Metadata: 1,203</div>
+    </div>
+  </div>
+
+  <div className={styles.overviewItem}>
+    <div className={styles.overviewLabel}>Books Table</div>
+    <table className={styles.bookTable}>
+      <thead>
+        <tr>
+          <th>Cover</th>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Year</th>
+          <th>Genre</th>
+          <th>Rating</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><img src="/placeholder-cover.png" width="40" alt="cover" /></td>
+          <td>The Great Gatsby</td>
+          <td>F. Scott Fitzgerald</td>
+          <td>1925</td>
+          <td>Fiction</td>
+          <td>4.3</td>
+          <td>
+            <button className={styles.saveBtn}>Edit</button>
+            <button className={styles.clearWishlistBtn}>Delete</button>
+          </td>
+        </tr>
+        <tr>
+          <td><img src="/placeholder-cover.png" width="40" alt="cover" /></td>
+          <td>1984</td>
+          <td>George Orwell</td>
+          <td>1949</td>
+          <td>Dystopian</td>
+          <td>4.5</td>
+          <td>
+            <button className={styles.saveBtn}>Edit</button>
+            <button className={styles.clearWishlistBtn}>Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div className={styles.overviewItem}>
+    <div className={styles.overviewLabel}>Add New Book</div>
+    <form>
+      <div className={styles.addBookContainer}>
+        <input type="text" placeholder="Title" required style={{ height: "30px", flex: 1 }} />
+        <input type="text" placeholder="Author" required style={{ height: "30px", flex: 1 }} />
+        <input type="text" placeholder="ISBN" style={{ height: "30px", flex: 1 }} />
+        <button type="submit" className={styles.saveBtn}>Add Book</button>
+      </div>
+    </form>
+  </div>
+</div>
           )}
 
           {activeTab === "analytics" && (
             <div className={styles.tabContent}>
-              <h2 className={styles.sectionTitle}>Analytics Dashboard</h2>
+  <h2 className={styles.sectionTitle}>Analytics Dashboard</h2>
 
-              <div className={styles.analyticsRow}>
-                <div className={styles.analyticsCard}>
-                  <h3>User Growth (Last 6 Months)</h3>
-                  <img src="/chart-users.png" alt="User growth chart" width="100%" />
-                </div>
+  <div className={styles.overviewRow}>
+    <div className={styles.overviewItem}>
+      <div className={styles.overviewLabel}>User Growth (Last 6 Months)</div>
+      <img src="/chart-users.png" alt="User growth chart" width="100%" />
+    </div>
 
-                <div className={styles.analyticsCard}>
-                  <h3>Recommendation Activity</h3>
-                  <img src="/chart-recommendations.png" alt="Recommendations chart" width="100%" />
-                </div>
-              </div>
+    <div className={styles.overviewItem}>
+      <div className={styles.overviewLabel}>Recommendation Activity</div>
+      <img src="/chart-recommendations.png" alt="Recommendations chart" width="100%" />
+    </div>
+  </div>
 
-              <div className={styles.analyticsRow}>
-                <div className={styles.analyticsCard}>
-                  <h3>Most Popular Genres</h3>
-                  <img src="/chart-genres.png" alt="Genre chart" width="100%" />
-                </div>
+  <div className={styles.overviewRow}>
+    <div className={styles.overviewItem}>
+      <div className={styles.overviewLabel}>Most Popular Genres</div>
+      <img src="/chart-genres.png" alt="Genre chart" width="100%" />
+    </div>
 
-                <div className={styles.analyticsCard}>
-                  <h3>Active Users (30 Days)</h3>
-                  <img src="/chart-active-users.png" alt="Active users chart" width="100%" />
-                </div>
-              </div>
-            </div>
+    <div className={styles.overviewItem}>
+      <div className={styles.overviewLabel}>Active Users (30 Days)</div>
+      <img src="/chart-active-users.png" alt="Active users chart" width="100%" />
+    </div>
+  </div>
+</div>
           )}
 
           {activeTab === "settings" && (
             <div className={styles.tabContent}>
-              <h2 className={styles.sectionTitle}>System Settings</h2>
+  <h2 className={styles.sectionTitle}>System Settings</h2>
 
-              <form className={styles.settingsForm}>
-                <div className={styles.formGroup}>
-                  <label>Recommendation Weights</label>
-                  <input type="number" placeholder="Content-based (35%)" />
-                  <input type="number" placeholder="Collaborative (25%)" />
-                  <input type="number" placeholder="Trending (20%)" />
-                  <input type="number" placeholder="Author (15%)" />
-                  <input type="number" placeholder="Diversity (5%)" />
-                </div>
+  <div className={styles.overviewItem}>
+    <div className={styles.overviewLabel}>Configuration</div>
+    <form className={styles.settingsForm}>
+      <div className={styles.formGroup}>
+        <label>Recommendation Weights:  </label>
+        <input type="number" placeholder="Content-based (35%)" style={{ height: "24px" }} />
+        <input type="number" placeholder="Collaborative (25%)" style={{ height: "24px" }} />
+        <input type="number" placeholder="Trending (20%)" style={{ height: "24px" }} />
+        <input type="number" placeholder="Author (15%)" style={{ height: "24px" }} />
+        <input type="number" placeholder="Diversity (5%)" style={{ height: "24px" }} />
+      </div>
 
-                <div className={styles.formGroup}>
-                  <label>Cache Refresh Interval (minutes)</label>
-                  <input type="number" placeholder="60" />
-                </div>
+      <div style={{ gap: "12px", marginBottom: "12px" }}>
+        <label>Cache Refresh Interval (minutes):</label>
+        <input type="number" placeholder="60" style={{ height: "24px", flex: 1, marginLeft:"24px"}} />
+      </div>
 
-                <div className={styles.formGroup}>
-                  <label>Maintenance Mode</label>
-                  <select>
-                    <option>Off</option>
-                    <option>On</option>
-                  </select>
-                </div>
+      <div >
+        <label>Maintenance Mode:</label>
+        <select style={{ height: "24px", flex: 1, marginLeft:"24px" }}>
+          <option>Off</option>
+          <option>On</option>
+        </select>
+      </div>
 
-                <button className={styles.primary}>Save Settings</button>
-              </form>
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "12px" }}>
+        <button className={styles.saveBtn}>Save Settings</button>
+      </div>
+    </form>
+  </div>
 
-              <div className={styles.dangerZone}>
-                <h3>Danger Zone</h3>
-                <p>Reset all caches and refresh metadata. This may take several minutes.</p>
-                <button className={styles.danger}>Run System Reset</button>
-              </div>
-            </div>
+  <div className={styles.overviewItem}>
+    <div className={styles.overviewLabel}>Danger Zone</div>
+    <p>Reset all caches and refresh metadata. This may take several minutes.</p>
+    <div style={{ display: "flex", justifyContent: "center", marginTop: "12px" }}>
+        <button className={styles.clearWishlistBtn}>Run System Reset</button>
+    </div>
+  </div>
+</div>
           )}
         </div>
       </div>
