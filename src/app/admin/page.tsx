@@ -24,22 +24,17 @@ export default function ProfilePage() {
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState<
-    "dashboard" | "users" | "recommendations" | "books" | "analytics" | "settings"
+    "dashboard" | "books" | "analytics" | "settings"
   >("dashboard");
 
-  const [wishlistBooks, setWishlistBooks] = useState<Book[]>([]);
-  const [userStats, setUserStats] = useState<UserStats | null>(null);
+  const [userStats, setUserStats] = useState<UserStats>({
+    recommendationsCount: 0,
+    totalUsers: 0,
+    newSignupsWeek: 0
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [preferencesGenres, setPreferencesGenres] = useState<string[]>([]);
-
-  // Notification preference state
-  const [emailFreq, setEmailFreq] = useState<"weekly" | "monthly" | "none">(
-    "none"
-  );
-  const [savingPref, setSavingPref] = useState(false);
-  const [prefLoaded, setPrefLoaded] = useState(false);
-  const [prefMsg, setPrefMsg] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const validTabs = ["dashboard", "users", "recommendations", "books", "analytics", "settings"];
@@ -50,164 +45,22 @@ export default function ProfilePage() {
   }, []);
 
   useEffect(() => {
-    if (isLoaded && user) {
-      loadUserData();
-    }
-  }, [isLoaded, user]);
-
-  useEffect(() => {
-    const fetchPreferences = async () => {
-      if (activeTab === "settings" && user) {
-        try {
-          const token = await getToken();
-          const res = await fetch(
-            `${API_BASE}/api/profile/interests?user_id=${user.id}`,
-            {
-              headers: token ? { Authorization: `Bearer ${token}` } : {},
-            }
-          );
-          const data = await res.json();
-          if (Array.isArray(data.genres)) {
-            setPreferencesGenres(data.genres.slice(-5)); // last 5 genres
-          }
-        } catch (err) {
-          console.error("Error loading preferences:", err);
-        }
-      }
-    };
-    fetchPreferences();
-  }, [activeTab, user, getToken, router]);
-
-  // Load current notification preferences when Notifications tab is opened
-  useEffect(() => {
-    const loadPref = async () => {
-      if (activeTab !== "settings" || !user) return;
+    const loadAdminOverview = async () => {
       try {
-        const token = await getToken();
-        const res = await fetch(
-          `${API_BASE}/api/notify/email?clerk_user_id=${user.id}`,
-          { headers: token ? { Authorization: `Bearer ${token}` } : {} }
-        );
-        if (!res.ok) throw new Error("Failed to load preference");
+        const res = await fetch(`${API_BASE}/api/admin/overview`);
+        if (!res.ok) throw new Error('Failed to load admin overview');
         const data = await res.json();
-        if (data.ok) {
-          setEmailFreq((data.email_frequency || "none") as typeof emailFreq);
-          setPrefLoaded(true);
-        }
-      } catch (e) {
-        console.error(e);
-        setPrefLoaded(true);
+        setUserStats(prev => ({
+          ...prev,
+          totalUsers: data.total_users ?? 0,
+          newSignupsWeek: data.new_signups_week ?? 0
+        }));
+      } catch (err) {
+        console.error('Error fetching admin overview:', err);
       }
     };
-    loadPref();
-  }, [activeTab, user, getToken]);
-
-  const loadUserData = async () => {
-    if (!user) return;
-    try {
-      setIsLoading(true);
-
-      const savedWishlist = localStorage.getItem(`wishlist_${user.id}`);
-      const wishlist = savedWishlist ? JSON.parse(savedWishlist) : [];
-      setWishlistBooks(wishlist);
-
-      // fetch recommendation count
-      const token = await getToken();
-      const resCount = await fetch(
-        `${API_BASE}/api/profile/recommendations/count?user_id=${user.id}`,
-        {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        }
-      );
-      const countData = await resCount.json();
-
-      setUserStats({
-        recommendationsCount: countData.count ?? 0,
-      });
-
-      // Optionally load backend data (interests, activity, etc.)
-      const res = await fetch(
-        `${API_BASE}/api/profile/interests?user_id=${user.id}`,
-        {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        }
-      );
-
-      if (res.ok) {
-        const data = await res.json();
-        console.log("Loaded interests in overview tab:", data.genres);
-      }
-    } catch (err) {
-      console.error("Error loading user data:", err);
-      setError("Failed to load profile data");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const removeFromWishlist = (bookId: number) => {
-    if (!user) return;
-    const updatedWishlist = wishlistBooks.filter((book) => book.id !== bookId);
-    setWishlistBooks(updatedWishlist);
-    localStorage.setItem(
-      `wishlist_${user.id}`,
-      JSON.stringify(updatedWishlist)
-    );
-  };
-
-  const clearWishlist = () => {
-    if (
-      !user ||
-      !confirm("Are you sure you want to clear your entire wishlist?")
-    )
-      return;
-
-    setWishlistBooks([]);
-    localStorage.removeItem(`wishlist_${user.id}`);
-  };
-
-  // Save email notification preference and optionally trigger a sample send
-  const saveEmailPref = async () => {
-    if (!user) return;
-    setSavingPref(true);
-    setPrefMsg(null);
-    try {
-      const token = await getToken();
-
-      const res = await fetch(`${API_BASE}/api/notify/email`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({
-          clerk_user_id: user.id,
-          frequency: emailFreq,
-        }),
-      });
-
-      const json = await res.json();
-
-      if (!res.ok || !json.ok) {
-        throw new Error(json?.error || "Save failed");
-      }
-
-      if (json.send_now) {
-        setPrefMsg(
-          json.send_now.ok
-            ? "Email sent! Check your inbox."
-            : `Could not send now: ${json.send_now.reason}`
-        );
-      } else {
-        setPrefMsg("Email notifications turned off.");
-      }
-    } catch (e: any) {
-      console.error(e);
-      setPrefMsg(e?.message || "Something went wrong");
-    } finally {
-      setSavingPref(false);
-    }
-  };
+    loadAdminOverview();
+  }, []);
 
   if (!isLoaded) return <div className="loading-container">Loading...</div>;
 
@@ -285,14 +138,14 @@ export default function ProfilePage() {
                     <div className={styles.overviewItem}>
                       <div className={styles.overviewLabel}>Total Users</div>
                       <div className={styles.overviewValue}>
-                        {userStats.totalUsers ?? 0}
+                        {userStats?.totalUsers ?? 0}
                       </div>
                     </div>
 
                     <div className={styles.overviewItem}>
                       <div className={styles.overviewLabel}>Books in Library</div>
                       <div className={styles.overviewValue}>
-                        {wishlistBooks.length}
+                        118,801
                       </div>
                     </div>
 
@@ -306,8 +159,41 @@ export default function ProfilePage() {
                     <div className={styles.overviewItem}>
                       <div className={styles.overviewLabel}>New Sign-up This Week</div>
                       <div className={styles.overviewValue}>
-                          {userStats.newSignupsWeek ?? 0}
+                          {userStats?.newSignupsWeek ?? 0}
                       </div>
+                    </div>
+                  </div>
+                  <div className={styles.overviewRowLarge}>
+                    <div className={styles.overviewItemLarge}>
+                      <div className={styles.overviewLabel}>Recent Activity Log</div>
+                      <ul className={styles.activityList}>
+                        <li>User John added a new book to the library.</li>
+                        <li>Recommendation engine refreshed at 12:30 PM.</li>
+                        <li>New user Sarah signed up.</li>
+                        <li>Database backup completed successfully.</li>
+                      </ul>
+                    </div>
+
+                    <div className={styles.overviewItemLarge}>
+                      <div className={styles.overviewLabel}>System Status</div>
+                      <ul className={styles.statusList}>
+                        <li>
+                          <span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>
+                          Database
+                        </li>
+                        <li>
+                          <span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>
+                          API Services
+                        </li>
+                        <li>
+                          <span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>
+                          Server Load
+                        </li>
+                        <li>
+                          <span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>
+                          Cache
+                        </li>
+                      </ul>
                     </div>
                   </div>
                 </>
@@ -317,38 +203,137 @@ export default function ProfilePage() {
             </div>
           )}
 
-                    {activeTab === "users" && (
-            <div className={styles.tabContent}>
-              <h2>User Management</h2>
-              {/* User management content will go here */}
-            </div>
-          )}
-
-          {activeTab === "recommendations" && (
-            <div className={styles.tabContent}>
-              <h2>Recommendations</h2>
-              {/* Recommendations management content will go here */}
-            </div>
-          )}
-
           {activeTab === "books" && (
             <div className={styles.tabContent}>
-              <h2>Book Management</h2>
-              {/* Book management content will go here */}
+              <h2 className={styles.sectionTitle}>Book Management</h2>
+              <div className={styles.searchContainer}>
+                <input
+                  type="text"
+                  placeholder="Search by title, author, or ISBN"
+                  className={styles.searchBar}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <div className={styles.summaryRow}>
+                <div>Total Books: 118,801</div>
+                <div>Missing Metadata: 1,203</div>
+              </div>
+              <table className={styles.bookTable}>
+                <thead>
+                  <tr>
+                    <th>Cover</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Year</th>
+                    <th>Genre</th>
+                    <th>Rating</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><img src="/placeholder-cover.png" width="40" alt="cover" /></td>
+                    <td>The Great Gatsby</td>
+                    <td>F. Scott Fitzgerald</td>
+                    <td>1925</td>
+                    <td>Fiction</td>
+                    <td>4.3</td>
+                    <td>
+                      <button className={styles.smallBtn}>Edit</button>
+                      <button className={styles.dangerSmall}>Delete</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><img src="/placeholder-cover.png" width="40" alt="cover" /></td>
+                    <td>1984</td>
+                    <td>George Orwell</td>
+                    <td>1949</td>
+                    <td>Dystopian</td>
+                    <td>4.5</td>
+                    <td>
+                      <button className={styles.smallBtn}>Edit</button>
+                      <button className={styles.dangerSmall}>Delete</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div className={styles.addBookForm}>
+                <h3>Add New Book</h3>
+                <form>
+                  <input type="text" placeholder="Title" required />
+                  <input type="text" placeholder="Author" required />
+                  <input type="text" placeholder="ISBN" />
+                  <button type="submit" className={styles.primary}>Add Book</button>
+                </form>
+              </div>
             </div>
           )}
 
           {activeTab === "analytics" && (
             <div className={styles.tabContent}>
-              <h2>Analytics Dashboard</h2>
-              {/* Analytics content will go here */}
+              <h2 className={styles.sectionTitle}>Analytics Dashboard</h2>
+
+              <div className={styles.analyticsRow}>
+                <div className={styles.analyticsCard}>
+                  <h3>User Growth (Last 6 Months)</h3>
+                  <img src="/chart-users.png" alt="User growth chart" width="100%" />
+                </div>
+
+                <div className={styles.analyticsCard}>
+                  <h3>Recommendation Activity</h3>
+                  <img src="/chart-recommendations.png" alt="Recommendations chart" width="100%" />
+                </div>
+              </div>
+
+              <div className={styles.analyticsRow}>
+                <div className={styles.analyticsCard}>
+                  <h3>Most Popular Genres</h3>
+                  <img src="/chart-genres.png" alt="Genre chart" width="100%" />
+                </div>
+
+                <div className={styles.analyticsCard}>
+                  <h3>Active Users (30 Days)</h3>
+                  <img src="/chart-active-users.png" alt="Active users chart" width="100%" />
+                </div>
+              </div>
             </div>
           )}
 
           {activeTab === "settings" && (
             <div className={styles.tabContent}>
-              <h2>System Settings</h2>
-              {/* Settings content will go here */}
+              <h2 className={styles.sectionTitle}>System Settings</h2>
+
+              <form className={styles.settingsForm}>
+                <div className={styles.formGroup}>
+                  <label>Recommendation Weights</label>
+                  <input type="number" placeholder="Content-based (35%)" />
+                  <input type="number" placeholder="Collaborative (25%)" />
+                  <input type="number" placeholder="Trending (20%)" />
+                  <input type="number" placeholder="Author (15%)" />
+                  <input type="number" placeholder="Diversity (5%)" />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Cache Refresh Interval (minutes)</label>
+                  <input type="number" placeholder="60" />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Maintenance Mode</label>
+                  <select>
+                    <option>Off</option>
+                    <option>On</option>
+                  </select>
+                </div>
+
+                <button className={styles.primary}>Save Settings</button>
+              </form>
+
+              <div className={styles.dangerZone}>
+                <h3>Danger Zone</h3>
+                <p>Reset all caches and refresh metadata. This may take several minutes.</p>
+                <button className={styles.danger}>Run System Reset</button>
+              </div>
             </div>
           )}
         </div>
