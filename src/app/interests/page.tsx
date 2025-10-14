@@ -18,10 +18,9 @@ const GENRES = [
 ];
 
 const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE ||
   process.env.NEXT_PUBLIC_API_URL ||
-  (typeof window !== "undefined"
-    ? `http://${location.hostname}:${process.env.NEXT_PUBLIC_API_PORT || 5000}`
-    : "http://localhost:5000");
+  "http://127.0.0.1:5000";
 
 type UserMetadata = {
   interestsCompleted?: boolean;
@@ -32,7 +31,7 @@ export default function InterestsPage() {
   const { user, isLoaded: userLoaded } = useUser();
   const { getToken, isSignedIn, isLoaded: authLoaded } = useAuth();
   const router = useRouter();
-  
+
   const [selected, setSelected] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -45,7 +44,7 @@ export default function InterestsPage() {
 
   useEffect(() => {
     setMounted(true);
-    
+
     // Wait for auth to load
     if (!authLoaded || !userLoaded) return;
 
@@ -54,7 +53,6 @@ export default function InterestsPage() {
       router.push("/sign-in?redirect_url=/interests");
       return;
     }
-
   }, [authLoaded, userLoaded, isSignedIn, user, router]);
 
   function toggle(k: string) {
@@ -102,7 +100,7 @@ export default function InterestsPage() {
 
   async function handleSkip() {
     if (!user || saving) return;
-    
+
     setSaving(true);
     try {
       // Redirect to dashboard
@@ -142,11 +140,11 @@ export default function InterestsPage() {
             <span className={styles.icon}>📚</span>
           </div>
           <h1 className={styles.title}>
-            Welcome to{" "}
-            <span className={styles.titleGradient}>Libby-Bot</span>
+            Welcome to <span className={styles.titleGradient}>Libby-Bot</span>
           </h1>
           <p className={styles.subtitle}>
-            Select your favorite genres. You can update them anytime in Preferences.
+            Select your favorite genres. You can update them anytime in
+            Preferences.
           </p>
         </div>
 
@@ -159,7 +157,7 @@ export default function InterestsPage() {
             </span>
           </div>
           <div className={styles.progressTrack}>
-            <div 
+            <div
               className={styles.progressFill}
               style={{ width: `${Math.min(progress, 100)}%` }}
             />
@@ -174,7 +172,9 @@ export default function InterestsPage() {
               <button
                 key={genre.key}
                 onClick={() => toggle(genre.key)}
-                className={`${styles.genreButton} ${active ? styles.active : ''}`}
+                className={`${styles.genreButton} ${
+                  active ? styles.active : ""
+                }`}
               >
                 {genre.label}
                 {active && <span className={styles.checkmark}>✓</span>}
@@ -188,10 +188,8 @@ export default function InterestsPage() {
           onClick={handleContinue}
           disabled={saving || selected.length < minRequired}
           className={`${styles.continueButton} ${
-            selected.length >= minRequired 
-              ? styles.enabled 
-              : styles.disabled
-          } ${saving ? styles.saving : ''}`}
+            selected.length >= minRequired ? styles.enabled : styles.disabled
+          } ${saving ? styles.saving : ""}`}
         >
           {saving
             ? "Setting up your library..."

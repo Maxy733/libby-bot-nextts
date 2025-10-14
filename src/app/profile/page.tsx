@@ -10,7 +10,10 @@ import styles from "./Profile.module.css";
 import BookCard from "../components/BookCard";
 import { Book } from "../../types/book";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://127.0.0.1:5000";
 
 interface RecentActivityItem {
   title: string;
@@ -48,6 +51,8 @@ export default function ProfilePage() {
   const [savingPref, setSavingPref] = useState(false);
   const [prefLoaded, setPrefLoaded] = useState(false);
   const [prefMsg, setPrefMsg] = useState<string | null>(null);
+  const [showEmailPrompt, setShowEmailPrompt] = useState(false);
+  const [newEmail, setNewEmail] = useState("");
 
   useEffect(() => {
     const validTabs = ["overview", "wishlist", "preferences", "notifications"];
@@ -206,22 +211,94 @@ export default function ProfilePage() {
 
       const json = await res.json();
 
+      // Check if email is missing
+      if (json.email_missing === true) {
+        setShowEmailPrompt(true);
+        setPrefMsg("Please provide your email to receive notifications.");
+        setSavingPref(false);
+        return;
+      }
+
       if (!res.ok || !json.ok) {
         throw new Error(json?.error || "Save failed");
       }
 
       if (json.send_now) {
-        setPrefMsg(
-          json.send_now.ok
-            ? "Email sent! Check your inbox."
-            : `Could not send now: ${json.send_now.reason}`
-        );
+        if (json.send_now.ok) {
+          setPrefMsg("Email sent! Check your inbox.");
+        } else if (
+          json.send_now.reason === "no_email" ||
+          json.send_now.reason === "email_missing"
+        ) {
+          // Show email prompt dialog
+          setShowEmailPrompt(true);
+          setPrefMsg(
+            "Please provide your email address to receive notifications."
+          );
+        } else {
+          setPrefMsg(`Could not send now: ${json.send_now.reason}`);
+        }
       } else {
         setPrefMsg("Email notifications turned off.");
       }
     } catch (e: any) {
       console.error(e);
       setPrefMsg(e?.message || "Something went wrong");
+    } finally {
+      setSavingPref(false);
+    }
+  };
+
+  // Save user email to database
+  const saveUserEmail = async () => {
+    if (!user || !newEmail) {
+      setPrefMsg("Please enter a valid email address.");
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newEmail)) {
+      setPrefMsg("Please enter a valid email address.");
+      return;
+    }
+
+    setSavingPref(true);
+    setPrefMsg(null);
+    try {
+      const token = await getToken();
+
+      // Update user email in database via the notify endpoint
+      const res = await fetch(`${API_BASE}/api/notify/email/update`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          clerk_user_id: user.id,
+          email: newEmail,
+        }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok || !json.ok) {
+        throw new Error(json?.error || "Failed to save email");
+      }
+
+      // Close the prompt and show success message
+      setShowEmailPrompt(false);
+      setNewEmail("");
+      setPrefMsg("Email saved successfully! You can now enable notifications.");
+
+      // Retry saving email preference to trigger send
+      setTimeout(() => {
+        saveEmailPref();
+      }, 500);
+    } catch (e: any) {
+      console.error(e);
+      setPrefMsg(e?.message || "Failed to save email");
     } finally {
       setSavingPref(false);
     }
@@ -481,11 +558,49 @@ export default function ProfilePage() {
                 </div>
 
                 <p className={styles.prefHint}>
-                  We’ll send you a curated set of recommendations based on your
+                  We'll send you a curated set of recommendations based on your
                   activity and interests.
                 </p>
 
                 {prefMsg && <div className={styles.toast}>{prefMsg}</div>}
+
+                {/* Email Prompt Dialog */}
+                {showEmailPrompt && (
+                  <div className={styles.emailPromptOverlay}>
+                    <div className={styles.emailPromptDialog}>
+                      <h3>Email Required</h3>
+                      <p>Please provide your email to receive notifications</p>
+                      <input
+                        type="email"
+                        placeholder="your.email@example.com"
+                        value={newEmail}
+                        onChange={(e) => setNewEmail(e.target.value)}
+                        className={styles.emailInput}
+                        disabled={savingPref}
+                      />
+                      <div className={styles.dialogButtons}>
+                        <button
+                          onClick={saveUserEmail}
+                          className={styles.saveBtn}
+                          disabled={savingPref || !newEmail}
+                        >
+                          {savingPref ? "Saving..." : "Save Email"}
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowEmailPrompt(false);
+                            setNewEmail("");
+                            setPrefMsg(null);
+                          }}
+                          className={styles.cancelBtn}
+                          disabled={savingPref}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}

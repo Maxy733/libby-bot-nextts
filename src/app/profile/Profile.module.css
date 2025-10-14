@@ -466,3 +466,89 @@
   padding: 10px 12px;
   color: #e8dcc6;
 }
+
+/* Email Prompt Dialog */
+.emailPromptOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.emailPromptDialog {
+  background-color: #2f261e;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  color: #e8dcc6;
+}
+
+.emailPromptDialog h3 {
+  margin: 0 0 16px;
+  font-size: 24px;
+  color: #e8dcc6;
+}
+
+.emailPromptDialog p {
+  margin: 0 0 20px;
+  color: #a3937b;
+  line-height: 1.6;
+}
+
+.emailInput {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #5a4a3e;
+  border-radius: 10px;
+  background-color: #1c1b18;
+  color: #e8dcc6;
+  font-size: 16px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.emailInput:focus {
+  outline: none;
+  border-color: #9c6237;
+  box-shadow: 0 0 0 3px rgba(156, 98, 55, 0.2);
+}
+
+.emailInput::placeholder {
+  color: #a3937b;
+}
+
+.dialogButtons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.cancelBtn {
+  background-color: transparent;
+  color: #a3937b;
+  border: 1px solid #5a4a3e;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelBtn:hover {
+  background-color: #1c1b18;
+  border-color: #9c6237;
+  color: #e8dcc6;
+}
+
+.cancelBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

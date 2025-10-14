@@ -29,6 +29,34 @@ export default function HomeContent({
   const { user } = useUser();
   const userId = user?.id ?? null;
 
+  // Helper function to ensure HTTPS URLs
+  const toHttps = (url: string | null | undefined): string | null => {
+    if (!url) return null;
+    return url.replace(/^http:\/\//i, "https://");
+  };
+
+  // Helper function to normalize book data
+  const normalizeBook = (book: any): Book => {
+    return {
+      id: Number(book.id || book.book_id),
+      title: book.title || "Untitled",
+      author: book.author || book.authors || "Unknown Author",
+      genre: book.genre || null,
+      description: book.description || null,
+      coverurl: toHttps(
+        book.coverurl ||
+          book.cover_image_url ||
+          book.image_url ||
+          book.thumbnail
+      ),
+      rating: book.rating !== null ? Number(book.rating) : null,
+      publication_date: book.publication_date || null,
+      pages: book.pages || null,
+      language: book.language || null,
+      isbn: book.isbn || null,
+    };
+  };
+
   // Fetch trending books
   useEffect(() => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000";
@@ -38,13 +66,16 @@ export default function HomeContent({
     fetch(`${apiUrl}/api/books/recommendations/globally-trending?limit=10`)
       .then((response) => response.json())
       .then((data) => {
+        let books: any[] = [];
         if (Array.isArray(data)) {
-          setTrendingBooks(data);
+          books = data;
         } else if (data && Array.isArray(data.books)) {
-          setTrendingBooks(data.books);
+          books = data.books;
         } else {
           throw new Error("Invalid data format received from API.");
         }
+        // Normalize all books to ensure coverurl is HTTPS
+        setTrendingBooks(books.map(normalizeBook));
       })
       .catch((error) => {
         console.error("Error fetching trending books:", error);
@@ -76,13 +107,16 @@ export default function HomeContent({
     fetch(`${apiUrl}/api/recommendations/${userId}/improve?limit=10`)
       .then((response) => response.json())
       .then((data) => {
+        let books: any[] = [];
         if (Array.isArray(data)) {
-          setPersonalizedBooks(data);
+          books = data;
         } else if (data && Array.isArray(data.books)) {
-          setPersonalizedBooks(data.books);
+          books = data.books;
         } else {
           throw new Error("Invalid data format received from API.");
         }
+        // Normalize all books to ensure coverurl is HTTPS
+        setPersonalizedBooks(books.map(normalizeBook));
       })
       .catch((error) => {
         console.error("Error fetching personalized books:", error);

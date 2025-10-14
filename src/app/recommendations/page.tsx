@@ -46,7 +46,10 @@ type PersonalizedRecommendationResp = {
 
 type Tab = "personalized" | "trending" | "major";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://127.0.0.1:5000";
 
 const TRENDING_PERIODS = [
   { value: "weekly", label: "This Week" },
@@ -118,13 +121,10 @@ const normalizeBooks = (raw: any[]): Book[] =>
             ? b.publication_date
             : new Date(b.publication_date).getFullYear().toString()
           : "Unknown"),
-      coverurl: toHttps(
-        b.coverurl ||
-          b.cover_image_url ||
-          b.image_url ||
-          b.thumbnail ||
-          null
-      )as string || null,
+      coverurl:
+        (toHttps(
+          b.coverurl || b.cover_image_url || b.image_url || b.thumbnail || null
+        ) as string) || null,
       description: b.description ?? "",
       publication_date: b.publication_date ?? null,
       pages: b.pages ?? null,
@@ -225,7 +225,8 @@ function RecommendationsContent() {
   // Initialize state from query params (with fallback defaults)
   function getTabFromQuery() {
     const tab = searchParams?.get("tab");
-    if (tab === "trending" || tab === "major" || tab === "personalized") return tab as Tab;
+    if (tab === "trending" || tab === "major" || tab === "personalized")
+      return tab as Tab;
     return "personalized";
   }
   function getPeriodFromQuery() {
@@ -245,7 +246,9 @@ function RecommendationsContent() {
   // Personalized state
   const [loadingP, setLoadingP] = useState(false);
   const [errorP, setErrorP] = useState<string | null>(null);
-  const [dataP, setDataP] = useState<PersonalizedRecommendationResp | null>(null);
+  const [dataP, setDataP] = useState<PersonalizedRecommendationResp | null>(
+    null
+  );
 
   // Trending state
   const [period, setPeriod] = useState(getPeriodFromQuery());
@@ -457,30 +460,8 @@ function RecommendationsContent() {
           books: normalizedBooks,
         });
       } catch (error) {
-        console.warn("Primary trending endpoint failed:", error);
-                // Try fallback endpoint
-        try {
-          const fallbackResponse = await fetch(
-            `${API_BASE}/api/recommendations/mixed?limit=20`
-          );
-          if (fallbackResponse.ok) {
-            const fallbackData = await fallbackResponse.json();
-            if (fallbackData.success && fallbackData.books?.length > 0) {
-              setDataT({
-                books: fallbackData.books,
-                total_books: fallbackData.books.length,
-                page: 1,
-                per_page: 20,
-              });
-              setErrorT(null);
-              return;
-            }
-          }
-          throw new Error("Fallback also failed");
-        } catch (fallbackError) {
-          console.error("All trending endpoints failed:", fallbackError);
-          setErrorT("Failed to load trending books. Please try again later.");
-        }
+        console.error("Trending endpoint failed:", error);
+        setErrorT("Failed to load trending books. Please try again later.");
       } finally {
         setLoadingT(false);
       }
@@ -488,7 +469,6 @@ function RecommendationsContent() {
 
     fetchTrending();
   }, [activeTab, period, pageT]);
-
 
   // Fetch books by major
   useEffect(() => {
@@ -690,7 +670,11 @@ function RecommendationsContent() {
               onChange={(e) => {
                 setPeriod(e.target.value);
                 setPageT(1);
-                updateQueryString({ tab: "trending", period: e.target.value, pageT: 1 });
+                updateQueryString({
+                  tab: "trending",
+                  period: e.target.value,
+                  pageT: 1,
+                });
               }}
             >
               {TRENDING_PERIODS.map((p) => (
@@ -711,7 +695,11 @@ function RecommendationsContent() {
               onChange={(e) => {
                 setMajor(e.target.value);
                 setPageM(1);
-                updateQueryString({ tab: "major", major: e.target.value, pageM: 1 });
+                updateQueryString({
+                  tab: "major",
+                  major: e.target.value,
+                  pageM: 1,
+                });
               }}
             >
               {MAJORS.map((m) => (
@@ -846,11 +834,19 @@ function RecommendationsContent() {
                       if (activeTab === "trending") {
                         const newPage = Math.max(1, pageT - 1);
                         setPageT(newPage);
-                        updateQueryString({ tab: "trending", period, pageT: newPage });
+                        updateQueryString({
+                          tab: "trending",
+                          period,
+                          pageT: newPage,
+                        });
                       } else {
                         const newPage = Math.max(1, pageM - 1);
                         setPageM(newPage);
-                        updateQueryString({ tab: "major", major, pageM: newPage });
+                        updateQueryString({
+                          tab: "major",
+                          major,
+                          pageM: newPage,
+                        });
                       }
                     }}
                   >
@@ -872,11 +868,19 @@ function RecommendationsContent() {
                       if (activeTab === "trending") {
                         const newPage = Math.min(totalPagesT, pageT + 1);
                         setPageT(newPage);
-                        updateQueryString({ tab: "trending", period, pageT: newPage });
+                        updateQueryString({
+                          tab: "trending",
+                          period,
+                          pageT: newPage,
+                        });
                       } else {
                         const newPage = Math.min(totalPagesM, pageM + 1);
                         setPageM(newPage);
-                        updateQueryString({ tab: "major", major, pageM: newPage });
+                        updateQueryString({
+                          tab: "major",
+                          major,
+                          pageM: newPage,
+                        });
                       }
                     }}
                   >
@@ -889,7 +893,6 @@ function RecommendationsContent() {
         </section>
       </div>
     </main>
-    
   );
 }
 

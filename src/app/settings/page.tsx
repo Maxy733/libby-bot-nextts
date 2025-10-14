@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import styles from './Settings.module.css';
+import React, { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import styles from "./Settings.module.css";
 
 type MeResponse = {
   user_id: number;
@@ -11,21 +11,28 @@ type MeResponse = {
   created_at?: string | null;
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://127.0.0.1:5000";
 
 export default function SettingsPage() {
   const router = useRouter();
-  const token = useMemo(() => (typeof window === 'undefined' ? null : localStorage.getItem('token')), []);
+  const token = useMemo(
+    () =>
+      typeof window === "undefined" ? null : localStorage.getItem("token"),
+    []
+  );
   const [me, setMe] = useState<MeResponse | null>(null);
   const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState({ full_name: '' });
-  const [pw, setPw] = useState({ current: '', next: '', confirm: '' });
+  const [form, setForm] = useState({ full_name: "" });
+  const [pw, setPw] = useState({ current: "", next: "", confirm: "" });
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
   // Redirect if not logged in
   useEffect(() => {
-    if (!token) router.push('/login?next=/settings');
+    if (!token) router.push("/login?next=/settings");
   }, [router, token]);
 
   // Load current user
@@ -38,12 +45,12 @@ export default function SettingsPage() {
         const res = await fetch(`${API_BASE}/api/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!res.ok) throw new Error('Failed to load user');
+        if (!res.ok) throw new Error("Failed to load user");
         const data: MeResponse = await res.json();
         setMe(data);
-        setForm({ full_name: data.full_name || '' });
+        setForm({ full_name: data.full_name || "" });
       } catch {
-        setErr('Unable to load your account. Please try again.');
+        setErr("Unable to load your account. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -62,25 +69,25 @@ export default function SettingsPage() {
     setErr(null);
     try {
       const res = await fetch(`${API_BASE}/api/user/profile`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ full_name: form.full_name }),
       });
-      if (!res.ok) throw new Error('Bad response');
-      setMsg('Profile updated.');
+      if (!res.ok) throw new Error("Bad response");
+      setMsg("Profile updated.");
       // Optional: update cached "user" in localStorage if you store it
-      const stored = localStorage.getItem('user');
+      const stored = localStorage.getItem("user");
       if (stored) {
         const next = { ...JSON.parse(stored), full_name: form.full_name };
-        localStorage.setItem('user', JSON.stringify(next));
+        localStorage.setItem("user", JSON.stringify(next));
       }
       // Notify header
-      window.dispatchEvent(new Event('libby:auth'));
+      window.dispatchEvent(new Event("libby:auth"));
     } catch {
-      setErr('Failed to update profile.');
+      setErr("Failed to update profile.");
     }
   };
 
@@ -88,51 +95,56 @@ export default function SettingsPage() {
   const changePassword = async () => {
     setMsg(null);
     setErr(null);
-    if (!pw.current || !pw.next) return setErr('Please fill current and new password.');
-    if (pw.next !== pw.confirm) return setErr('New passwords do not match.');
+    if (!pw.current || !pw.next)
+      return setErr("Please fill current and new password.");
+    if (pw.next !== pw.confirm) return setErr("New passwords do not match.");
     try {
       const res = await fetch(`${API_BASE}/api/auth/change-password`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ current_password: pw.current, new_password: pw.next }),
+        body: JSON.stringify({
+          current_password: pw.current,
+          new_password: pw.next,
+        }),
       });
-      if (!res.ok) throw new Error('Bad response');
-      setMsg('Password changed.');
-      setPw({ current: '', next: '', confirm: '' });
+      if (!res.ok) throw new Error("Bad response");
+      setMsg("Password changed.");
+      setPw({ current: "", next: "", confirm: "" });
     } catch {
-      setErr('Failed to change password.');
+      setErr("Failed to change password.");
     }
   };
 
   // ---- Delete account (stub endpoint; implement in backend) ----
   const deleteAccount = async () => {
-    if (!confirm('This will permanently delete your account. Continue?')) return;
+    if (!confirm("This will permanently delete your account. Continue?"))
+      return;
     setMsg(null);
     setErr(null);
     try {
       const res = await fetch(`${API_BASE}/api/auth/account`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error('Bad response');
+      if (!res.ok) throw new Error("Bad response");
       // Clear client state and go home
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.dispatchEvent(new Event('libby:auth'));
-      router.push('/');
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.dispatchEvent(new Event("libby:auth"));
+      router.push("/");
     } catch {
-      setErr('Could not delete account. Please try again.');
+      setErr("Could not delete account. Please try again.");
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.dispatchEvent(new Event('libby:auth'));
-    router.push('/');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.dispatchEvent(new Event("libby:auth"));
+    router.push("/");
   };
 
   return (
@@ -156,7 +168,9 @@ export default function SettingsPage() {
                   <div className={styles.mutedBox}>{me.email}</div>
                 </div>
                 <div>
-                  <label className={styles.label} htmlFor="full_name">Full name</label>
+                  <label className={styles.label} htmlFor="full_name">
+                    Full name
+                  </label>
                   <input
                     id="full_name"
                     className={styles.input}
@@ -166,8 +180,12 @@ export default function SettingsPage() {
                   />
                 </div>
                 <div className={styles.row}>
-                  <button className={styles.primary} onClick={saveProfile}>Save Changes</button>
-                  <button className={styles.ghost} onClick={logout}>Log out</button>
+                  <button className={styles.primary} onClick={saveProfile}>
+                    Save Changes
+                  </button>
+                  <button className={styles.ghost} onClick={logout}>
+                    Log out
+                  </button>
                 </div>
               </div>
             ) : (
@@ -180,37 +198,51 @@ export default function SettingsPage() {
             <h2 className={styles.cardTitle}>Password</h2>
             <div className={styles.stack}>
               <div>
-                <label className={styles.label} htmlFor="pw_current">Current password</label>
+                <label className={styles.label} htmlFor="pw_current">
+                  Current password
+                </label>
                 <input
                   id="pw_current"
                   type="password"
                   className={styles.input}
                   value={pw.current}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPw((s) => ({ ...s, current: e.target.value }))}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPw((s) => ({ ...s, current: e.target.value }))
+                  }
                 />
               </div>
               <div>
-                <label className={styles.label} htmlFor="pw_next">New password</label>
+                <label className={styles.label} htmlFor="pw_next">
+                  New password
+                </label>
                 <input
                   id="pw_next"
                   type="password"
                   className={styles.input}
                   value={pw.next}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPw((s) => ({ ...s, next: e.target.value }))}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPw((s) => ({ ...s, next: e.target.value }))
+                  }
                 />
               </div>
               <div>
-                <label className={styles.label} htmlFor="pw_confirm">Confirm new password</label>
+                <label className={styles.label} htmlFor="pw_confirm">
+                  Confirm new password
+                </label>
                 <input
                   id="pw_confirm"
                   type="password"
                   className={styles.input}
                   value={pw.confirm}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPw((s) => ({ ...s, confirm: e.target.value }))}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPw((s) => ({ ...s, confirm: e.target.value }))
+                  }
                 />
               </div>
               <div>
-                <button className={styles.primary} onClick={changePassword}>Change Password</button>
+                <button className={styles.primary} onClick={changePassword}>
+                  Change Password
+                </button>
               </div>
             </div>
           </div>
@@ -218,8 +250,12 @@ export default function SettingsPage() {
           {/* Danger zone */}
           <div className={styles.cardDanger}>
             <h2 className={styles.cardTitle}>Danger Zone</h2>
-            <p className={styles.muted}>Deleting your account is permanent and cannot be undone.</p>
-            <button className={styles.danger} onClick={deleteAccount}>Delete Account</button>
+            <p className={styles.muted}>
+              Deleting your account is permanent and cannot be undone.
+            </p>
+            <button className={styles.danger} onClick={deleteAccount}>
+              Delete Account
+            </button>
           </div>
         </section>
 
