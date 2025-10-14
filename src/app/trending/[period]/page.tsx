@@ -95,7 +95,7 @@ function TrendingPeriodContent() {
                     <div className="pagination mt-12 flex justify-center items-center gap-4">
                         <button
                             onClick={handlePrevPage}
-                            disabled={currentPage === 1 || books.length === 0}
+                            disabled={currentPage === 1}
                             className="pagination-arrow disabled:opacity-50"
                         >
                             &larr;
