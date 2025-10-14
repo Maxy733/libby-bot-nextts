@@ -209,7 +209,7 @@ export default function HomeContent({
       </div>
 
       {/* Trending Section */}
-      <section id="discover" className="discover-section">
+      <section id="discover" className="discover-section" style={{ marginBottom: "1.5rem" }}>
         <div className="container">
           <BookCarousel title="Trending This Week" books={trendingBooks} />
         </div>
@@ -217,15 +217,9 @@ export default function HomeContent({
 
       {/* Personalized Recommendations Section */}
       {personalized && (
-        <section id="personalized" className="discover-section">
+        <section id="personalized" className="discover-section" style={{ marginTop: "0.5rem" }}>
           <div className="container">
-            <div className="section-header animated-element">
-              <h2 className="section-title">Personalized Recommendations</h2>
-              <Link href="/recommendations" className="see-more-link">
-                See More
-              </Link>
-            </div>
-            <BookCarousel title="For You" books={personalizedBooks} />
+            <BookCarousel title="You might also like..." books={personalizedBooks} />
           </div>
         </section>
       )}

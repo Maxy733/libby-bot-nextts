@@ -1,62 +1,107 @@
-.carouselSection {
-  margin: 2rem 0;
-}
 
 .carouselHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.75rem;
+  margin-right: 1.2rem;
 }
 
 .carouselTitle {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  color: var(--brand-accent);
+  color: white;
 }
 
 .scrollButtons {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
   display: flex;
-  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 0.75rem;
+  pointer-events: none;
+  z-index: 5; /* ensures buttons float above the cards */
 }
 
 .scrollBtn {
-  background-color: #9c6237; /* orange */
+  pointer-events: all;
+  background-color: #9c6237;
   color: rgba(255, 255, 255, 0.9);
   border: none;
-  border-radius: 50%; /* circular shape */
+  border-radius: 50%;
   width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
-  font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  opacity: 0; /* hidden by default */
+  transition: opacity 0.3s ease-in-out, background-color 0.3s, transform 0.2s;
+}
+
+.carouselContainer:hover .scrollBtn {
+  opacity: 1; /* visible on hover */
 }
 
 .scrollBtn:hover {
-  background-color: #b2744b; /* lighter orange on hover */
+  background-color: #b2744b;
   transform: scale(1.05);
+}
+
+.scrollBtn.disabled {
+  opacity: 0.5; /* 50% opacity when disabled */
+  background-color: #9c6237; /* same orange base */
+  cursor: default;
+  pointer-events: none;
 }
 
 .carouselContainer {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   overflow-x: auto;
   scroll-behavior: smooth;
-  padding-bottom: 0.5rem;
+  padding: 1rem 0 1.5rem 0; /* more breathing space */
+  height: auto; /* allow dynamic height based on card size */
+  align-items: flex-start; /* align cards from top */
+  position: relative; /* keep reference for floating buttons */
+  margin-right: 2.5rem;
+  overflow: hidden; /* ensure scroll buttons overlay neatly */
 }
 
 .carouselBookCard {
   flex: 0 0 auto;
-  width: 160px;
+  width: 180px;
 }
 
 .emptyText {
   color: var(--brand-muted);
   font-size: 0.95rem;
   padding: 1rem;
+}
+
+.button {
+  background-color: #9c6237;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.button:hover {
+  background-color: #b2744b;
+  transform: scale(1.03);
+}
+.carouselSection {
+  position: relative; /* new anchor for scroll buttons */
 }
