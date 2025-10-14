@@ -1,0 +1,468 @@
+.wishlistCardWrapper {
+  position: relative;
+  display: inline-block;
+}
+/* Profile.module.css */
+
+/* Layout for profile page with two columns */
+.threeColumnLayout {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 24px;
+  padding: 32px;
+  background-color: #1c1b18;
+  min-height: 100vh;
+}
+
+.leftColumn,
+.middleColumn,
+.rightColumn {
+  background-color: #2f261e;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  color: #e8dcc6;
+}
+
+.settingsMenu h3 {
+  margin-bottom: 16px;
+  font-size: 18px;
+  color: #e8dcc6;
+}
+
+.settingsMenu a {
+  color: #9c6237;
+  text-decoration: none;
+}
+
+.profileName {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #e8dcc6;
+}
+
+.profileEmail {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: #a3937b;
+}
+
+.tabBtn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4b3f35;
+  color: #e8dcc6;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.active {
+  background-color: #9c6237;
+  color: #e8dcc6;
+}
+
+.statText {
+  font-size: 16px;
+  margin-top: 4px;
+}
+
+.secondary {
+  background-color: #a3937b;
+  color: #2f261e;
+}
+
+.danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.clearWishlistBtn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.discoverBtn {
+  display: inline-block;
+  margin-top: 16px;
+  background-color: #9c6237;
+  color: #e8dcc6;
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.wishlistBookCard {
+  background-color: #4b3f35;
+  padding: 12px;
+  border-radius: 12px;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: #e8dcc6;
+}
+.wishlistBookCard:hover {
+  background-color: #e8dcc6;
+}
+
+.bookTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #e8dcc6;
+}
+
+.bookAuthor {
+  font-size: 14px;
+  color: #a3937b;
+}
+
+.dateAdded {
+  font-size: 12px;
+  color: #a3937b;
+  margin-top: 4px;
+}
+
+.removeBookBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: #9c6237;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 28px;
+  text-align: center;
+}
+
+.removeBookBtn:hover {
+  background-color: #b2744b;
+}
+
+.rightColumn {
+  font-style: italic;
+  text-align: center;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: #a3937b;
+}
+
+.settingsMenu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.settingsMenu li {
+  margin-bottom: 12px;
+}
+
+.settingsMenu li button {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  background-color: #4b3f35;
+  color: #e8dcc6;
+  border-radius: 10px;
+  font-weight: 500;
+  text-align: left;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.settingsMenu li button:hover {
+  background-color: #9c6237;
+  color: #fff;
+}
+
+.settingsMenu li button.danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.settingsMenu li button.danger:hover {
+  background-color: #b02a37;
+}
+
+/* Preferences grid and genre tab styles */
+.preferencesGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.genreTab {
+  padding: 10px 16px;
+  background-color: #4b3f35;
+  color: #e8dcc6;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: default;
+  transition: background 0.3s;
+}
+
+.genreTab:hover {
+  background-color: #9c6237;
+  color: #fff;
+}
+
+.redoInterestsBtn {
+  background-color: transparent;
+  color: #9c6237;
+  font-weight: 600;
+  text-decoration: underline;
+  border: none;
+  cursor: pointer;
+  margin-top: 16px;
+}
+
+.redoInterestsBtn:hover {
+  color: #b2744b;
+}
+@media (max-width: 1024px) {
+  .threeColumnLayout {
+    grid-template-columns: 1fr; /* stack columns */
+    padding: 16px;
+  }
+
+  .leftColumn,
+  .middleColumn,
+  .rightColumn {
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+
+  .rightColumn {
+    display: none; /* optional: hide right column */
+  }
+}
+.wishlistRow {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.wishlistRow > * {
+  flex: 0 0 auto;
+}
+
+/* Overview container cards for stats and info */
+.overviewCard {
+  background: var(--brand-surface);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  color: var(--brand-text);
+}
+
+/* Section titles */
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--brand-accent);
+  margin-bottom: 1rem;
+}
+
+/* Container for overview stats and info cards */
+.overviewRow {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap; /* responsive for smaller screens */
+  margin-bottom: 1.5rem;
+}
+
+/* Individual overview item cards */
+.overviewItem {
+  flex: 1;
+  min-width: 150px;
+  background: #4b3f35;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Labels for overview items */
+.overviewLabel {
+  font-size: 0.9rem;
+  color: var(--brand-muted);
+  margin-bottom: 0.5rem;
+}
+
+/* Values for overview items */
+.overviewValue {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--brand-accent);
+}
+
+/* Styling for the recent activity card to match overview items */
+.recentActivityCard {
+  flex: 2; /* make it wider than other stats */
+  text-align: left;
+  background: #4b3f35;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--brand-text);
+}
+
+/* Recent activity list */
+.recentActivityList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Individual recent activity items */
+.recentActivityItem {
+  font-size: 0.85rem;
+  color: var(--brand-text);
+  margin-bottom: 0.4rem;
+}
+
+/* Activity list item layout */
+.activityItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.activityCover {
+  width: 40px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.activityInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.activityTitle {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.activityType {
+  font-size: 0.75rem;
+  color: var(--brand-muted);
+}
+
+/* Progress bar */
+.progressWrapper {
+  background: #2f261e;
+  border-radius: 6px;
+  overflow: hidden;
+  height: 10px;
+  margin-top: 0.5rem;
+}
+
+.progressFill {
+  background: var(--brand-accent);
+  height: 100%;
+  transition: width 0.3s ease-in-out;
+}
+
+/* Notification preference UI */
+.prefCard {
+  background-color: #4b3f35;
+  border-radius: 12px;
+  padding: 16px;
+  color: #e8dcc6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.prefRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.prefLabel {
+  font-weight: 600;
+  min-width: 200px;
+}
+
+.selectWrap {
+  position: relative;
+  display: inline-block;
+}
+
+.select {
+  appearance: none;
+  background: #2f261e;
+  color: #e8dcc6;
+  border: 1px solid #5a4a3e;
+  border-radius: 10px;
+  padding: 10px 36px 10px 12px;
+  font-weight: 500;
+  min-width: 180px;
+  cursor: pointer;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #9c6237;
+  box-shadow: 0 0 0 2px rgba(156, 98, 55, 0.3);
+}
+
+.selectChevron {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #a3937b;
+}
+
+.saveBtn {
+  background-color: #9c6237;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.saveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.prefHint {
+  margin-top: 10px;
+  color: #a3937b;
+  font-size: 0.9rem;
+}
+
+.toast {
+  margin-top: 12px;
+  background: #2f261e;
+  border: 1px solid #5a4a3e;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #e8dcc6;
+}
