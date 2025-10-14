@@ -85,20 +85,17 @@ const toHttps = (u?: string | null) => {
   }
 };
 
-const placeholder = (t: string) =>
-  `https://placehold.co/320x480/2d2d2d/ffffff?text=${encodeURIComponent(
-    t
-  )}&font=roboto`;
+const placeholder = "/Libby_Bot.png";
 
 function CardCover({ title, src }: { title: string; src?: string | null }) {
-  const safeSrc = src || placeholder(title);
+  const safeSrc = src || placeholder;
   return (
     <img
       src={safeSrc}
       alt={title}
       referrerPolicy="no-referrer"
       onError={(e) => {
-        (e.currentTarget as HTMLImageElement).src = placeholder(title);
+        (e.currentTarget as HTMLImageElement).src = placeholder;
       }}
       className="w-full h-[240px] md:h-[280px] object-cover rounded-xl bg-[#1e1f22]"
       loading="lazy"

@@ -314,18 +314,11 @@ export default function BookDetailsPage() {
               <div className={styles.bookLeftColumn}>
                 <div className="book-details-cover">
                   <img
-                    src={
-                      book.coverurl ||
-                      `https://placehold.co/600x900/2F2F2F/FFFFFF?text=${encodeURIComponent(
-                        book.title
-                      )}`
-                    }
+                    src={book.coverurl || "/Libby_Bot.png"}
                     alt={book.title}
                     onError={(e) => {
                       console.error("Image failed to load:", book.coverurl);
-                      e.currentTarget.src = `https://placehold.co/600x900/2F2F2F/FFFFFF?text=${encodeURIComponent(
-                        book.title
-                      )}`;
+                      e.currentTarget.src = "/Libby_Bot.png";
                     }}
                   />
                 </div>
@@ -764,7 +757,7 @@ export default function BookDetailsPage() {
                 >
                   <div className={styles.bookCardWrapper}>
                     <img
-                      src="https://placehold.co/100x150?text=Book"
+                      src="/Libby_Bot.png"
                       alt="icon"
                       className={styles.bookCardImage}
                     />

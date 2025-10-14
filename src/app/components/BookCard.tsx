@@ -36,9 +36,7 @@ export default function BookCard({
   book,
   showWishlist = false,
 }: BookCardProps) {
-  const placeholderUrl = `https://placehold.co/300x450/2F2F2F/FFFFFF?text=${encodeURIComponent(
-    book.title || "No Title"
-  )}`;
+  const placeholderUrl = "/Libby_Bot.png";
   const { user } = useUser();
 
   const handleClick = () => {
