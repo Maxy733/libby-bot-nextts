@@ -333,13 +333,6 @@ export default function BookDetailsPage() {
                 <div className="book-details-section">
                   <h2>Details</h2>
                   <ul>
-<<<<<<< HEAD
-                    <li><strong>ISBN:</strong> {book.isbn || 'N/A'}</li>
-                    <li><strong>Language:</strong> {book.language || 'N/A'}</li>
-                    <li><strong>Pages:</strong> {book.pages || 'N/A'}</li>
-                    <li><strong>Publication Year:</strong> {book.publication_date || 'N/A'}</li>
-                    <li><strong>Rating:</strong> {book.rating !== null ? book.rating.toFixed(1) : 'N/A'}</li>
-=======
                     <li>
                       <strong>ISBN:</strong> {book.isbn || "N/A"}
                     </li>
@@ -359,7 +352,6 @@ export default function BookDetailsPage() {
                       <strong>Rating:</strong>{" "}
                       {book.rating !== null ? book.rating.toFixed(1) : "N/A"}
                     </li>
->>>>>>> 14e594c ( User rating+email)
                   </ul>
                 </div>
               </div>
@@ -625,7 +617,7 @@ export default function BookDetailsPage() {
                       if (rating.first_name) return rating.first_name;
                       if (rating.last_name) return rating.last_name;
                       if (rating.email) return rating.email.split("@")[0];
-                      
+
                       // Fallback: if this is the current user's review
                       if (user && rating.clerk_user_id === user.id) {
                         // Show current user's name from Clerk
@@ -635,18 +627,23 @@ export default function BookDetailsPage() {
                         if (user.firstName) return user.firstName;
                         if (user.username) return user.username;
                         if (user.primaryEmailAddress?.emailAddress) {
-                          return user.primaryEmailAddress.emailAddress.split("@")[0];
+                          return user.primaryEmailAddress.emailAddress.split(
+                            "@"
+                          )[0];
                         }
                       }
-                      
+
                       // Last resort: show "User" with short ID
                       if (rating.clerk_user_id) {
-                        const shortId = rating.clerk_user_id.substring(rating.clerk_user_id.length - 6);
+                        const shortId = rating.clerk_user_id.substring(
+                          rating.clerk_user_id.length - 6
+                        );
                         return `User ${shortId}`;
                       }
-                      
+
                       return "Anonymous User";
-                    };                    return (
+                    };
+                    return (
                       <div key={rating.rating_id} className={styles.ratingItem}>
                         <div className={styles.ratingItemHeader}>
                           <div className={styles.userInfo}>
