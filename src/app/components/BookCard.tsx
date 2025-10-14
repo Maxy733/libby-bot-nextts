@@ -10,6 +10,7 @@ import { trackUserInteraction } from "../utils/interactionTracker";
 interface BookCardProps {
   book: Book;
   showWishlist?: boolean;
+  className?: string; // ✅ allows custom styling
 }
 
 // Utility function to extract year from various date formats

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import BookCard from "./BookCard";
+import BookCarousel from "./BookCarousel";
 import { Book } from "../../types/book";
 
 interface HomeContentProps {
@@ -210,47 +211,7 @@ export default function HomeContent({
       {/* Trending Section */}
       <section id="discover" className="discover-section">
         <div className="container">
-          <div id="trending">
-            <h2 className="section-title animated-element">
-              Trending This Week
-            </h2>
-            <div className="carousel-wrapper">
-              <div ref={trendingCarouselRef} className="carousel-container">
-                {isLoading && (
-                  <p className="loading-text">Loading trending books...</p>
-                )}
-                {error && <p className="error-text">{error}</p>}
-                {!isLoading &&
-                  !error &&
-                  trendingBooks.map((book, index) => (
-                    <BookCard
-                      key={book.id || index}
-                      book={book}
-                      showWishlist={true}
-                    />
-                  ))}
-              </div>
-              {/* Scroll Buttons */}
-              <button
-                onClick={() =>
-                  handleCarouselScroll(trendingCarouselRef, "left")
-                }
-                className="carousel-button prev"
-                aria-label="Scroll left"
-              >
-                ‹
-              </button>
-              <button
-                onClick={() =>
-                  handleCarouselScroll(trendingCarouselRef, "right")
-                }
-                className="carousel-button next"
-                aria-label="Scroll right"
-              >
-                ›
-              </button>
-            </div>
-          </div>
+          <BookCarousel title="Trending This Week" books={trendingBooks} />
         </div>
       </section>
 
@@ -258,55 +219,13 @@ export default function HomeContent({
       {personalized && (
         <section id="personalized" className="discover-section">
           <div className="container">
-            <div id="personalized-carousel">
-              <div className="section-header animated-element">
-                <h2 className="section-title">Personalized Recommendations</h2>
-                <Link href="/recommendations" className="see-more-link">
-                  See More
-                </Link>
-              </div>
-              <div className="carousel-wrapper">
-                <div
-                  ref={personalizedCarouselRef}
-                  className="carousel-container"
-                >
-                  {isLoading && (
-                    <p className="loading-text">
-                      Loading your recommendations...
-                    </p>
-                  )}
-                  {error && <p className="error-text">{error}</p>}
-                  {!isLoading &&
-                    !error &&
-                    personalizedBooks.map((book, index) => (
-                      <BookCard
-                        key={book.id || index}
-                        book={book}
-                        showWishlist={true}
-                      />
-                    ))}
-                </div>
-                {/* Scroll Buttons */}
-                <button
-                  onClick={() =>
-                    handleCarouselScroll(personalizedCarouselRef, "left")
-                  }
-                  className="carousel-button prev"
-                  aria-label="Scroll left"
-                >
-                  ‹
-                </button>
-                <button
-                  onClick={() =>
-                    handleCarouselScroll(personalizedCarouselRef, "right")
-                  }
-                  className="carousel-button next"
-                  aria-label="Scroll right"
-                >
-                  ›
-                </button>
-              </div>
+            <div className="section-header animated-element">
+              <h2 className="section-title">Personalized Recommendations</h2>
+              <Link href="/recommendations" className="see-more-link">
+                See More
+              </Link>
             </div>
+            <BookCarousel title="For You" books={personalizedBooks} />
           </div>
         </section>
       )}

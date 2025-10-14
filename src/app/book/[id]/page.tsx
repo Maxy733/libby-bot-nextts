@@ -338,7 +338,9 @@ export default function BookDetailsPage() {
                     <li>
                       <strong>Publication Date:</strong>{" "}
                       {book.publication_date
-                        ? new Date(book.publication_date).toLocaleDateString()
+                        ? /^\d{4}$/.test(book.publication_date)
+                          ? book.publication_date
+                          : new Date(book.publication_date).toLocaleDateString()
                         : "N/A"}
                     </li>
                     <li>
