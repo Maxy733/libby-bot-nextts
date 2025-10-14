@@ -4,6 +4,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import BookCard from "../components/BookCard";
+import BookCarousel from "../components/BookCarousel";
 import { Book } from "../../types/book";
 
 // --- Data for Genres ---
@@ -130,24 +131,6 @@ export default function DiscoverPage() {
     return () => elementsToAnimate.forEach((el) => observer.unobserve(el));
   }, [trendingBooks]);
 
-  // Carousel scroll handler
-  const handleCarouselScroll = (
-    direction: "left" | "right",
-    ref: React.RefObject<HTMLDivElement | null>
-  ) => {
-    if (ref.current) {
-      const scrollAmount = 300;
-      const currentScroll = ref.current.scrollLeft;
-      ref.current.scrollTo({
-        left:
-          direction === "left"
-            ? currentScroll - scrollAmount
-            : currentScroll + scrollAmount,
-        behavior: "smooth",
-      });
-    }
-  };
-
   function handleBookClick(b: Book): void {
     // Optionally, navigate to the book detail page
     // For now, just log the book or implement navigation as needed
@@ -175,37 +158,7 @@ export default function DiscoverPage() {
                 See More &rarr;
               </Link>
             </div>
-            <div className="carousel-wrapper">
-              <div ref={trendingCarouselRef} className="carousel-container">
-                {trendingBooks.map((book) => (
-                  <div
-                    key={book.id}
-                    className="book-card is-visible"
-                    onClick={() => handleBookClick(book)}
-                  >
-                    <BookCard key={book.id} book={book} showWishlist={true} />
-                  </div>
-                ))}
-              </div>
-              <button
-                onClick={() =>
-                  handleCarouselScroll("left", trendingCarouselRef)
-                }
-                className="carousel-button prev"
-                aria-label="Scroll left"
-              >
-                ‹
-              </button>
-              <button
-                onClick={() =>
-                  handleCarouselScroll("right", trendingCarouselRef)
-                }
-                className="carousel-button next"
-                aria-label="Scroll right"
-              >
-                ›
-              </button>
-            </div>
+            <BookCarousel books={trendingBooks} title="Trending This Week" />
           </section>
 
           {/* Genres Section */}

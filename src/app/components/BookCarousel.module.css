@@ -44,7 +44,7 @@
   transition: opacity 0.3s ease-in-out, background-color 0.3s, transform 0.2s;
 }
 
-.carouselContainer:hover .scrollBtn {
+.carouselSection:hover .scrollBtn {
   opacity: 1; /* visible on hover */
 }
 

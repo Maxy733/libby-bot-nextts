@@ -4,87 +4,12 @@
 import React, {
   useState,
   useEffect,
-  useRef,
   Dispatch,
   SetStateAction,
 } from "react";
 import Link from "next/link";
-import BookCard from "../components/BookCard";
+import BookCarousel from "../components/BookCarousel";
 import { Book } from "../../types/book";
-
-type Period = "weekly" | "monthly" | "yearly";
-
-// --- Reusable BookCarousel ---
-const BookCarousel = ({
-  title,
-  books,
-  isLoading,
-  error,
-  seeMoreLink,
-}: {
-  title: string;
-  books: Book[];
-  isLoading: boolean;
-  error: string | null;
-  seeMoreLink: string;
-}) => {
-  const carouselRef = useRef<HTMLDivElement>(null);
-
-  const handleCarouselScroll = (direction: "left" | "right") => {
-    if (carouselRef.current) {
-      const scrollAmount = 300;
-      const currentScroll = carouselRef.current.scrollLeft;
-      carouselRef.current.scrollTo({
-        left:
-          direction === "left"
-            ? currentScroll - scrollAmount
-            : currentScroll + scrollAmount,
-        behavior: "smooth",
-      });
-    }
-  };
-
-  return (
-    <section>
-      <div className="section-header">
-        <h2 className="section-title">{title}</h2>
-        <Link href={seeMoreLink} className="see-more-link">
-          See More &rarr;
-        </Link>
-      </div>
-      <div className="carousel-wrapper">
-        <div ref={carouselRef} className="carousel-container">
-          {isLoading && <p className="loading-text">Loading...</p>}
-          {error && <p className="error-text">{error}</p>}
-          {!isLoading &&
-            !error &&
-            books.length > 0 &&
-            books.map((book) => (
-              <BookCard key={book.id} book={book} showWishlist={true} />
-            )) // ✅ Reused
-          }
-          {!isLoading && !error && books.length === 0 && (
-            <p className="loading-text">No books found for this period.</p>
-          )}
-        </div>
-        <button
-          onClick={() => handleCarouselScroll("left")}
-          className="carousel-button prev"
-          aria-label="Scroll left"
-        >
-          ‹
-        </button>
-        <button
-          onClick={() => handleCarouselScroll("right")}
-          className="carousel-button next"
-          aria-label="Scroll right"
-        >
-          ›
-        </button>
-      </div>
-    </section>
-  );
-};
 
 // --- Main Page Component ---
 export default function TrendingPage() {
@@ -133,7 +58,7 @@ export default function TrendingPage() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000";
 
     const fetchData = (
-      period: Period,
+      period: "weekly" | "monthly" | "yearly",
       setData: Dispatch<SetStateAction<Book[]>>,
       setLoadingState: (isLoading: boolean) => void,
       setErrorState: (error: string | null) => void
