@@ -24,7 +24,7 @@ export default function ProfilePage() {
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState<
-    "dashboard" | "users" | "recommendations" | "books" | "analytics" | "settings"
+    "dashboard" | "books" | "analytics" | "settings"
   >("dashboard");
 
   const [userStats, setUserStats] = useState<UserStats>({
@@ -163,7 +163,6 @@ export default function ProfilePage() {
                       </div>
                     </div>
                   </div>
-                  {/* Recent Activity Log and System Status cards */}
                   <div className={styles.overviewRowLarge}>
                     <div className={styles.overviewItemLarge}>
                       <div className={styles.overviewLabel}>Recent Activity Log</div>
@@ -178,10 +177,22 @@ export default function ProfilePage() {
                     <div className={styles.overviewItemLarge}>
                       <div className={styles.overviewLabel}>System Status</div>
                       <ul className={styles.statusList}>
-                        <li><span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>Database</li>
-                        <li><span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>API Services</li>
-                        <li><span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>Server Load</li>
-                        <li><span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>Cache</li>
+                        <li>
+                          <span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>
+                          Database
+                        </li>
+                        <li>
+                          <span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>
+                          API Services
+                        </li>
+                        <li>
+                          <span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>
+                          Server Load
+                        </li>
+                        <li>
+                          <span style={{ backgroundColor: 'limegreen', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '8px' }}></span>
+                          Cache
+                        </li>
                       </ul>
                     </div>
                   </div>
