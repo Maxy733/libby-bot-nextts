@@ -111,9 +111,11 @@ const normalizeBooks = (raw: any[]): Book[] =>
       author: b.author ?? b.authors ?? "",
       rating: b.rating ?? null,
       genre: b.genre ?? null,
-      year: b.year
-        ?? (b.publication_date ? new Date(b.publication_date).getFullYear().toString() : null)
-        ?? "Unknown",
+      year:
+        b.year ??
+        (b.publication_date && /^\d{4}$/.test(b.publication_date)
+          ? b.publication_date
+          : "Unknown"),
       coverurl: toHttps(
         b.coverurl ||
           b.cover_image_url ||
