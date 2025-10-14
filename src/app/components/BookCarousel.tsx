@@ -56,24 +56,25 @@ export default function BookCarousel({ title, books }: BookCarouselProps) {
         ) : (
           <p className={styles.emptyText}>No books to display</p>
         )}
+
+        <div className={styles.scrollButtons}>
+          <button
+            onClick={() => scroll("left")}
+            className={styles.scrollBtn}
+            aria-label="Scroll left"
+          >
+            {"<"}
+          </button>
+          <button
+            onClick={() => scroll("right")}
+            className={styles.scrollBtn}
+            aria-label="Scroll right"
+          >
+            {">"}
+          </button>
+        </div>
       </div>
 
-      <div className={styles.scrollButtons}>
-        <button
-          onClick={() => scroll("left")}
-          className={styles.scrollBtn}
-          aria-label="Scroll left"
-        >
-          {"<"}
-        </button>
-        <button
-          onClick={() => scroll("right")}
-          className={styles.scrollBtn}
-          aria-label="Scroll right"
-        >
-          {">"}
-        </button>
-      </div>
     </section>
   );
 }

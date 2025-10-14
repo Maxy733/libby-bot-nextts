@@ -1,4 +1,3 @@
-
 .carouselHeader {
   display: flex;
   justify-content: space-between;
@@ -55,10 +54,11 @@
   transform: scale(1.05);
 }
 
-.scrollBtn.disabled {
-  opacity: 0.5; /* 50% opacity when disabled */
-  background-color: #9c6237; /* same orange base */
-  cursor: default;
+
+.scrollBtn:disabled {
+  opacity: 0.5;
+  background-color: #5a4a3e; /* dimmer brown */
+  cursor: not-allowed;
   pointer-events: none;
 }
 
@@ -67,12 +67,11 @@
   gap: 1.5rem;
   overflow-x: auto;
   scroll-behavior: smooth;
-  padding: 1rem 0 1.5rem 0; /* more breathing space */
   height: auto; /* allow dynamic height based on card size */
   align-items: flex-start; /* align cards from top */
   position: relative; /* keep reference for floating buttons */
   margin-right: 2.5rem;
-  overflow: hidden; /* ensure scroll buttons overlay neatly */
+  overflow: visible;
 }
 
 .carouselBookCard {
