@@ -3,7 +3,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import BookCard from "../components/BookCard";
 import BookCarousel from "../components/BookCarousel";
 import { Book } from "../../types/book";
 
@@ -152,13 +151,7 @@ export default function DiscoverPage() {
 
           {/* Trending Section */}
           <section id="trending">
-            <div className="section-header">
-              <h2 className="section-title">Trending This Week</h2>
-              <Link href="/trending" className="see-more-link">
-                See More &rarr;
-              </Link>
-            </div>
-            <BookCarousel books={trendingBooks} title="Trending This Week" />
+            <BookCarousel books={trendingBooks} title="Trending This Week" seeMoreLink="/trending/weekly" />
           </section>
 
           {/* Genres Section */}

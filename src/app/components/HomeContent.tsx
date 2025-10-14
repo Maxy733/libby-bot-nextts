@@ -210,7 +210,7 @@ export default function HomeContent({
       {/* Trending Section */}
       <section id="discover" className="discover-section" style={{ marginBottom: "1.5rem" }}>
         <div className="container">
-          <BookCarousel title="Trending This Week" books={trendingBooks} />
+          <BookCarousel title="Trending This Week" books={trendingBooks} seeMoreLink="/trending/weekly"/>
         </div>
       </section>
 
@@ -218,7 +218,7 @@ export default function HomeContent({
       {personalized && (
         <section id="personalized" className="discover-section" style={{ marginTop: "0.5rem" }}>
           <div className="container">
-            <BookCarousel title="You might also like..." books={personalizedBooks} />
+            <BookCarousel title="You might also like..." books={personalizedBooks} seeMoreLink="/recommendations" />
           </div>
         </section>
       )}

@@ -20,7 +20,7 @@ interface BookCarouselProps {
  * Displays a horizontally scrollable carousel of BookCard components.
  * Designed to match existing BookCard and Book page visual style.
  */
-export default function BookCarousel({ title, books }: BookCarouselProps) {
+export default function BookCarousel({ title, books, seeMoreLink }: BookCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const handleCarouselScroll = (direction: "left" | "right") => {
@@ -37,12 +37,14 @@ export default function BookCarousel({ title, books }: BookCarouselProps) {
       <div className={styles.carouselHeader}>
         <h2 className={styles.carouselTitle}>{title}</h2>
         <div className={styles.carouselHeaderRight}>
-          <button
+        {seeMoreLink ? (
+            <button
             className={styles.button}
-            onClick={() => (window.location.href = '/books')}
-          >
+            onClick={() => (window.location.href = seeMoreLink)}
+            >
             See More
-          </button>
+            </button>
+        ) : null}
         </div>
       </div>
 
