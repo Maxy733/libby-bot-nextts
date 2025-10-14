@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import BookCard from "./BookCard";
 import BookCarousel from "./BookCarousel";
 import { Book } from "../../types/book";
 

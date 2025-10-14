@@ -6,7 +6,6 @@ import styles from "./BookCarousel.module.css";
 import type { Book } from "../../types/book";
 
 
-
 interface BookCarouselProps {
   title: string;
   books: Book[];
@@ -21,9 +20,9 @@ interface BookCarouselProps {
 export default function BookCarousel({ title, books }: BookCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const scroll = (direction: "left" | "right") => {
+  const handleCarouselScroll = (direction: "left" | "right") => {
     if (!scrollRef.current) return;
-    const scrollAmount = 400;
+    const scrollAmount = 300;
     scrollRef.current.scrollBy({
       left: direction === "left" ? -scrollAmount : scrollAmount,
       behavior: "smooth",
@@ -56,23 +55,23 @@ export default function BookCarousel({ title, books }: BookCarouselProps) {
         ) : (
           <p className={styles.emptyText}>No books to display</p>
         )}
+      </div>
 
-        <div className={styles.scrollButtons}>
-          <button
-            onClick={() => scroll("left")}
-            className={styles.scrollBtn}
-            aria-label="Scroll left"
-          >
-            {"<"}
-          </button>
-          <button
-            onClick={() => scroll("right")}
-            className={styles.scrollBtn}
-            aria-label="Scroll right"
-          >
-            {">"}
-          </button>
-        </div>
+      <div className={styles.scrollButtons}>
+        <button
+          onClick={() => handleCarouselScroll("left")}
+          className={styles.scrollBtn}
+          aria-label="Scroll left"
+        >
+          {"<"}
+        </button>
+        <button
+          onClick={() => handleCarouselScroll("right")}
+          className={styles.scrollBtn}
+          aria-label="Scroll right"
+        >
+          {">"}
+        </button>
       </div>
 
     </section>

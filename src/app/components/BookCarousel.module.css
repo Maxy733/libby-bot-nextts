@@ -15,16 +15,15 @@
 .scrollButtons {
   position: absolute;
   top: 50%;
-  left: 0;
-  right: 0;
+  left: -2.5rem; /* move left button outside container */
+  right: -2.5rem; /* move right button outside container */
   transform: translateY(-50%);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  padding: 0 0.75rem;
+  width: calc(100% + 5rem); /* account for new offset */
   pointer-events: none;
-  z-index: 5; /* ensures buttons float above the cards */
+  z-index: 5;
 }
 
 .scrollBtn {
@@ -66,12 +65,17 @@
   display: flex;
   gap: 1.5rem;
   overflow-x: auto;
+  overflow-y: hidden;
   scroll-behavior: smooth;
-  height: auto; /* allow dynamic height based on card size */
-  align-items: flex-start; /* align cards from top */
-  position: relative; /* keep reference for floating buttons */
+  height: auto;
+  align-items: flex-start;
+  position: relative;
+  flex-wrap: nowrap; /* prevent wrapping to new rows */
   margin-right: 2.5rem;
-  overflow: visible;
+}
+
+.carouselContainer::-webkit-scrollbar {
+  display: none; /* hide scrollbar for cleaner look */
 }
 
 .carouselBookCard {
