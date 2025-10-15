@@ -31,7 +31,9 @@ function GenreContent() {
             setBooks(
               data.books.map((b: any) => ({
                 ...b,
-                year: b.year ?? b.publication_date?.split("-")[0] ?? "Unknown",
+                year: typeof b.publication_date === "string"
+        ? b.publication_date.split("-")[0]
+        : b.year ?? "Unknown",
                 coverurl: b.cover_image_url|| b.coverurl,
               }))
             );
